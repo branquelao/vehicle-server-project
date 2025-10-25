@@ -1,8 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
-import br.edu.unifaj.cc.poo.appcompraveiculoserver.dao.LoginDAO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,18 +9,15 @@ import java.util.List;
 @RestController
 public class LoginController {
 
-    @Autowired
-    LoginDAO dao;
+    private final LoginRepository loginRepository;
 
+    public LoginController(LoginRepository loginRepository) {
+        this.loginRepository = loginRepository;
+    }
 
     @GetMapping("/login")
     public List<Login> getLogins(){
-        return dao.getLogins();
-    }
-
-    @GetMapping("/login/{id}")
-    public Login getLoginId(@PathVariable Integer id){
-        return dao.getLoginId(id);
+        return loginRepository.findAll();
     }
 
     /*
@@ -39,15 +35,31 @@ public class LoginController {
     }
     */
 
+    @GetMapping("/login/{id}")
+    public Login getLoginId(@PathVariable Long id){
+        return loginRepository.findById(id).orElse(null);
+    }
+
     @PostMapping("/login")
-    public Login postLogin(@RequestBody Login p) {
-        return dao.postLogin(p);
+    public Login postLogin(@RequestBody Login l) {
+        return loginRepository.save(l);
     }
 
     @PutMapping("/login/{id}")
-    public Login putLogin(@RequestBody Login p, @PathVariable Integer id)
-            throws Exception{
-        return dao.putLogin(p, id);
+    public Login putLogin(@RequestBody Login p, @PathVariable Long id){
+            return loginRepository.findById(id)
+                    .map(l -> {
+                        l.setNome(l.getNome());
+                        l.setSenha(l.getSenha());
+                        l.setTelefone(l.getTelefone());
+                        l.setCarteira(l.getCarteira());
+                        return loginRepository.save(l);
+                    })
+                    .orElse(null);
     }
 
+    @DeleteMapping("/login/{id}")
+    public void Login(@PathVariable Long id){
+        loginRepository.deleteById(id);
+    }
 }
