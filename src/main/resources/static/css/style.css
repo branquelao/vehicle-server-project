@@ -1,0 +1,137 @@
+body
+{
+  background-image: url('img/imgFundo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: white;
+}
+
+/* menu geral */
+
+.menuP
+{
+  background-color: #4f4fc7;
+  border-radius: 100px;
+  padding: 10px 10px;
+  text-align: center;
+  flex-wrap: wrap;
+}
+
+.menuP a
+{
+  color: white;
+  text-decoration: none;
+  font-family: 'Oswald', sans-serif;
+  padding: 5px 70px;
+  margin: 0 4px;
+  transition: background 0.3s, color 0.3s;
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.menuP a:hover
+{
+  background-color: #b8c9ed;
+  color: #26004d;
+  text-shadow:
+      1px 1px 2px red,
+      0 0 1em blue,
+      0 0 0.2em blue;
+}
+
+@media (max-width: 576px) {
+  .menuP {
+    flex-direction: column;
+  }
+
+  .menuP a
+  {
+    margin-bottom: 20px;
+  }
+}
+
+/* 🔽 Botão do ícone de perfil */
+
+.perfil-btn
+{
+ background-color: #4f4fc7 ;
+  color: white;
+  position: absolute;
+  top: 30px;
+  right: 25px;
+  z-index: 1000;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  transition: all 0.3s;
+}
+
+.perfil-btn:hover {
+  background-color: #b8c9ed;
+  color: #26004d;
+  text-shadow:
+      1px 1px 2px red,
+      0 0 1em blue,
+      0 0 0.2em blue;
+}
+
+/* CARROSSEIS */
+h2 {
+  font-family: 'Oswald', sans-serif;
+  color: #b8c9ed ;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  text-shadow:
+    1px 1px 2px red,
+    0 0 1em blue,
+    0 0 0.2em blue;
+}
+.carousel-item img
+{
+  width: 100%;       /* ocupa toda a largura do container */
+  max-width: 700px;  /* largura máxima (opcional) */
+  height: 400px;     /* altura fixa para padronizar todas as imagens */
+  object-fit: cover; /* corta excesso mantendo proporção */
+  object-position: center; /* centraliza o corte */
+  margin: 0 auto;    /* centraliza horizontalmente */
+}
+
+.Pcarrocel
+{
+  font-family: 'Oswald', sans-serif;
+  color: #b8c9ed ;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  text-shadow:
+    1px 1px 2px red,
+    0 0 1em blue,
+    0 0 0.2em blue;
+}
+
+/* Setas personalizadas do carrossel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: transparent;
+  background-size: 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.carousel-control-prev-icon {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%234f4fc7" viewBox="0 0 8 8"><path d="M5.5 0L7 1.5 3.5 4 7 6.5 5.5 8 1 4 5.5 0z"/></svg>');
+}
+
+/* Seta direita */
+.carousel-control-next-icon {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%234f4fc7" viewBox="0 0 8 8"><path d="M2.5 0L1.5 1 4 4 1.5 7 2.5 8l4-4-4-4z"/></svg>');
+}
+
+
+
+
