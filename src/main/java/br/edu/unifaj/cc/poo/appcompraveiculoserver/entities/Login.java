@@ -21,10 +21,10 @@ public class Login {
     private String senha;
 
     @Column(name = "loginTelefone", nullable = false, unique = false)
-    private int telefone;
+    private String telefone;
 
     @Column(name = "loginCarteira", nullable = false, unique = false)
-    private int carteira;
+    private float carteira;
 
     @Column(name = "loginImagem", length = 100, nullable = false, unique = false)
     private String loginImagem;
