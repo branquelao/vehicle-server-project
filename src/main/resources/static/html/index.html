@@ -6,7 +6,7 @@
     <title>Veiculos.index</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -27,6 +27,59 @@
 <!-- Conteúdo principal -->
 <div class="container mt-5">
 
+    <!-- 🔹 Carrossel de Carros -->
+    <h2 class="text-center mt-5 mb-3">Carros em destaque</h2>
+    <div id="carouselCarros" class="carousel slide" data-bs-ride="carousel">
+
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselCarros" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#carouselCarros" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#carouselCarros" data-bs-slide-to="2"></button>
+        </div>
+
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="../img/carro1.jpg" class="d-block w-100" alt="Carro 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <div class="Pcarrocel">
+                        <h5>Carro Eclipse GT</h5>
+                        <p>Design esportivo e potência impressionante.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="../img/carro2.jpg" class="d-block w-100" alt="Carro 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <div class="Pcarrocel">
+                        <h5>Carro Mustang 67</h5>
+                        <p>Clássico americano com alma de corrida.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="../img/carro3.jpg" class="d-block w-100" alt="Carro 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <div class="Pcarrocel">
+                        <h5>Carro Cyberline</h5>
+                        <p>Tecnologia de ponta e conforto futurista.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselCarros" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselCarros" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
+
+    </div>
+
     <!-- 🔹 Carrossel de Motos -->
     <h2 class="text-center mt-5 mb-3">Motos em destaque</h2>
     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
@@ -37,10 +90,9 @@
             <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"></button>
         </div>
 
-
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="img/moto2.jpg" class="d-block w-100" alt="Moto 2">
+                <img src="../img/moto2.jpg" class="d-block w-100" alt="Moto 2">
                 <div class="carousel-caption d-none d-md-block">
                     <div class="Pcarrocel">
                         <h5>Moto Akira</h5>
@@ -50,7 +102,7 @@
             </div>
 
             <div class="carousel-item">
-                <img src="img/moto1.jpg" class="d-block w-100" alt="Moto 1">
+                <img src="../img/moto1.jpg" class="d-block w-100" alt="Moto 1">
                 <div class="carousel-caption d-none d-md-block">
                     <div class="Pcarrocel">
                         <h5>Moto Tron</h5>
@@ -60,16 +112,15 @@
             </div>
 
             <div class="carousel-item">
-                <img src="img/moto3.jpg" class="d-block w-100" alt="Moto 3">
+                <img src="../img/moto3.jpg" class="d-block w-100" alt="Moto 3">
                 <div class="carousel-caption d-none d-md-block">
                     <div class="Pcarrocel">
-                        <h5>Moto cavalier </h5>
-                        <p>Perfita para o combate.</p>
+                        <h5>Moto Cavalier</h5>
+                        <p>Perfeita para o combate.</p>
                     </div>
                 </div>
             </div>
         </div>
-
 
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
@@ -79,10 +130,29 @@
             <span class="carousel-control-next-icon"></span>
             <span class="visually-hidden">Próximo</span>
         </button>
-</div>
-<!-- Script do Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    </div>
+
+</div>
+
+<footer class="footer mt-5 py-4">
+    <div class="container text-center">
+        <h5 class="mb-3">Loja de carrinhos 🚗🏍️</h5>
+        <p class="mb-2">Seu portal de carros e motos incríveis</p>
+
+        <div class="social-icons mb-3">
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-twitter-x"></i></a>
+            <a href="#"><i class="bi bi-youtube"></i></a>
+        </div>
+
+        <p class="mb-0">&copy; 2025 Veiculos Neon | Amigos, Henrique the dark sous 2 gamer</p>
+    </div>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
