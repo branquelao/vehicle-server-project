@@ -16,5 +16,5 @@ public class CarroDTO {
     private float carroValor;
 
     //Arquivo da Imagem
-    private MultipartFile carroImagem;
+    private String carroImagem;
 }
