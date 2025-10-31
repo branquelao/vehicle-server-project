@@ -16,5 +16,5 @@ public class MotoDTO {
     private float motoValor;
 
     //Arquivo da Imagem
-    private MultipartFile motoImagem;
+    private String motoImagem;
 }
