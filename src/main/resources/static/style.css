@@ -1,17 +1,19 @@
+/* === CYBERPUNK 2077 STYLE === */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
 
 html, body {
   overflow-y: auto !important;
   height: auto !important;
 }
 
-
 body {
   margin: 0;
   height: 100vh;
-  background: radial-gradient(circle at top, #1a0033, #000010 80%);
+  background: radial-gradient(circle at top, #050505, #000 80%);
   overflow: hidden;
   position: relative;
-  font-family: 'Oswald', sans-serif;
+  font-family: 'Orbitron', sans-serif;
+  color: #f8f8f8;
 }
 
 /* --- BRILHO PULSANTE NEON --- */
@@ -22,55 +24,48 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, rgba(186,85,211,0.2), transparent 70%);
-  animation: glow 4s ease-in-out infinite alternate;
+  background: radial-gradient(circle at center, rgba(255,255,0,0.15), transparent 70%);
+  animation: glow 3s ease-in-out infinite alternate;
   z-index: 0;
-  filter: blur(30px);
-}
-
-@keyframes moveGrid {
-  from { transform: rotateX(60deg) translateY(100px); }
-  to { transform: rotateX(60deg) translateY(-100px); }
+  filter: blur(50px);
 }
 
 @keyframes glow {
-  from { opacity: 0.3; }
-  to { opacity: 0.7; }
+  from { opacity: 0.2; }
+  to { opacity: 0.8; }
 }
 
-    /* MENU PRINCIPAL USAR EM TODAS AS PAGINAS !! */
-.menuP
-{
-  background-color: #4f4fc7;
+/* MENU PRINCIPAL */
+.menuP {
+  background-color: #ff005e;
   border-radius: 100px;
   padding: 10px 10px;
   text-align: center;
   flex-wrap: wrap;
   z-index: 1;
+  box-shadow: 0 0 10px #ff005e, 0 0 10px #ff005e;
 }
 
-.menuP a
-{
-  color: white;
+.menuP a {
+  color: #00eaff;
   text-decoration: none;
-  font-family: 'Oswald', sans-serif;
+  font-family: 'Orbitron', sans-serif;
   padding: 5px 70px;
   margin: 0 4px;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.3s, color 0.3s, text-shadow 0.3s;
   border-radius: 20px;
   font-size: 15px;
   font-weight: bold;
   z-index: 1;
 }
 
-.menuP a:hover
-{
-  background-color: #b8c9ed;
-  color: #26004d;
+.menuP a:hover {
+  background-color: #f9f002;
+  color: #000;
   text-shadow:
-      1px 1px 2px red,
-      0 0 1em blue,
-      0 0 0.2em blue;
+      0 0 10px #f9f002,
+      0 0 30px #00eaff,
+      0 0 60px #ff005e;
 }
 
 @media (max-width: 576px) {
@@ -78,18 +73,15 @@ body::before {
     flex-direction: column;
   }
 
-  .menuP a
-  {
+  .menuP a {
     margin-bottom: 20px;
   }
 }
 
-/* 🔽 Botão do ícone de perfil */
-
-.perfil-btn
-{
- background-color: #4f4fc7 ;
-  color: white;
+/* 🔽 Botão de Perfil */
+.perfil-btn {
+  background-color: #00eaff;
+  color: #000;
   position: absolute;
   top: 28px;
   right: 25px;
@@ -100,50 +92,49 @@ body::before {
   align-items: center;
   justify-content: center;
   font-size: 22px;
+  border-radius: 50%;
   transition: all 0.3s;
+  box-shadow: 0 0 10px #00eaff, 0 0 10px #00eaff;
 }
 
 .perfil-btn:hover {
-  background-color: #b8c9ed;
-  color: #26004d;
+  background-color: #f9f002;
+  color: #000;
   text-shadow:
-      1px 1px 2px red,
-      0 0 1em blue,
-      0 0 0.2em blue;
+    0 0 10px #f9f002,
+    0 0 20px #ff005e;
 }
 
-/* CARROSSEIS */
+/* === CARROSSEIS === */
 h2 {
-  font-family: 'Oswald', sans-serif;
-  color: #b8c9ed ;
-  font-weight: bold;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  font-family: 'Orbitron', sans-serif;
+  color: #f9f002;
+  font-weight: 800;
   text-shadow:
-    1px 1px 2px red,
-    0 0 1em blue,
-    0 0 0.2em blue;
+        0 0 10px #f9f002,
+        0 0 10px #00eaff,
+        0 0 10px #ff005e;
 }
-.carousel-item img
-{
-  width: 100%;       /* ocupa toda a largura do container */
-  max-width: 700px;  /* largura máxima (opcional) */
-  height: 400px;     /* altura fixa para padronizar todas as imagens */
-  object-fit: cover; /* corta excesso mantendo proporção */
-  object-position: center; /* centraliza o corte */
-  margin: 0 auto;    /* centraliza horizontalmente */
+
+.carousel-item img {
+  width: 100%;
+  max-width: 700px;
+  height: 400px;
+  object-fit: cover;
+  object-position: center;
+  margin: 0 auto;
+  border: 2px solid #ff005e;
   z-index: 1;
 }
 
-.Pcarrocel
-{
-  font-family: 'Oswald', sans-serif;
-  color: #b8c9ed ;
+.Pcarrocel {
+  font-family: 'Orbitron', sans-serif;
+  color: #00eaff;
   font-weight: bold;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
   text-shadow:
-    1px 1px 2px red,
-    0 0 1em blue,
-    0 0 0.2em blue;
+    0 0 10px #00eaff,
+    0 0 20px #ff005e,
+    0 0 40px #f9f002;
 }
 
 /* Setas personalizadas do carrossel */
@@ -156,27 +147,27 @@ h2 {
 }
 
 .carousel-control-prev-icon {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%234f4fc7" viewBox="0 0 8 8"><path d="M5.5 0L7 1.5 3.5 4 7 6.5 5.5 8 1 4 5.5 0z"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23f9f002" viewBox="0 0 8 8"><path d="M5.5 0L7 1.5 3.5 4 7 6.5 5.5 8 1 4 5.5 0z"/></svg>');
 }
 
-/* Seta direita */
 .carousel-control-next-icon {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%234f4fc7" viewBox="0 0 8 8"><path d="M2.5 0L1.5 1 4 4 1.5 7 2.5 8l4-4-4-4z"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23f9f002" viewBox="0 0 8 8"><path d="M2.5 0L1.5 1 4 4 1.5 7 2.5 8l4-4-4-4z"/></svg>');
 }
 
-/* 🔹 RODA PÉ USAR EM TODAS AS PAGINAS !!*/
+/* === RODAPÉ === */
 .footer {
-  background-color: #111;
-  color: #fff;
-  font-family: 'Oswald', sans-serif;
-  letter-spacing: 0.5px;
-  border-top: 4px solid #4f4fc7;
+  background-color: #050505;
+  color: #00eaff;
+  font-family: 'Orbitron', sans-serif;
+  border-top: 4px solid #ff005e;
   margin-top: 80px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 -5px 20px #ff005e;
 }
 
-/* Ícones de redes sociais */
 .footer .social-icons a {
-  color: #4f4fc7;
+  color: #f9f002;
   font-size: 1.5rem;
   margin: 0 10px;
   transition: 0.3s;
@@ -184,22 +175,44 @@ h2 {
 }
 
 .footer .social-icons a:hover {
-  color: #fff;
-  transform: scale(1.2);
+  color: #ff005e;
+  transform: scale(1.3);
+  text-shadow:
+    0 0 10px #ff005e,
+    0 0 20px #f9f002;
 }
 
-/* Ajuste de espaçamento geral */
 .footer h5 {
   font-weight: 700;
+  color: #ff005e;
 }
 
 .footer p {
   font-size: 0.95rem;
+  color: #00eaff;
+}
+
+/* === MOTOS.HTML PAGINA === */
+
+/* Fundo amarelo no card */
+.card {
+  background-color: #e6e60a;
+  border: solid;
 }
 
 
-    /*  CADASTRO.css */
+.card-title {
+  color: black;
+}
 
+.card-subtitle {
+  color: #00eaff !important;
+}
 
+.card-link {
+  color: red;
+}
 
-
+.card-link:hover {
+  color: darkred;
+}
