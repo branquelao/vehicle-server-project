@@ -1,79 +1,192 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css">
-    <link href ='https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalogo-motos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link href ='https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
 </head>
 <body>
 
 <div class="container mt-4">
-    <div class="menuP d-flex justify-content-around align-items-center">
-        <a href="index.html">Home</a>
-        <a href="#">Carros</a>
-        <a href="motos.html">Motos</a>
-        <a href="#">Perfil</a>
-    </div>
+  <div class="menuP d-flex justify-content-around align-items-center">
+    <a href="index.html">Home</a>
+    <a href="carros.html">Carros</a>
+    <a href="motos.html">Motos</a>
+    <a href="perfil.html">Perfil</a>
+  </div>
 </div>
 
 <a href="perfil.html" class="btn btn-black rounded-circle perfil-btn">
-    <i class="bi bi-person-fill"></i>
+  <i class="bi bi-person-fill"></i>
 </a>
 
+<div class="container mt-5">
+  <div class="row g-4 justify-content-center">
+    <!-- Card 1 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 text-center expandable-card">
+        <div class="card-body">
+          <h5 class="card-title">CyberCar X</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Modelo 2077</h6>
+          <p class="card-text">Um carro de alta performance com design inspirado em Night City.</p>
+          <button class="card-toggle-btn btn btn-primary">Detalhes</button>
+          <div class="card-extra">
+            <p class="card-price">Preço: R$ 350.000</p>
+            <button class="btn btn-success buy-btn">Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 text-center expandable-card">
+        <div class="card-body">
+          <h5 class="card-title">Neon Speedster</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Turbo Neon</h6>
+          <p class="card-text">Velocidade, estilo e luzes pulsantes.</p>
+          <button class="card-toggle-btn btn btn-primary">Detalhes</button>
+          <div class="card-extra">
+            <p class="card-price">Preço: R$ 280.000</p>
+            <button class="btn btn-success buy-btn">Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 text-center expandable-card">
+        <div class="card-body">
+          <h5 class="card-title">RetroRider</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Edição Limitada</h6>
+          <p class="card-text">Combina o retrô e o futurista — ideal para quem desafia o sistema.</p>
+          <button class="card-toggle-btn btn btn-primary">Detalhes</button>
+          <div class="card-extra">
+            <p class="card-price">Preço: R$ 300.000</p>
+            <button class="btn btn-success buy-btn">Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 text-center expandable-card">
+        <div class="card-body">
+          <h5 class="card-title">CyberRacer</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Street Edition</h6>
+          <p class="card-text">A máquina perfeita para corridas ilegais e luzes de néon.</p>
+          <button class="card-toggle-btn btn btn-primary">Detalhes</button>
+          <div class="card-extra">
+            <p class="card-price">Preço: R$ 320.000</p>
+            <button class="btn btn-success buy-btn">Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!-- fecha row -->
+</div> <!-- fecha container -->
 
 <div class="container mt-5">
-    <div class="row g-4 justify-content-center">
-
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <h5 class="card-title">CyberCar X</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Modelo 2077</h6>
-                    <p class="card-text">Um carro de alta performance com design inspirado em Night City.</p>
-                    <a href="#" class="card-link">Detalhes</a>
-                </div>
-            </div>
+  <div class="row g-4 justify-content-center">
+    <!-- Card 1 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 text-center expandable-card">
+        <div class="card-body">
+          <h5 class="card-title">CyberCar X</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Modelo 2077</h6>
+          <p class="card-text">Um carro de alta performance com design inspirado em Night City.</p>
+          <button class="card-toggle-btn btn btn-primary">Detalhes</button>
+          <div class="card-extra">
+            <p class="card-price">Preço: R$ 350.000</p>
+            <button class="btn btn-success buy-btn">Comprar</button>
+          </div>
         </div>
-
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <h5 class="card-title">Neon Speedster</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Turbo Neon</h6>
-                    <p class="card-text">Velocidade, estilo e luzes pulsantes. Um clássico do submundo urbano.</p>
-                    <a href="#" class="card-link">Detalhes</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <h5 class="card-title">RetroRider</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Edição Limitada</h6>
-                    <p class="card-text">Combina o retrô e o futurista — ideal para quem desafia o sistema.</p>
-                    <a href="#" class="card-link">Detalhes</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100 text-center">
-                <div class="card-body">
-                    <h5 class="card-title">CyberRacer</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Street Edition</h6>
-                    <p class="card-text">A máquina perfeita para corridas ilegais e luzes de néon.</p>
-                    <a href="#" class="card-link">Detalhes</a>
-                </div>
-            </div>
-        </div>
-
+      </div>
     </div>
-</div>
+
+    <!-- Card 2 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 text-center expandable-card">
+        <div class="card-body">
+          <h5 class="card-title">Neon Speedster</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Turbo Neon</h6>
+          <p class="card-text">Velocidade, estilo e luzes pulsantes.</p>
+          <button class="card-toggle-btn btn btn-primary">Detalhes</button>
+          <div class="card-extra">
+            <p class="card-price">Preço: R$ 280.000</p>
+            <button class="btn btn-success buy-btn">Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 text-center expandable-card">
+        <div class="card-body">
+          <h5 class="card-title">RetroRider</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Edição Limitada</h6>
+          <p class="card-text">Combina o retrô e o futurista — ideal para quem desafia o sistema.</p>
+          <button class="card-toggle-btn btn btn-primary">Detalhes</button>
+          <div class="card-extra">
+            <p class="card-price">Preço: R$ 300.000</p>
+            <button class="btn btn-success buy-btn">Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="card h-100 text-center expandable-card">
+        <div class="card-body">
+          <h5 class="card-title">CyberRacer</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Street Edition</h6>
+          <p class="card-text">A máquina perfeita para corridas ilegais e luzes de néon.</p>
+          <button class="card-toggle-btn btn btn-primary">Detalhes</button>
+          <div class="card-extra">
+            <p class="card-price">Preço: R$ 320.000</p>
+            <button class="btn btn-success buy-btn">Comprar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!-- fecha row -->
+</div> <!-- fecha container -->
+
+<footer class="footer mt-5 py-4">
+  <div class="container text-center">
+    <h5 class="mb-3">Loja de carrinhos 🚗🏍️</h5>
+    <p class="mb-2">Seu portal de carros e motos incríveis</p>
+
+    <div class="social-icons mb-3">
+      <a href="#"><i class="bi bi-facebook"></i></a>
+      <a href="#"><i class="bi bi-instagram"></i></a>
+      <a href="#"><i class="bi bi-twitter-x"></i></a>
+      <a href="#"><i class="bi bi-youtube"></i></a>
+    </div>
+
+    <p class="mb-0">&copy; 2025 Veiculos Neon | Amigos, Henrique the dark sous 2 gamer</p>
+  </div>
+</footer>
+
+</body>
+<script>
+  // Seleciona todos os botões de detalhes
+  const toggleButtons = document.querySelectorAll('.card-toggle-btn');
+
+  toggleButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.expandable-card'); // pega o card do botão
+      card.classList.toggle('active'); // alterna a classe active
+    });
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
