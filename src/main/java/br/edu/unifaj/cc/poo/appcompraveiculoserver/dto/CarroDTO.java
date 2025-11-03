@@ -1,5 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,6 @@ public class CarroDTO {
     private String carroCor;
     private int carroAno;
     private float carroValor;
-
-    //Arquivo da Imagem
     private String carroImagem;
+    private Long loginId;
 }

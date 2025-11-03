@@ -1,5 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,4 +43,9 @@ public class Carro {
     @UpdateTimestamp
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime carroAtualizadoEm;
+
+    @ManyToOne
+    @JoinColumn(name = "login_id")
+    @JsonBackReference
+    private Login login;
 }

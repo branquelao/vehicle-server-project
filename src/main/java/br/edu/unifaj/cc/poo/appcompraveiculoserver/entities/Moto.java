@@ -1,6 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ public class Moto {
     @Column(name = "motoValor", nullable = false, unique = false)
     private float motoValor;
 
-    @Column(name = "motoImagem", length = 100, nullable = false, unique = false)
+    @Column(name = "motoImagem", length = 100, nullable = true, unique = false)
     private String motoImagem;
 
     @CreationTimestamp
@@ -43,4 +44,9 @@ public class Moto {
     @UpdateTimestamp
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime motoAtualizadaEm;
+
+    @ManyToOne
+    @JoinColumn(name = "login_id")
+    @JsonBackReference
+    private Login login;
 }

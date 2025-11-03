@@ -2,7 +2,9 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.CarroDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Carro;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.CarroRepository;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import jakarta.annotation.Resource;
 import org.apache.coyote.Response;
 import org.springframework.core.io.UrlResource;
@@ -22,9 +24,11 @@ import java.util.List;
 public class CarroController {
 
     private final CarroRepository carroRepository;
+    private final LoginRepository loginRepository;
 
-    public CarroController(CarroRepository carroRepository) {
+    public CarroController(CarroRepository carroRepository, LoginRepository loginRepository) {
         this.carroRepository = carroRepository;
+        this.loginRepository = loginRepository;
     }
 
     @GetMapping("/veiculos/carro")
@@ -77,8 +81,11 @@ public class CarroController {
 
         if (!Files.exists(caminhoArquivo)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("❌ A imagem '" + dto.getCarroImagem() + "' não foi encontrada em /uploads/");
+                    .body("A imagem '" + dto.getCarroImagem() + "' não foi encontrada em /uploads/");
         }
+
+        Login login = loginRepository.findById(dto.getLoginId())
+                .orElseThrow(() -> new RuntimeException("Login não encontrado"));
 
         Carro carro = new Carro();
         carro.setCarroNome(dto.getCarroNome());
@@ -86,10 +93,10 @@ public class CarroController {
         carro.setCarroAno(dto.getCarroAno());
         carro.setCarroValor(dto.getCarroValor());
         carro.setCarroImagem(dto.getCarroImagem());
+        carro.setLogin(login);
 
         carroRepository.save(carro);
-
-        return ResponseEntity.ok("✅ Carro salvo com sucesso!");
+        return ResponseEntity.ok("Carro salvo com sucesso!");
     }
 
     @PutMapping("/veiculos/carro/{id}")
@@ -108,6 +115,6 @@ public class CarroController {
     @DeleteMapping("/veiculos/carro/{id}")
     public ResponseEntity<?> deleteCarro(@PathVariable long id) {
         carroRepository.deleteById(id);
-        return ResponseEntity.ok("✅ Carro de ID = " + id + " deletado com sucesso!");
+        return ResponseEntity.ok("Carro de ID = " + id + " deletado com sucesso!");
     }
 }

@@ -9,6 +9,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,19 +21,19 @@ public class Login {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "loginNome", length = 100, nullable = false, unique = false)
-    private String nome;
+    @Column(name = "usuario", length = 100, nullable = false, unique = false)
+    private String usuario;
 
-    @Column(name = "loginSenha", length = 30, nullable = false, unique = false)
+    @Column(name = "senha", length = 30, nullable = false, unique = false)
     private String senha;
 
-    @Column(name = "loginTelefone", nullable = false, unique = false)
+    @Column(name = "telefone", nullable = false, unique = false)
     private String telefone;
 
-    @Column(name = "loginCarteira", nullable = false, unique = false)
+    @Column(name = "carteira", nullable = false, unique = false)
     private float carteira;
 
-    @Column(name = "loginImagem", length = 100, nullable = false, unique = false)
+    @Column(name = "loginImagem", length = 100, nullable = true, unique = false)
     private String loginImagem;
 
     @CreationTimestamp
@@ -42,4 +44,10 @@ public class Login {
     @UpdateTimestamp
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime loginAtualizadoEm;
+
+    @OneToMany(mappedBy = "login", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Carro> carros = new ArrayList<>();
+
+    @OneToMany(mappedBy = "login", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Moto> motos = new ArrayList<>();
 }

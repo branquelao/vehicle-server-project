@@ -2,9 +2,11 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class LoginController {
@@ -33,11 +35,26 @@ public class LoginController {
         }
         return resp;
     }
-    */
 
     @GetMapping("/login/{id}")
     public Login getLoginId(@PathVariable Long id){
         return loginRepository.findById(id).orElse(null);
+    }
+    */
+
+    @GetMapping("/login/{id}")
+    public ResponseEntity<Login> getLoginId(@PathVariable Long id) {
+        Optional<Login> login = loginRepository.findById(id);
+
+        if (login.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Força o carregamento das listas (porque estão LAZY)
+        login.get().getCarros().size();
+        login.get().getMotos().size();
+
+        return ResponseEntity.ok(login.get());
     }
 
     @PostMapping("/login")
@@ -49,7 +66,7 @@ public class LoginController {
     public Login putLogin(@RequestBody Login p, @PathVariable Long id){
             return loginRepository.findById(id)
                     .map(l -> {
-                        l.setNome(l.getNome());
+                        l.setUsuario(l.getUsuario());
                         l.setSenha(l.getSenha());
                         l.setTelefone(l.getTelefone());
                         l.setCarteira(l.getCarteira());
