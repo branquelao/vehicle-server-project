@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class CarroController {
 
     private final CarroRepository carroRepository;

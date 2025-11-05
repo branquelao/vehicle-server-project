@@ -6,264 +6,292 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  background: radial-gradient(circle at top, #1a0033, #000010 80%);
-  overflow: hidden;
-  position: relative;
-  font-family: 'Oswald', sans-serif;
-}
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at top, #1a0033, #000010 80%);
+      overflow: hidden;
+      position: relative;
+      font-family: 'Oswald', sans-serif;
+    }
 
-/* --- GRADE FUTURISTA --- */
-body::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 200%;
-  background-image:
-    linear-gradient(#6A5ACD 1px, transparent 1px),
-    linear-gradient(90deg, #6A5ACD 1px, transparent 1px);
-  background-size: 50px 50px;
-  transform: rotateX(60deg) translateY(100px);
-  animation: moveGrid 5s linear infinite;
-  opacity: 0.3;
-  z-index: 0;
-  filter: drop-shadow(0 0 6px #8A2BE2) drop-shadow(0 0 12px #BA55D3);
-}
+    /* --- GRADE FUTURISTA --- */
+    body::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background-image:
+        linear-gradient(#6A5ACD 1px, transparent 1px),
+        linear-gradient(90deg, #6A5ACD 1px, transparent 1px);
+      background-size: 50px 50px;
+      transform: rotateX(60deg) translateY(100px);
+      animation: moveGrid 5s linear infinite;
+      opacity: 0.3;
+      z-index: 0;
+      filter: drop-shadow(0 0 6px #8A2BE2) drop-shadow(0 0 12px #BA55D3);
+    }
 
-/* --- BRILHO PULSANTE NEON --- */
-body::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, rgba(186,85,211,0.2), transparent 70%);
-  animation: glow 4s ease-in-out infinite alternate;
-  z-index: 0;
-  filter: blur(30px);
-}
+    /* --- BRILHO PULSANTE NEON --- */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(186,85,211,0.2), transparent 70%);
+      animation: glow 4s ease-in-out infinite alternate;
+      z-index: 0;
+      filter: blur(30px);
+    }
 
-@keyframes moveGrid {
-  from { transform: rotateX(60deg) translateY(100px); }
-  to { transform: rotateX(60deg) translateY(-100px); }
-}
+    @keyframes moveGrid {
+      from { transform: rotateX(60deg) translateY(100px); }
+      to { transform: rotateX(60deg) translateY(-100px); }
+    }
 
-@keyframes glow {
-  from { opacity: 0.3; }
-  to { opacity: 0.7; }
-}
+    @keyframes glow {
+      from { opacity: 0.3; }
+      to { opacity: 0.7; }
+    }
 
-
-
-.tela-login{
-    z-index: 1;
-    font-family: 'Oswald', sans-serif ;
-    color: white;
-   text-shadow:
-      1px 1px 2px red,
-      0 0 1em blue,
-      0 0 0.2em blue;
-background-color: #4f4fc7b3;
-position: absolute;
-top: 50%;
-left: 65%;
-transform: translate(-50%, -50%);
-padding: 50px;
-border-radius: 20px;
-box-shadow: rgba(0, 0, 0, 0.3);
-backdrop-filter: blur(10px);
-
-}
-
-.tela-login:hover {
-  transform: translate(-50%, -52%);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-}
-
-/* --- CORRIGIDO, IMAGEM FUNCIONANDO --- */
-.titulo{
-    background-image: url("../img/logo_neon.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-     
-    
-
-
-    background-color: rgba(0, 0, 0, 0.7);
+    .tela-login{
+        z-index: 1;
+        font-family: 'Oswald', sans-serif ;
+        color: white;
+       text-shadow:
+          1px 1px 2px red,
+          0 0 1em blue,
+          0 0 0.2em blue;
+    background-color: #4f4fc7b3;
     position: absolute;
-    border-radius: 20px;
     top: 50%;
-    left: 30%;
+    left: 65%;
     transform: translate(-50%, -50%);
-    padding: 300px;
-    backdrop-filter: blur(10px);
-    
-    
-}
-
-.password-container {
-  position: relative;
-  display: inline-block;
-}
-
-/* mantém o mesmo estilo do seu input */
-.password-container input {
-  font-family: 'Oswald', sans-serif;
-  width: 250px;
-  height: 15px;
-  padding: 12px;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  background: linear-gradient(#cdcdcd, #cdcdcd) padding-box,
-              linear-gradient(90deg, #00e0ff, #ff00e0, #00e0ff) border-box;
-  background-size: 200% 200%;
-  animation: borderMove 4s linear infinite;
-  color: rgb(0, 0, 0);
-  outline: none;
-  box-sizing: border-box;
-  padding-right: 40px; /* espaço pro olho */
-}
-
-.toggle-password {
-  position: absolute;
-  right: 15px;
-  top: 43%;
-  transform: translateY(-55%); 
-  cursor: pointer;
-  font-size: 18px;
-  color: #000;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  height: 20px;
-  width: 20px;
-}
-
-.toggle-password:hover {
-  color: #4f4fc7;
-}
-
-
-
-
-input {
-    font-family: 'Oswald', sans-serif ;
-    width: 200px;
-    height: 15px;
-    padding: 15px;
+    padding: 50px;
     border-radius: 20px;
-    outline: none;
-border: none;
+    box-shadow: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
 
-  width: 250px;
-  padding: 12px;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  background: linear-gradient(#cdcdcd, #cdcdcd) padding-box,
-              linear-gradient(90deg, #00e0ff, #ff00e0, #00e0ff) border-box;
-  background-size: 200% 200%;
-  animation: borderMove 4s linear infinite;
-  color: rgb(0, 0, 0);
-}
+    }
 
-button{
-    font-family: 'Oswald', sans-serif ;
-    font-size: medium;
-    color: white;
-    padding: 10px; 
-    background-color: rgb(129, 79, 199);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0,3s;
-    width: 200px;
-}
+    .tela-login:hover {
+      transform: translate(-50%, -52%);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
 
-button:hover{
-    background-color: #26004d;
-    color: black;
-    text-shadow:
-      1px 1px 2px red,
-      0 0 1em blue,
-      0 0 0.2em blue;
-}
+    /* --- CORRIGIDO, IMAGEM FUNCIONANDO --- */
+    .titulo{
+        background-image: url("../img/logo_neon.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
 
+        background-color: rgba(0, 0, 0, 0.7);
+        position: absolute;
+        border-radius: 20px;
+        top: 50%;
+        left: 30%;
+        transform: translate(-50%, -50%);
+        padding: 300px;
+        backdrop-filter: blur(10px);
+    }
+
+    .password-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* mantém o mesmo estilo do seu input */
+    .password-container input {
+      font-family: 'Oswald', sans-serif;
+      width: 250px;
+      height: 15px;
+      padding: 12px;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: linear-gradient(#cdcdcd, #cdcdcd) padding-box,
+                  linear-gradient(90deg, #00e0ff, #ff00e0, #00e0ff) border-box;
+      background-size: 200% 200%;
+      animation: borderMove 4s linear infinite;
+      color: rgb(0, 0, 0);
+      outline: none;
+      box-sizing: border-box;
+      padding-right: 40px; /* espaço pro olho */
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 43%;
+      transform: translateY(-55%);
+      cursor: pointer;
+      font-size: 18px;
+      color: #000;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      height: 20px;
+      width: 20px;
+    }
+
+    .toggle-password:hover {
+      color: #4f4fc7;
+    }
+
+    input {
+        font-family: 'Oswald', sans-serif ;
+        width: 200px;
+        height: 15px;
+        padding: 15px;
+        border-radius: 20px;
+        outline: none;
+    border: none;
+
+      width: 250px;
+      padding: 12px;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: linear-gradient(#cdcdcd, #cdcdcd) padding-box,
+                  linear-gradient(90deg, #00e0ff, #ff00e0, #00e0ff) border-box;
+      background-size: 200% 200%;
+      animation: borderMove 4s linear infinite;
+      color: rgb(0, 0, 0);
+    }
+
+    button{
+        font-family: 'Oswald', sans-serif ;
+        font-size: medium;
+        color: white;
+        padding: 10px;
+        background-color: rgb(129, 79, 199);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0,3s;
+        width: 200px;
+    }
+
+    button:hover{
+        background-color: #26004d;
+        color: black;
+        text-shadow:
+          1px 1px 2px red,
+          0 0 1em blue,
+          0 0 0.2em blue;
+    }
 </style>
 
-
 <body>
-
-
     <div class = "titulo">
-
-
-
-
     </div>
-    <!-- Esse é a base do login para a loja de carro-->
-<div class = "tela-login">    
-    <h1> Login </h1>
-    <input type="text" id="usuario" placeholder="Nome">
-    <br><br>
-   <div class="olho">
-  <input type="password" id="senha" placeholder="Senha">
-  <span class="toggle-password" onclick="mostrarSenha()">👁️</span>
-</div> <br><br>
-    <button type="button" onclick="logar()"> Logar </button><br><br>
-    <button> Cadastrar </button><br><br>
-    <button> Esqueci a senha </button>
+        <div class = "tela-login">
+            <h1> Login </h1>
+            <input type="text" id="usuario" placeholder="Nome"><br><br>
+            <div class="olho">
+            <input type="password" id="senha" placeholder="Senha"><br><br>
+            <span class="toggle-password" onclick="mostrarSenha()">👁️</span>
+                <input type="text" id="telefone" placeholder="Telefone (opcional)"><br><br>
 
-    
-
-
+            </div> <br><br>
+            <button type="button" onclick="logarConta()"> Logar </button><br><br>
+            <button type="button" onclick="criarConta()"> Cadastrar </button><br><br>
+            <button> Esqueci a senha </button>
+        </div>
 </body>
 
 <script>
-    src = "script.js"
+    function criarConta() {
+        // Monta o objeto com os dados do formulário
+        let obj = {
+            usuario: document.getElementById("usuario").value.trim(),
+            senha: document.getElementById("senha").value.trim(),
+            telefone: document.getElementById("telefone").value.trim() || "0",
+            carteira: 0.0
+        };
 
-function logar(){
-    const usuarioInput = document.getElementById("usuario");
-    const senhaInput = document.getElementById("senha");
-    const usuario = usuarioInput.value;
-    const senha = senhaInput.value;
+        // Validação simples
+        if (obj.usuario === "" || obj.senha === "") {
+            alert("Preencha usuário e senha!");
+            return;
+        }
 
-    const usuarioCorreto ="admin";
-    const senhaCorreto = "admin";
+        console.log("Enviando:", obj);
 
-    if(usuario == "" || senha == ""){
-        alert("Por favor, prencha todos os campos")
-        return;
+        // Configuração dos headers
+        let headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        };
+
+        // URL do endpoint
+        let url = "http://localhost:8080/login";
+
+        // Requisição fetch POST
+        fetch(url, {
+            headers: headers,
+            method: "POST",
+            body: JSON.stringify(obj)
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Erro ao cadastrar. Código: " + res.status);
+            }
+            return res.json();
+        })
+        .then(res => {
+            console.log("Resposta do servidor:", res);
+            alert("Conta criada com sucesso! ID: " + res.id);
+
+            // Limpa os campos
+            document.getElementById("usuario").value = "";
+            document.getElementById("senha").value = "";
+            document.getElementById("telefone").value = "";
+            document.getElementById("carteira").value = "";
+        })
+        .catch(err => {
+            console.error("Erro na requisição:", err.message);
+            alert("Falha ao conectar ao servidor.");
+        });
     }
-    if(usuario == usuarioCorreto && senha == senhaCorreto){
-        alert("Login realizado com sucesso")
-    } else {
-        alert("Usuario ou senha incorreto")
+
+    function logarConta(){
+        const usuarioInput = document.getElementById("usuario");
+        const senhaInput = document.getElementById("senha");
+        const usuario = usuarioInput.value;
+        const senha = senhaInput.value;
+
+        const usuarioCorreto ="admin";
+        const senhaCorreto = "admin";
+
+        if(usuario == "" || senha == ""){
+            alert("Por favor, prencha todos os campos");
+            return;
+        }
+        if(usuario == usuarioCorreto && senha == senhaCorreto){
+            alert("Login realizado com sucesso");
+            window.location.href = "index.html";
+        } else {
+            alert("Usuario ou senha incorreto");
+        }
     }
 
-}
-/* --- FUNÇÃO FUNCIONANDO E EMOJIS APARECENDO --- */
-function mostrarSenha() {
-  const senhaInput = document.getElementById("senha");
-  const olho = document.querySelector(".toggle-password");
+    /* --- FUNÇÃO FUNCIONANDO E EMOJIS APARECENDO --- */
+    function mostrarSenha() {
+      const senhaInput = document.getElementById("senha");
+      const olho = document.querySelector(".toggle-password");
 
-  if (senhaInput.type === "password") {
-    senhaInput.type = "text";
-    olho.textContent = "🙈"; // muda o ícone quando mostra
-  } else {
-    senhaInput.type = "password";
-    olho.textContent = "👁️"; // volta ao ícone original
-  }
-}
-
-
+      if (senhaInput.type === "password") {
+        senhaInput.type = "text";
+        olho.textContent = "🙈"; // muda o ícone quando mostra
+      } else {
+        senhaInput.type = "password";
+        olho.textContent = "👁️"; // volta ao ícone original
+      }
+    }
 </script>
-
-
 </html>

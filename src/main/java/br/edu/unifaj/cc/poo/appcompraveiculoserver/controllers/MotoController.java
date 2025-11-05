@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class MotoController {
 
     private final MotoRepository motoRepository;

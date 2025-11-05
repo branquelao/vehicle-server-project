@@ -4,4 +4,5 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LoginRepository extends JpaRepository<Login, Long> {
+    Login findByUsuario(String usuario);
 }

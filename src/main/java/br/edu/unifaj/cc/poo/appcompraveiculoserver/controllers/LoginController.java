@@ -2,6 +2,7 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class LoginController {
 
     private final LoginRepository loginRepository;
