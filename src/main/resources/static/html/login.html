@@ -259,25 +259,52 @@
         });
     }
 
-    function logarConta(){
-        const usuarioInput = document.getElementById("usuario");
-        const senhaInput = document.getElementById("senha");
-        const usuario = usuarioInput.value;
-        const senha = senhaInput.value;
+    function logarConta() {
+      const usuario = document.getElementById("usuario").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      const telefone = document.getElementById("telefone")
+        ? document.getElementById("telefone").value.trim()
+        : "0";
 
-        const usuarioCorreto ="admin";
-        const senhaCorreto = "admin";
+      if (!usuario || !senha) {
+        alert("⚠️ Preencha usuário e senha!");
+        return;
+      }
 
-        if(usuario == "" || senha == ""){
-            alert("Por favor, prencha todos os campos");
-            return;
-        }
-        if(usuario == usuarioCorreto && senha == senhaCorreto){
-            alert("Login realizado com sucesso");
+      const url = "http://localhost:8080/login";
+
+      fetch(url)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error("Erro ao buscar logins: " + res.status);
+          }
+          return res.json();
+        })
+        .then(lista => {
+          console.log("Lista recebida:", lista);
+
+          // Verifica se há algum login que corresponda
+          const loginEncontrado = lista.find(l =>
+            l.usuario === usuario && l.senha === senha && l.telefone === telefone
+          );
+
+          if (loginEncontrado) {
+            alert("Login bem-sucedido! Bem-vindo, " + loginEncontrado.usuario + "!");
+            console.log("Usuário logado:", loginEncontrado);
+
+            // salva no localStorage (opcional)
+            localStorage.setItem("usuarioLogado", JSON.stringify(loginEncontrado));
+
+            // redireciona para a página inicial
             window.location.href = "index.html";
-        } else {
-            alert("Usuario ou senha incorreto");
-        }
+          } else {
+            alert("Usuário, senha ou telefone incorretos.");
+          }
+        })
+        .catch(err => {
+          console.error("Erro:", err.message);
+          alert("Falha ao conectar ao servidor.");
+        });
     }
 
     /* --- FUNÇÃO FUNCIONANDO E EMOJIS APARECENDO --- */
