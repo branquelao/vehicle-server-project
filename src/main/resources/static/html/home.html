@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Loja de Carros</title>
+    <title>Bem-vindo - Loja de Carros</title>
 
     <!-- Bootstrap e ícones -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,10 +28,23 @@
 
 <!-- ======= Conteúdo principal ======= -->
 <main class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
+    <div class="row justify-content-center align-items-center">
+
+        <!-- Coluna da mensagem de boas-vindas -->
+        <div class="col-md-6 text-center mb-4 mb-md-0">
+            <h1 class="display-5 fw-bold text-primary mb-3">Bem-vindo(a) à Loja de Carrinhos 🚗🏍️</h1>
+            <p class="lead">
+                Explore o universo dos veículos dos sonhos!
+                Aqui você encontra carros e motos incríveis, pode anunciar os seus,
+                e fazer parte da comunidade Veículos Neon.
+            </p>
+            <p class="fw-semibold mt-3">Entre, cadastre-se para criar seus anuncios!</p>
+        </div>
+
+        <!-- Coluna da caixa de login -->
+        <div class="col-md-5 col-lg-4">
             <div class="card shadow-sm p-4">
-                <h3 class="text-center mb-4">Login</h3>
+                <h3 class="text-center mb-4">Acesse sua conta</h3>
 
                 <div class="mb-3">
                     <label for="usuario" class="form-label">Usuário</label>
@@ -115,55 +128,4 @@
       })
       .catch(err => {
         console.error(err);
-        alert("Falha ao conectar ao servidor.");
-      });
-    }
-
-    function logarConta() {
-      const usuario = document.getElementById("usuario").value.trim();
-      const senha = document.getElementById("senha").value.trim();
-      const telefone = document.getElementById("telefone").value.trim() || "0";
-
-      if (!usuario || !senha) {
-        alert("Preencha usuário e senha!");
-        return;
-      }
-
-      fetch("http://localhost:8080/login")
-        .then(res => {
-          if (!res.ok) throw new Error("Erro ao buscar logins: " + res.status);
-          return res.json();
-        })
-        .then(lista => {
-          const login = lista.find(l =>
-            l.usuario === usuario && l.senha === senha && l.telefone === telefone
-          );
-
-          if (login) {
-            alert("Login bem-sucedido! Bem-vindo, " + login.usuario + "!");
-            localStorage.setItem("usuarioLogado", JSON.stringify(login));
-            window.location.href = "index.html";
-          } else {
-            alert("Usuário, senha ou telefone incorretos.");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Falha ao conectar ao servidor.");
-        });
-    }
-
-    function mostrarSenha() {
-      const senha = document.getElementById("senha");
-      const icone = document.querySelector(".bi-eye");
-      if (senha.type === "password") {
-        senha.type = "text";
-        icone.classList.replace("bi-eye", "bi-eye-slash");
-      } else {
-        senha.type = "password";
-        icone.classList.replace("bi-eye-slash", "bi-eye");
-      }
-    }
-</script>
-</body>
-</html>
+        alert("Falha ao conectar ao servido
