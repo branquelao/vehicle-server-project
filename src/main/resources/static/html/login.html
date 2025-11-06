@@ -195,7 +195,7 @@
             <div class="olho">
             <input type="password" id="senha" placeholder="Senha"><br><br>
             <span class="toggle-password" onclick="mostrarSenha()">👁️</span>
-                <input type="text" id="telefone" placeholder="Telefone (opcional)"><br><br>
+                <input type="text" id="telefone" placeholder="Telefone (opcional)"><br>
 
             </div> <br><br>
             <button type="button" onclick="logarConta()"> Logar </button><br><br>
@@ -266,7 +266,7 @@
         : "0";
 
       if (!usuario || !senha) {
-        alert("⚠️ Preencha usuário e senha!");
+        alert("Preencha usuário e senha!");
         return;
       }
 
