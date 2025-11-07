@@ -65,16 +65,17 @@ public class LoginController {
     }
 
     @PutMapping("/login/{id}")
-    public Login putLogin(@RequestBody Login p, @PathVariable Long id){
-            return loginRepository.findById(id)
-                    .map(l -> {
-                        l.setUsuario(l.getUsuario());
-                        l.setSenha(l.getSenha());
-                        l.setTelefone(l.getTelefone());
-                        l.setCarteira(l.getCarteira());
-                        return loginRepository.save(l);
-                    })
-                    .orElse(null);
+    public ResponseEntity<Login> atualizar(@PathVariable Long id, @RequestBody Login novoLogin) {
+        return loginRepository.findById(id)
+                .map(login -> {
+                    login.setUsuario(novoLogin.getUsuario());
+                    login.setSenha(novoLogin.getSenha());
+                    login.setTelefone(novoLogin.getTelefone());
+                    login.setCarteira(novoLogin.getCarteira());
+                    loginRepository.save(login);
+                    return ResponseEntity.ok(login);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/login/{id}")
