@@ -1,5 +1,8 @@
+/* === IMPORTAÇÃO DE FONTES === */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
 
+
+/* === CONFIGURAÇÕES GERAIS === */
 html, body {
   overflow-y: auto !important;
   height: auto !important;
@@ -9,20 +12,22 @@ body {
   margin: 0;
   height: 100vh;
   background-image: url('img/fundo.jpg');
-  background-size: cover; /* Faz a imagem preencher a tela */
-  background-position: center; /* Centraliza */
-  background-repeat: no-repeat; /* Evita repetição */
-  background-attachment: fixed; /* Fica fixa ao rolar */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: white;
   font-family: 'Orbitron', sans-serif;
 }
 
+/* === ANIMAÇÕES === */
 @keyframes glow {
   from { opacity: 0.2; }
   to { opacity: 0.8; }
 }
 
-/* MENU PRINCIPAL */
+
+/* === MENU PRINCIPAL === */
 .menuP {
   background-color: #ff005e;
   border-radius: 100px;
@@ -34,7 +39,7 @@ body {
 }
 
 .menuP a {
-  color: #00eaff;
+  color: #fff;
   text-decoration: none;
   font-family: 'Orbitron', sans-serif;
   padding: 5px 70px;
@@ -49,23 +54,11 @@ body {
 .menuP a:hover {
   background-color: #f9f002;
   color: #000;
-  text-shadow:
-      0 0 10px #f9f002,
-      0 0 30px #00eaff,
-      0 0 60px #ff005e;
+  text-shadow: 0 0 10px #f9f002, 0 0 30px #00eaff, 0 0 60px #ff005e;
 }
 
-@media (max-width: 576px) {
-  .menuP {
-    flex-direction: column;
-  }
 
-  .menuP a {
-    margin-bottom: 20px;
-  }
-}
-
-/* 🔽 Botão de Perfil */
+/* === BOTÃO DE PERFIL === */
 .perfil-btn {
   background-color: #00eaff;
   color: #000;
@@ -87,20 +80,16 @@ body {
 .perfil-btn:hover {
   background-color: #f9f002;
   color: #000;
-  text-shadow:
-    0 0 10px #f9f002,
-    0 0 20px #ff005e;
+  text-shadow: 0 0 10px #f9f002, 0 0 20px #ff005e;
 }
+
 
 /* === CARROSSEIS === */
 h2 {
   font-family: 'Orbitron', sans-serif;
   color: #f9f002;
   font-weight: 800;
-  text-shadow:
-        0 0 10px #f9f002,
-        0 0 10px #00eaff,
-        0 0 10px #ff005e;
+  text-shadow: 0 0 10px #f9f002, 0 0 10px #00eaff, 0 0 10px #ff005e;
 }
 
 .carousel-item img {
@@ -118,10 +107,7 @@ h2 {
   font-family: 'Orbitron', sans-serif;
   color: #00eaff;
   font-weight: bold;
-  text-shadow:
-    0 0 10px #00eaff,
-    0 0 20px #ff005e,
-    0 0 40px #f9f002;
+  text-shadow: 0 0 10px #00eaff, 0 0 20px #ff005e, 0 0 40px #f9f002;
 }
 
 /* Setas personalizadas do carrossel */
@@ -141,49 +127,10 @@ h2 {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23f9f002" viewBox="0 0 8 8"><path d="M2.5 0L1.5 1 4 4 1.5 7 2.5 8l4-4-4-4z"/></svg>');
 }
 
-/* === RODAPÉ === */
-.footer {
-  background-color: #050505;
-  color: #00eaff;
-  font-family: 'Orbitron', sans-serif;
-  border-top: 4px solid #ff005e;
-  margin-top: 80px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0 -5px 20px #ff005e;
-}
-
-.footer .social-icons a {
-  color: #f9f002;
-  font-size: 1.5rem;
-  margin: 0 10px;
-  transition: 0.3s;
-  text-decoration: none;
-}
-
-.footer .social-icons a:hover {
-  color: #ff005e;
-  transform: scale(1.3);
-  text-shadow:
-    0 0 10px #ff005e,
-    0 0 20px #f9f002;
-}
-
-.footer h5 {
-  font-weight: 700;
-  color: #ff005e;
-}
-
-.footer p {
-  font-size: 0.95rem;
-  color: #00eaff;
-}
-
-/* === MOTOS.HTML PAGINA === CARROS.HTML ===                                                                                                                                                                                                     */
 
 /* === CARDS CYBERPUNK === */
 .card {
---bs-body-bg: #000 !important;
+  --bs-body-bg: #000 !important;
   --bs-body-color: #f9f002 !important;
   --bs-form-control-bg: #000 !important;
   --bs-form-control-color: #f9f002 !important;
@@ -191,10 +138,9 @@ h2 {
   --bs-form-control-focus-bg: #000 !important;
   --bs-form-control-focus-color: #f9f002 !important;
 
-  background: rgba(26, 26, 26, 0.6); /* Fundo preto com transparência */
-  backdrop-filter: blur(10px);        /* Aplica o desfoque */
-  -webkit-backdrop-filter: blur(10px);/* Suporte para Safari */
-
+  background: rgba(26, 26, 26, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 15px;
   color: #00eaff;
   transition: all 0.4s ease;
@@ -202,22 +148,17 @@ h2 {
   position: relative;
 }
 
-
 /* Título, subtítulo e texto */
 .card-title {
   color: #f9f002;
   font-weight: 800;
   font-size: 1.4rem;
-  text-shadow:
-    0 0 10px #f9f002,
-    0 0 20px #ff005e;
+  text-shadow: 0 0 10px #f9f002, 0 0 20px #ff005e;
 }
 
 .card-subtitle {
   color: #00eaff !important;
-  text-shadow:
-    0 0 8px #00eaff,
-    0 0 15px #ff005e;
+  text-shadow: 0 0 8px #00eaff, 0 0 15px #ff005e;
 }
 
 .card-text {
@@ -242,11 +183,10 @@ h2 {
 .card-toggle-btn:hover {
   background-color: #f9f002;
   color: #000;
-  text-shadow:
-    0 0 10px #f9f002,
-    0 0 20px #00eaff;
+  text-shadow: 0 0 10px #f9f002, 0 0 20px #00eaff;
 }
 
+/* Área expandida */
 .card-extra {
   max-height: 0;
   opacity: 0;
@@ -254,7 +194,6 @@ h2 {
   transition: all 0.4s ease;
   margin-top: 0;
 }
-
 
 .card.active .card-extra {
   max-height: 200px;
@@ -265,9 +204,7 @@ h2 {
 .card-extra .card-price {
   font-weight: 800;
   color: #f9f002;
-  text-shadow:
-    0 0 10px #f9f002,
-    0 0 20px #ff005e;
+  text-shadow: 0 0 10px #f9f002, 0 0 20px #ff005e;
   margin-bottom: 10px;
 }
 
@@ -285,10 +222,9 @@ h2 {
 .card-extra .buy-btn:hover {
   background-color: #f9f002;
   color: #000;
-  text-shadow:
-    0 0 10px #f9f002,
-    0 0 20px #ff005e;
+  text-shadow: 0 0 10px #f9f002, 0 0 20px #ff005e;
 }
+
 
 /* === INPUTS PRETOS COM TEXTO E BORDA AMARELOS === */
 .card input,
@@ -296,15 +232,15 @@ h2 {
 .card textarea,
 .card .form-control,
 .card .form-select {
-  background-color: #000 !important;       /* fundo preto */
-  color: #f9f002 !important;               /* texto amarelo */
-  border: 1px solid #f9f002 !important;    /* borda amarela */
-  -webkit-text-fill-color: #f9f002 !important; /* Safari fix */
+  background-color: #000 !important;
+  color: #f9f002 !important;
+  border: 1px solid #f9f002 !important;
+  -webkit-text-fill-color: #f9f002 !important;
   box-shadow: none !important;
   outline: none !important;
 }
 
-/* Mantém igual no hover e no focus */
+/* Hover e focus */
 .card input:hover,
 .card input:focus,
 .card select:hover,
@@ -317,7 +253,7 @@ h2 {
 .card .form-select:focus {
   background-color: #000 !important;
   color: #f9f002 !important;
-  border: 1px solid #f9f002 !important; /* borda amarela */
+  border: 1px solid #f9f002 !important;
   box-shadow: none !important;
   outline: none !important;
 }
@@ -328,19 +264,20 @@ h2 {
 .card .form-control::placeholder {
   color: rgba(249, 240, 2, 0.7) !important;
 }
+
+
 /* === BOTÕES ROSA NEON (LED) === */
 .card button,
 .card .btn,
 .card .card-toggle-btn,
 .card .buy-btn {
-  background-color: #ff005e !important;   /* rosa neon */
-  color: #fff !important;                 /* texto branco pra contraste */
+  background-color: #ff005e !important;
+  color: #fff !important;
   font-weight: bold;
-  border: 1px solid #ff005e !important;   /* borda rosa neon */
+  border: 1px solid #ff005e !important;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-       /* brilho LED */
 }
 
 /* Hover com brilho mais intenso */
@@ -348,25 +285,15 @@ h2 {
 .card .btn:hover,
 .card .card-toggle-btn:hover,
 .card .buy-btn:hover {
-  background-color: yellow !important;   /* rosa um pouco mais claro no hover */
+  background-color: yellow !important;
   border-color: yellow !important;
   text-color: black;
-  box-shadow:
-    0 0 12px yellow,
-    0 0 25px yellow,
-    0 0 40px rgba(255, 26, 115, 0.8);
+  box-shadow: 0 0 12px yellow, 0 0 25px yellow, 0 0 40px rgba(255, 26, 115, 0.8);
   transform: scale(1.03);
 }
 
 
-@media (max-width: 768px) {
-  .card {
-    margin-bottom: 20px;
-  }
-}
-
 /* === PERFIL === */
-
 .perfil-foto {
   width: 120px;
   height: 120px;
@@ -375,14 +302,12 @@ h2 {
   align-items: center;
   justify-content: center;
   background: radial-gradient(circle at top left, #111, #000);
-  box-shadow: 0 0 20px #ff005e;
 }
 
 .perfil-foto i {
   font-size: 80px;
   color: #00eaff;
 }
-
 
 .perfil-container {
   background: rgba(10, 10, 10, 0.9);
@@ -395,16 +320,11 @@ h2 {
 
 .perfil-nome {
   color: #f9f002;
-  text-shadow:
-    0 0 10px #f9f002,
-    0 0 20px #ff005e;
+  text-shadow: 0 0 10px #f9f002, 0 0 20px #ff005e;
 }
 
 .perfil-saldo {
   color: #00eaff;
-  text-shadow:
-    0 0 8px #00eaff,
-    0 0 15px #ff005e;
 }
 
 .saldo-valor {
@@ -414,7 +334,7 @@ h2 {
 
 .btn-cyber {
   background-color: #ff005e;
-  color: #00eaff;
+  color: #fff;
   font-weight: bold;
   border: none;
   padding: 10px;
@@ -429,6 +349,7 @@ h2 {
   text-shadow: 0 0 10px #f9f002, 0 0 20px #00eaff;
 }
 
+
 /* === ADMIN PAGE === */
 .admin-container {
   max-width: 500px;
@@ -437,14 +358,13 @@ h2 {
   border: 2px solid #ff005e;
   border-radius: 15px;
   padding: 30px;
-  box-shadow: 0 0 20px #ff005e;
 }
 
 .admin-container h2 {
   text-align: center;
   color: #f9f002;
   margin-bottom: 20px;
-  text-shadow: 0 0 10px #ff005e;
+  text-shadow: 0 0 10px #f9f002, 0 0 20px #ff005e;
 }
 
 .admin-container .form-label {
@@ -479,6 +399,62 @@ h2 {
   box-shadow: 0 0 15px #f9f002;
 }
 
+
+/* === RODAPÉ === */
+.footer {
+  background-color: #050505;
+  color: #00eaff;
+  font-family: 'Orbitron', sans-serif;
+  border-top: 4px solid #ff005e;
+  margin-top: 80px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 -5px 20px #ff005e;
+}
+
+.footer .social-icons a {
+  color: #f9f002;
+  font-size: 1.5rem;
+  margin: 0 10px;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.footer .social-icons a:hover {
+  color: #ff005e;
+  transform: scale(1.3);
+  text-shadow: 0 0 10px #ff005e, 0 0 20px #f9f002;
+}
+
+.footer h5 {
+  font-weight: 700;
+  color: #ff005e;
+}
+
+.footer p {
+  font-size: 0.95rem;
+  color: #00eaff;
+}
+
+
+/* === RESPONSIVIDADE === */
+@media (max-width: 576px) {
+  .menuP {
+    flex-direction: column;
+  }
+  .menuP a {
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 20px;
+  }
+}
+
+
+/* === CORREÇÕES FINAIS === */
 html, body {
   height: 100%;
   margin: 0;
@@ -498,7 +474,7 @@ main {
   margin-top: auto;
 }
 
-/* NOVO VISUAL DOS CARDS */
+/* === NOVO VISUAL DOS CARDS === */
 .admin-container {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(12px);
@@ -506,33 +482,27 @@ main {
   padding: 2rem;
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-}
-
-.expandable-card {
-  background: rgba(0, 0, 0, 0.4); /* preto translúcido */
-  backdrop-filter: blur(10px); /* efeito vidro fosco */
-  -webkit-backdrop-filter: blur(10px); /* compatibilidade Safari */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* borda sutil */
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: background 0.3s ease;
 }
 
 .expandable-card:hover {
-  background: rgba(0, 0, 0, 0.55); /* escurece um pouco ao passar o mouse */
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .perfil-container {
-  background: rgba(0, 0, 0, 0.4); /* fundo escuro translúcido */
-  backdrop-filter: blur(10px); /* efeito vidro fosco */
-  -webkit-backdrop-filter: blur(10px); /* compatibilidade Safari */
-  border: 1px solid rgba(255, 255, 255, 0.1); /* borda leve */
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 15px;
   padding: 40px 20px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05); /* brilho sutil */
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
   max-width: 500px;
 }
 
-/* Padronização dos botões de Login, Start, Perfil e Anunciar. */
+/* Padronização dos botões */
 .card .btn:hover,
 .card button:hover,
 .card .btn-link:hover {
@@ -541,10 +511,7 @@ main {
 
 .btn-cyber:hover {
   transform: scale(1.03);
-  box-shadow:
-    0 0 12px #f9f002,
-    0 0 25px #f9f002,
-    0 0 40px rgba(255, 26, 115, 0.8);
+  box-shadow: 0 0 12px #f9f002, 0 0 25px #f9f002, 0 0 40px rgba(255, 26, 115, 0.8);
 }
 
 .btn-incluir:hover {
