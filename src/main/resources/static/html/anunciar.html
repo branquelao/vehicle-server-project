@@ -1,14 +1,34 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Administrador</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="../style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Administrador</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+
+<style>
+    .input-group-text {
+          background-color: #ff005e !important;
+          color: #000000 !important;
+          font-weight: bold;
+          border: none;
+        }
+
+    input[type="file"]::file-selector-button {
+          background-color: #ff005e;
+          color: #000000;
+          border: none;
+          border-radius: 6px;
+          padding: 6px 12px;
+          font-weight: 600;
+          transition: 0.3s;
+        }
+
+</style>
 
 <div class="container mt-4">
     <div class="menuP d-flex justify-content-around align-items-center">
@@ -23,29 +43,57 @@
     <i class="bi bi-person-fill"></i>
 </a>
 
-<div class="admin-container">
-  <h2>Painel para Anunciar</h2>
-  <form>
-    <div class="mb-3">
-      <label for="tipo" class="form-label">Tipo de veículo</label>
-      <select class="form-select" id="tipo">
-        <option value="carro">Carro</option>
-        <option value="moto">Moto</option>
-      </select>
-    </div>
+<div class="admin-container mt-4 p-4">
+    <h2 class="text-center mb-4">Painel para Anunciar</h2>
 
-    <div class="mb-3">
-      <label for="nome" class="form-label">Nome</label>
-      <input type="text" class="form-control" id="nome" placeholder="Digite o nome do veículo">
-    </div>
+    <form>
+        <!-- Tipo -->
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo de veículo</label>
+            <select class="form-select" id="tipo">
+                <option value="carro">Carro</option>
+                <option value="moto">Moto</option>
+            </select>
+        </div>
 
-    <div class="mb-3">
-      <label for="descricao" class="form-label">Descrição</label>
-      <textarea class="form-control" id="descricao" rows="3" placeholder="Digite uma breve descrição"></textarea>
-    </div>
+        <!-- Nome -->
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome do veículo</label>
+            <input type="text" class="form-control" id="nome" placeholder="Digite o nome do veículo" required>
+        </div>
 
-    <button type="submit" class="btn btn-incluir">Incluir</button>
-  </form>
+        <!-- Cor -->
+        <div class="mb-3">
+            <label for="cor" class="form-label">Cor</label>
+            <input type="text" class="form-control" id="cor" placeholder="Digite a cor do veículo" required>
+        </div>
+
+        <!-- Ano -->
+        <div class="mb-3">
+            <label for="ano" class="form-label">Ano</label>
+            <input type="number" class="form-control" id="ano" placeholder="Ex: 2022" min="1900" max="2099" required>
+        </div>
+
+        <!-- Valor -->
+        <div class="mb-3">
+            <label for="valor" class="form-label">Valor</label>
+            <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="number" class="form-control" id="valor" placeholder="Digite o valor do veículo" step="0.01" required>
+            </div>
+        </div>
+
+        <!-- Imagem -->
+        <div class="mb-4">
+            <label for="imagem" class="form-label">Imagem</label>
+            <input class="form-control" type="file" id="imagem" accept="image/*">
+        </div>
+
+        <!-- Botão -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-incluir px-5">Incluir</button>
+        </div>
+    </form>
 </div>
 
 <footer class="footer mt-5 py-4">
@@ -63,6 +111,104 @@
         <p class="mb-0">&copy; 2025 Veículos Neon | Amigos, Henrique the dark sous 2 gamer</p>
     </div>
 </footer>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const usuarioLogado = localStorage.getItem("usuarioLogado");
+
+    /*
+      if (!usuarioLogado) {
+        window.location.href = "login.html";
+        return;
+      }
+    */
+
+      // guarda o id globalmente para o fetch
+      const login = JSON.parse(usuarioLogado);
+      window.loginId = login.id;
+    });
+
+    document.querySelector("form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const tipo = document.querySelector("#tipo").value;
+      const nome = document.querySelector("#nome").value;
+      const cor = document.querySelector("#cor").value;
+      const ano = parseInt(document.querySelector("#ano").value);
+      const valor = parseFloat(document.querySelector("#valor").value);
+      const imagemInput = document.querySelector("#imagem");
+      const imagemArquivo = imagemInput.files[0];
+
+      // Obtém o ID do login logado
+      const loginId = localStorage.getItem("loginId");
+
+      if (!loginId) {
+        alert("Nenhum usuário logado! Faça login antes de anunciar.");
+        return;
+      }
+
+      let nomeImagem = "";
+
+      // Se o usuário selecionou imagem, faz upload primeiro
+      if (imagemArquivo) {
+        nomeImagem = imagemArquivo.name;
+
+        const formData = new FormData();
+        formData.append("file", imagemArquivo);
+
+        try {
+          const uploadResp = await fetch("http://localhost:8080/uploads", {
+            method: "POST",
+            body: formData
+          });
+
+          if (!uploadResp.ok) {
+            const erroTexto = await uploadResp.text();
+            alert("Erro ao enviar imagem: " + erroTexto);
+            return;
+          }
+
+          console.log("Imagem enviada com sucesso:", nomeImagem);
+        } catch (err) {
+          console.error(err);
+          alert("Erro na conexão durante upload!");
+          return;
+        }
+      }
+
+      // 🔹 Agora envia os dados do carro como JSON
+      const carroData = {
+        carroNome: nome,
+        carroCor: cor,
+        carroAno: ano,
+        carroValor: valor,
+        carroImagem: nomeImagem,
+        loginId: parseInt(loginId) // Agora vem direto do usuário logado
+      };
+
+      try {
+        const resposta = await fetch("http://localhost:8080/veiculos/carro", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(carroData)
+        });
+
+        if (resposta.ok) {
+          const texto = await resposta.text();
+          alert("texto);
+          e.target.reset();
+        } else {
+          const erro = await resposta.text();
+          alert("⚠Erro ao salvar carro: " + erro);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar com o servidor!");
+      }
+    });
+</script>
+
 
 </body>
 </html>

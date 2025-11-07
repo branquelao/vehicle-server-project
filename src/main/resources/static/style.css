@@ -183,14 +183,25 @@ h2 {
 
 /* === CARDS CYBERPUNK === */
 .card {
-  background: radial-gradient(circle at top left, #1a1a1a, #000);
-  border: 2px solid #ff005e;
+--bs-body-bg: #000 !important;
+  --bs-body-color: #f9f002 !important;
+  --bs-form-control-bg: #000 !important;
+  --bs-form-control-color: #f9f002 !important;
+  --bs-form-control-border-color: #ff005e !important;
+  --bs-form-control-focus-bg: #000 !important;
+  --bs-form-control-focus-color: #f9f002 !important;
+
+  background: rgba(26, 26, 26, 0.6); /* Fundo preto com transparência */
+  backdrop-filter: blur(10px);        /* Aplica o desfoque */
+  -webkit-backdrop-filter: blur(10px);/* Suporte para Safari */
+
   border-radius: 15px;
   color: #00eaff;
   transition: all 0.4s ease;
   overflow: hidden;
   position: relative;
 }
+
 
 /* Título, subtítulo e texto */
 .card-title {
@@ -278,6 +289,75 @@ h2 {
     0 0 10px #f9f002,
     0 0 20px #ff005e;
 }
+
+/* === INPUTS PRETOS COM TEXTO E BORDA AMARELOS === */
+.card input,
+.card select,
+.card textarea,
+.card .form-control,
+.card .form-select {
+  background-color: #000 !important;       /* fundo preto */
+  color: #f9f002 !important;               /* texto amarelo */
+  border: 1px solid #f9f002 !important;    /* borda amarela */
+  -webkit-text-fill-color: #f9f002 !important; /* Safari fix */
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Mantém igual no hover e no focus */
+.card input:hover,
+.card input:focus,
+.card select:hover,
+.card select:focus,
+.card textarea:hover,
+.card textarea:focus,
+.card .form-control:hover,
+.card .form-control:focus,
+.card .form-select:hover,
+.card .form-select:focus {
+  background-color: #000 !important;
+  color: #f9f002 !important;
+  border: 1px solid #f9f002 !important; /* borda amarela */
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Placeholder amarelo suave */
+.card input::placeholder,
+.card textarea::placeholder,
+.card .form-control::placeholder {
+  color: rgba(249, 240, 2, 0.7) !important;
+}
+/* === BOTÕES ROSA NEON (LED) === */
+.card button,
+.card .btn,
+.card .card-toggle-btn,
+.card .buy-btn {
+  background-color: #ff005e !important;   /* rosa neon */
+  color: #fff !important;                 /* texto branco pra contraste */
+  font-weight: bold;
+  border: 1px solid #ff005e !important;   /* borda rosa neon */
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+       /* brilho LED */
+}
+
+/* Hover com brilho mais intenso */
+.card button:hover,
+.card .btn:hover,
+.card .card-toggle-btn:hover,
+.card .buy-btn:hover {
+  background-color: yellow !important;   /* rosa um pouco mais claro no hover */
+  border-color: yellow !important;
+  text-color: black;
+  box-shadow:
+    0 0 12px yellow,
+    0 0 25px yellow,
+    0 0 40px rgba(255, 26, 115, 0.8);
+  transform: scale(1.03);
+}
+
 
 @media (max-width: 768px) {
   .card {
@@ -418,3 +498,56 @@ main {
   margin-top: auto;
 }
 
+/* NOVO VISUAL DOS CARDS */
+.admin-container {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 2rem;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.expandable-card {
+  background: rgba(0, 0, 0, 0.4); /* preto translúcido */
+  backdrop-filter: blur(10px); /* efeito vidro fosco */
+  -webkit-backdrop-filter: blur(10px); /* compatibilidade Safari */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* borda sutil */
+  transition: background 0.3s ease;
+}
+
+.expandable-card:hover {
+  background: rgba(0, 0, 0, 0.55); /* escurece um pouco ao passar o mouse */
+}
+
+.perfil-container {
+  background: rgba(0, 0, 0, 0.4); /* fundo escuro translúcido */
+  backdrop-filter: blur(10px); /* efeito vidro fosco */
+  -webkit-backdrop-filter: blur(10px); /* compatibilidade Safari */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* borda leve */
+  border-radius: 15px;
+  padding: 40px 20px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05); /* brilho sutil */
+  max-width: 500px;
+}
+
+/* Padronização dos botões de Login, Start, Perfil e Anunciar. */
+.card .btn:hover,
+.card button:hover,
+.card .btn-link:hover {
+  color: #000 !important;
+}
+
+.btn-cyber:hover {
+  transform: scale(1.03);
+  box-shadow:
+    0 0 12px #f9f002,
+    0 0 25px #f9f002,
+    0 0 40px rgba(255, 26, 115, 0.8);
+}
+
+.btn-incluir:hover {
+  transform: scale(1.03);
+  transition: transform 0.2s ease;
+}

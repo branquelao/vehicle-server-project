@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -98,6 +99,27 @@ public class CarroController {
 
         carroRepository.save(carro);
         return ResponseEntity.ok("Carro salvo com sucesso!");
+    }
+
+    //Upload das imagens para a pasta correta
+    @PostMapping("/uploads")
+    public ResponseEntity<String> uploadImagem(@RequestParam("file") MultipartFile file) {
+        try {
+            Path pastaUploads = Paths.get("src/main/resources/static/uploads");
+
+            if (!Files.exists(pastaUploads)) {
+                Files.createDirectories(pastaUploads);
+            }
+
+            Path destino = pastaUploads.resolve(file.getOriginalFilename());
+            Files.copy(file.getInputStream(), destino);
+
+            return ResponseEntity.ok("Imagem enviada com sucesso!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao enviar a imagem: " + e.getMessage());
+        }
     }
 
     @PutMapping("/veiculos/carro/{id}")

@@ -30,7 +30,7 @@
 <main class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm p-4">
+            <div class="card shadow-sm p-4 glass-container">
                 <h3 class="text-center mb-4">Login</h3>
 
                 <div class="mb-3">
@@ -142,6 +142,7 @@
           if (login) {
             alert("Login bem-sucedido! Bem-vindo, " + login.usuario + "!");
             localStorage.setItem("usuarioLogado", JSON.stringify(login));
+            localStorage.setItem("loginId", login.id);
             window.location.href = "index.html";
           } else {
             alert("Usuário, senha ou telefone incorretos.");
