@@ -135,7 +135,7 @@
     document.querySelector("form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const tipo = document.querySelector("#tipo").value;
+      const tipo = document.querySelector("#tipo").value; // "carro" ou "moto"
       const nome = document.querySelector("#nome").value;
       const cor = document.querySelector("#cor").value;
       const ano = parseInt(document.querySelector("#ano").value);
@@ -143,8 +143,7 @@
       const imagemInput = document.querySelector("#imagem");
       const imagemArquivo = imagemInput.files[0];
 
-      // Obtém o ID do login logado
-      const loginId = localStorage.getItem("loginId");
+      const loginId = window.loginId;
 
       if (!loginId) {
         alert("Nenhum usuário logado! Faça login antes de anunciar.");
@@ -153,7 +152,7 @@
 
       let nomeImagem = "";
 
-      // Se o usuário selecionou imagem, faz upload primeiro
+      // Faz upload da imagem, se houver
       if (imagemArquivo) {
         nomeImagem = imagemArquivo.name;
 
@@ -180,30 +179,33 @@
         }
       }
 
-      // Agora envia os dados do carro como JSON
-      const carroData = {
-        carroNome: nome,
-        carroCor: cor,
-        carroAno: ano,
-        carroValor: valor,
-        carroImagem: nomeImagem,
-        loginId: parseInt(loginId) // Agora vem direto do usuário logado
+      // Monta o corpo do JSON conforme o tipo de veículo
+      const dados = {
+        [`${tipo}Nome`]: nome,
+        [`${tipo}Cor`]: cor,
+        [`${tipo}Ano`]: ano,
+        [`${tipo}Valor`]: valor,
+        [`${tipo}Imagem`]: nomeImagem,
+        loginId: parseInt(loginId)
       };
 
+      // Define a URL conforme o tipo
+      const url = `http://localhost:8080/veiculos/${tipo}`;
+
       try {
-        const resposta = await fetch("http://localhost:8080/veiculos/carro", {
+        const resposta = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(carroData)
+          body: JSON.stringify(dados)
         });
 
         if (resposta.ok) {
           const texto = await resposta.text();
-          alert("texto);
+          alert(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} anunciado com sucesso!`);
           e.target.reset();
         } else {
           const erro = await resposta.text();
-          alert("Erro ao salvar carro: " + erro);
+          alert("Erro ao salvar " + tipo + ": " + erro);
         }
       } catch (err) {
         console.error(err);

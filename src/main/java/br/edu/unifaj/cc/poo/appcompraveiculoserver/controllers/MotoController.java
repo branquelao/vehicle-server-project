@@ -44,7 +44,7 @@ public class MotoController {
 
     @PostMapping("/veiculos/moto")
     public ResponseEntity<?> postMoto(@RequestBody MotoDTO dto) {
-        Path pastaUploads = Paths.get("src/main/resources/static/uploads");
+        Path pastaUploads = Paths.get(System.getProperty("user.dir"), "uploads");
         Path caminhoArquivo = pastaUploads.resolve(dto.getMotoImagem());
 
         if (!Files.exists(caminhoArquivo)) {

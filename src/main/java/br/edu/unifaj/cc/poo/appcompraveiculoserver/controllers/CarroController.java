@@ -50,7 +50,7 @@ public class CarroController {
 
     @PostMapping("/veiculos/carro")
     public ResponseEntity<?> postCarro(@RequestBody CarroDTO dto) {
-        Path pastaUploads = Paths.get("src/main/resources/static/uploads");
+        Path pastaUploads = Paths.get(System.getProperty("user.dir"), "uploads");
         Path caminhoArquivo = pastaUploads.resolve(dto.getCarroImagem());
 
         if (!Files.exists(caminhoArquivo)) {
@@ -73,11 +73,10 @@ public class CarroController {
         return ResponseEntity.ok("Carro salvo com sucesso!");
     }
 
-    //Upload das imagens para a pasta correta
     @PostMapping("/uploads")
     public ResponseEntity<String> uploadImagem(@RequestParam("file") MultipartFile file) {
         try {
-            Path pastaUploads = Paths.get("src/main/resources/static/uploads");
+            Path pastaUploads = Paths.get(System.getProperty("user.dir"), "uploads");
 
             if (!Files.exists(pastaUploads)) {
                 Files.createDirectories(pastaUploads);
