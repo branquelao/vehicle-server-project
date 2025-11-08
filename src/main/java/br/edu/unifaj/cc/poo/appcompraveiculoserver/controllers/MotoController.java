@@ -37,12 +37,10 @@ public class MotoController {
         return motoRepository.findById(id).orElse(null);
     }
 
-    /*
-    @PostMapping("/veiculos/moto")
-    public Moto postMoto(@RequestBody Moto m) {
-        return motoRepository.save(m);
+    @GetMapping("veiculos/moto/recentes")
+    public List<Moto> ultimasMotos() {
+        return motoRepository.findTop3ByOrderByIdDesc();
     }
-    */
 
     @PostMapping("/veiculos/moto")
     public ResponseEntity<?> postMoto(@RequestBody MotoDTO dto) {

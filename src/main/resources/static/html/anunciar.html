@@ -119,16 +119,13 @@
 </footer>
 
 <script>
-
     document.addEventListener("DOMContentLoaded", () => {
       const usuarioLogado = localStorage.getItem("usuarioLogado");
 
-    /*
       if (!usuarioLogado) {
         window.location.href = "login.html";
         return;
       }
-    */
 
       // guarda o id globalmente para o fetch
       const login = JSON.parse(usuarioLogado);
@@ -183,7 +180,7 @@
         }
       }
 
-      // 🔹 Agora envia os dados do carro como JSON
+      // Agora envia os dados do carro como JSON
       const carroData = {
         carroNome: nome,
         carroCor: cor,
@@ -206,7 +203,7 @@
           e.target.reset();
         } else {
           const erro = await resposta.text();
-          alert("⚠Erro ao salvar carro: " + erro);
+          alert("Erro ao salvar carro: " + erro);
         }
       } catch (err) {
         console.error(err);
@@ -214,7 +211,6 @@
       }
     });
 </script>
-
 
 </body>
 </html>

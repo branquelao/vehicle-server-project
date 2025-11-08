@@ -43,38 +43,10 @@ public class CarroController {
         return carroRepository.findById(id).orElse(null);
     }
 
-    /*
-    @GetMapping("/uploads/{nomeArquivo}")
-    public ResponseEntity<Resource> getCarroImagem(@PathVariable String nomeArquivo){
-        try {
-            Path caminho = Paths.get("src/main/resources/static/uploads").resolve(nomeArquivo);
-            if(!Files.exists(caminho)) {
-                return ResponseEntity.notFound().build();
-            }
-
-            UrlResource resource = new UrlResource(caminho.toUri());
-            String contentType = Files.probeContentType(caminho);
-
-            if(contentType == null ||
-                    !(contentType.equals("image/jpeg") || contentType.equals("image/png") ||
-                            contentType.equals("image/webp"))) {
-                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
-            }
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .body((Resource) resource);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @GetMapping("veiculos/carro/recentes")
+    public List<Carro> ultimosCarros() {
+        return carroRepository.findTop3ByOrderByIdDesc();
     }
-
-    @PostMapping("/veiculos/carro")
-    public Carro postCarro(@RequestBody Carro c) {
-        return carroRepository.save(c);
-    }
-     */
 
     @PostMapping("/veiculos/carro")
     public ResponseEntity<?> postCarro(@RequestBody CarroDTO dto) {
