@@ -121,8 +121,7 @@
     }
 
     function editarVeiculo(tipo, id) {
-      // redireciona para a página de edição futura
-      window.location.href = `editar-${tipo}.html?id=${id}`;
+      window.location.href = `editarVeiculo.html?tipo=${tipo}&id=${id}`;
     }
 
     async function removerVeiculo(tipo, id) {

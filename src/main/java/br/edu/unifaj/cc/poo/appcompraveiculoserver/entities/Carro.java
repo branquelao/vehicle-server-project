@@ -32,7 +32,7 @@ public class Carro {
     @Column(name = "carroValor", nullable = false, unique = false)
     private float carroValor;
 
-    @Column(name = "carroImagem", length = 100, nullable = true, unique = false)
+    @Column(name = "carroImagem", length = 200, nullable = false, unique = false)
     private String carroImagem;
 
     @CreationTimestamp

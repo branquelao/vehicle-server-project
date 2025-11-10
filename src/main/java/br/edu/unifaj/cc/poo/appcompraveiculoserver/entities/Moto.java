@@ -33,7 +33,7 @@ public class Moto {
     @Column(name = "motoValor", nullable = false, unique = false)
     private float motoValor;
 
-    @Column(name = "motoImagem", length = 100, nullable = true, unique = false)
+    @Column(name = "motoImagem", length = 200, nullable = false, unique = false)
     private String motoImagem;
 
     @CreationTimestamp

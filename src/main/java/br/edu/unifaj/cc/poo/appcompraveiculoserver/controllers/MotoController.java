@@ -3,13 +3,13 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.MotoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Moto;
-import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Moto;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.MotoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,23 +67,61 @@ public class MotoController {
 
         return ResponseEntity.ok("Moto salva com sucesso!");
     }
-    
+
     @PutMapping("/veiculos/moto/{id}")
     public Moto putMoto(@RequestBody MotoDTO novoDTO, @PathVariable Long id) {
-            return motoRepository.findById(id)
-                    .map(m -> {
-                        m.setMotoNome(novoDTO.getMotoNome());
-                        m.setMotoCor(novoDTO.getMotoCor());
-                        m.setMotoAno(novoDTO.getMotoAno());
-                        m.setMotoValor(novoDTO.getMotoValor());
-                        return motoRepository.save(m);
-                    })
-                    .orElse(null);
+        return motoRepository.findById(id)
+                .map(m -> {
+                    // Verifica se a imagem foi alterada
+                    String imagemAntiga = m.getMotoImagem();
+                    String novaImagem = novoDTO.getMotoImagem();
+
+                    if (novaImagem != null && !novaImagem.isEmpty() && !novaImagem.equals(imagemAntiga)) {
+                        try {
+                            Path uploadDir = Paths.get("uploads");
+                            Path caminhoAntigo = uploadDir.resolve(imagemAntiga);
+
+                            // Exclui o arquivo antigo se existir
+                            Files.deleteIfExists(caminhoAntigo);
+
+                            System.out.println("Imagem antiga de moto removida: " + caminhoAntigo);
+                        } catch (IOException e) {
+                            System.err.println("Erro ao remover imagem antiga da moto: " + e.getMessage());
+                        }
+
+                        m.setMotoImagem(novaImagem);
+                    }
+
+                    // Atualiza os outros campos normalmente
+                    m.setMotoNome(novoDTO.getMotoNome());
+                    m.setMotoCor(novoDTO.getMotoCor());
+                    m.setMotoAno(novoDTO.getMotoAno());
+                    m.setMotoValor(novoDTO.getMotoValor());
+
+                    return motoRepository.save(m);
+                })
+                .orElse(null);
     }
 
     @DeleteMapping("/veiculos/moto/{id}")
-    public ResponseEntity<?> deleteMoto(@PathVariable Long id) {
-        motoRepository.deleteById(id);
-        return ResponseEntity.ok("Moto de ID = " + id + " deletada com sucesso!");
+    public ResponseEntity<Object> deleteMoto(@PathVariable Long id) {
+        return motoRepository.findById(id)
+                .map(moto -> {
+                    // Exclui a imagem antiga, se existir
+                    try {
+                        if (moto.getMotoImagem() != null && !moto.getMotoImagem().isEmpty()) {
+                            Path uploadDir = Paths.get("uploads");
+                            Path caminhoImagem = uploadDir.resolve(moto.getMotoImagem());
+                            Files.deleteIfExists(caminhoImagem);
+                            System.out.println("🗑️ Imagem da moto removida: " + caminhoImagem);
+                        }
+                    } catch (IOException e) {
+                        System.err.println("⚠️ Erro ao remover imagem da moto: " + e.getMessage());
+                    }
+
+                    motoRepository.deleteById(id);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

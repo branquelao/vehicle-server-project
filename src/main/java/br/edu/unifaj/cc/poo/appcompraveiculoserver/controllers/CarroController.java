@@ -5,20 +5,16 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Carro;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.CarroRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
-import jakarta.annotation.Resource;
-import org.apache.coyote.Response;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @RestController
@@ -83,7 +79,7 @@ public class CarroController {
             }
 
             Path destino = pastaUploads.resolve(file.getOriginalFilename());
-            Files.copy(file.getInputStream(), destino);
+            Files.copy(file.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
 
             return ResponseEntity.ok("Imagem enviada com sucesso!");
         } catch (IOException e) {
@@ -94,21 +90,59 @@ public class CarroController {
     }
 
     @PutMapping("/veiculos/carro/{id}")
-    public Carro putCarro(@RequestBody CarroDTO novoDto, @PathVariable Long id){
+    public Carro putCarro(@RequestBody CarroDTO novoDto, @PathVariable Long id) {
         return carroRepository.findById(id)
                 .map(c -> {
+                    // Verifica se a imagem mudou
+                    String imagemAntiga = c.getCarroImagem();
+                    String novaImagem = novoDto.getCarroImagem();
+
+                    if (novaImagem != null && !novaImagem.isEmpty() && !novaImagem.equals(imagemAntiga)) {
+                        try {
+                            Path uploadDir = Paths.get("uploads");
+                            Path caminhoAntigo = uploadDir.resolve(imagemAntiga);
+
+                            // Exclui a imagem antiga se existir
+                            Files.deleteIfExists(caminhoAntigo);
+
+                            System.out.println("Imagem antiga removida: " + caminhoAntigo);
+                        } catch (IOException e) {
+                            System.err.println("Erro ao remover imagem antiga: " + e.getMessage());
+                        }
+
+                        c.setCarroImagem(novaImagem);
+                    }
+
+                    // Atualiza os outros campos normalmente
                     c.setCarroNome(novoDto.getCarroNome());
                     c.setCarroCor(novoDto.getCarroCor());
                     c.setCarroAno(novoDto.getCarroAno());
                     c.setCarroValor(novoDto.getCarroValor());
+
                     return carroRepository.save(c);
                 })
                 .orElse(null);
     }
 
     @DeleteMapping("/veiculos/carro/{id}")
-    public ResponseEntity<?> deleteCarro(@PathVariable long id) {
-        carroRepository.deleteById(id);
-        return ResponseEntity.ok("Carro de ID = " + id + " deletado com sucesso!");
+    public ResponseEntity<Object> deleteCarro(@PathVariable Long id) {
+        return carroRepository.findById(id)
+                .map(carro -> {
+                    // Exclui a imagem antiga, se existir
+                    try {
+                        if (carro.getCarroImagem() != null && !carro.getCarroImagem().isEmpty()) {
+                            Path uploadDir = Paths.get("uploads");
+                            Path caminhoImagem = uploadDir.resolve(carro.getCarroImagem());
+                            Files.deleteIfExists(caminhoImagem);
+                            System.out.println("Imagem do carro removida: " + caminhoImagem);
+                        }
+                    } catch (IOException e) {
+                        System.err.println("Erro ao remover imagem do carro: " + e.getMessage());
+                    }
+
+                    carroRepository.deleteById(id);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

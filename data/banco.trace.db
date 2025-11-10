@@ -165,3 +165,6 @@ TRUNCATE TABLE LOGIN [90106-232]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
 	at java.base/java.lang.Thread.run(Thread.java:1447)
+2025-11-10 11:56:59.799899-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "CARRO_IMAGEM CHARACTER VARYING(100)": "'1970_plymouth_barracuda_1970_plymouth_barracuda_34e6c5d7-1393-4b18-9b0e-8fc46e9... (115)"; SQL statement:
+update carro set carro_ano=?,carro_atualizado_em=?,carro_cor=?,carro_imagem=?,carro_nome=?,carro_valor=?,login_id=? where id=? [22001-232]
