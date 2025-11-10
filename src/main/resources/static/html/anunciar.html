@@ -12,27 +12,85 @@
 
 <style>
     .input-group-text {
-          background-color: #ff005e !important;
-          color: #000000 !important;
-          font-weight: bold;
-          border: none;
-        }
+        background-color: #ff005e !important;
+        color: #000000 !important;
+        font-weight: bold;
+        border: none;
+    }
 
     input[type="file"]::file-selector-button {
-          background-color: #ff005e;
-          color: #000000;
-          border: none;
-          border-radius: 6px;
-          padding: 6px 12px;
-          font-weight: 600;
-          transition: 0.3s;
-        }
+        background-color: #ff005e;
+        color: #000000;
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
 
     input::placeholder,
     textarea::placeholder,
     select::placeholder {
-      color: #cccccc !important;
-      opacity: 0.3 !important;
+        color: #cccccc !important;
+        opacity: 0.3 !important;
+    }
+
+    /* ===== NOVO LAYOUT ===== */
+    .painel-anuncio {
+        display: flex;
+        justify-content: center;
+        align-items: center; /* centraliza verticalmente */
+        gap: 60px;
+        margin-top: 50px;
+        flex-wrap: wrap;
+    }
+
+    .admin-container {
+        max-width: 500px;
+        margin: 0;
+    }
+
+    /* Container de preview */
+    #preview-container {
+        width: 500px;            /* aumentei a largura */
+        height: 400px;           /* aumentei a altura */
+        border: 2px dashed #ff005e;
+        border-radius: 15px;
+        background: rgba(20, 20, 20, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        color: #bbb;
+        font-size: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 0, 94, 0.2);
+    }
+
+    #preview-container:hover {
+        border-color: #ff3377;
+        background: rgba(25, 25, 25, 0.95);
+        box-shadow: 0 0 14px rgba(255, 0, 94, 0.4);
+    }
+
+    #preview-placeholder {
+        position: absolute;
+        pointer-events: none;
+    }
+
+    #preview {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 12px;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.6s ease;
+    }
+
+    #preview.show {
+        display: block;
+        opacity: 1;
     }
 </style>
 
@@ -43,63 +101,72 @@
         <a href="motos.html">Motos</a>
         <a href="anunciar.html">Anunciar</a>
     </div>
-</div>
+</div><br>
 
 <a href="perfil.html" class="btn btn-black rounded-circle perfil-btn">
     <i class="bi bi-person-fill"></i>
 </a>
 
-<div class="admin-container mt-4 p-4">
-    <h2 class="text-center mb-4">Painel para Anunciar</h2>
+<!-- ===== PAINEL COM IMAGEM AO LADO ===== -->
+<div class="painel-anuncio">
+    <div class="admin-container p-4">
+        <h2 class="text-center mb-4">Painel para Anunciar</h2>
 
-    <form>
-        <!-- Tipo -->
-        <div class="mb-3">
-            <label for="tipo" class="form-label">Tipo de veículo</label>
-            <select class="form-select" id="tipo">
-                <option value="carro">Carro</option>
-                <option value="moto">Moto</option>
-            </select>
-        </div>
-
-        <!-- Nome -->
-        <div class="mb-3">
-            <label for="nome" class="form-label">Nome do veículo</label>
-            <input type="text" class="form-control" id="nome" placeholder="Digite o nome do veículo" required>
-        </div>
-
-        <!-- Cor -->
-        <div class="mb-3">
-            <label for="cor" class="form-label">Cor</label>
-            <input type="text" class="form-control" id="cor" placeholder="Digite a cor do veículo" required>
-        </div>
-
-        <!-- Ano -->
-        <div class="mb-3">
-            <label for="ano" class="form-label">Ano</label>
-            <input type="number" class="form-control" id="ano" placeholder="Ex: 2022" min="1900" max="2099" required>
-        </div>
-
-        <!-- Valor -->
-        <div class="mb-3">
-            <label for="valor" class="form-label">Valor</label>
-            <div class="input-group">
-                <span class="input-group-text">R$</span>
-                <input type="number" class="form-control" id="valor" placeholder="Digite o valor do veículo" step="0.01" required>
+        <form>
+            <!-- Tipo -->
+            <div class="mb-3">
+                <label for="tipo" class="form-label">Tipo de veículo</label>
+                <select class="form-select" id="tipo">
+                    <option value="carro">Carro</option>
+                    <option value="moto">Moto</option>
+                </select>
             </div>
-        </div>
 
-        <!-- Imagem -->
-        <div class="mb-4">
-            <label for="imagem" class="form-label">Imagem</label>
-            <input class="form-control" type="file" id="imagem" accept="image/*">
-        </div>
+            <!-- Nome -->
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome do veículo</label>
+                <input type="text" class="form-control" id="nome" placeholder="Digite o nome do veículo" required>
+            </div>
 
-        <!-- Botão -->
-        <div class="text-center">
-            <button type="submit" class="btn btn-incluir px-5">Incluir</button>
-        </div>
-    </form>
+            <!-- Cor -->
+            <div class="mb-3">
+                <label for="cor" class="form-label">Cor</label>
+                <input type="text" class="form-control" id="cor" placeholder="Digite a cor do veículo" required>
+            </div>
+
+            <!-- Ano -->
+            <div class="mb-3">
+                <label for="ano" class="form-label">Ano</label>
+                <input type="number" class="form-control" id="ano" placeholder="Ex: 2022" min="1900" max="2099" required>
+            </div>
+
+            <!-- Valor -->
+            <div class="mb-3">
+                <label for="valor" class="form-label">Valor</label>
+                <div class="input-group">
+                    <span class="input-group-text">R$</span>
+                    <input type="number" class="form-control" id="valor" placeholder="Digite o valor do veículo" step="0.01" required>
+                </div>
+            </div>
+
+            <!-- Imagem -->
+            <div class="mb-4">
+                <label for="imagem" class="form-label">Imagem</label>
+                <input class="form-control" type="file" id="imagem" accept="image/*">
+            </div>
+
+            <!-- Botão -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-incluir px-5">Incluir</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Contêiner da imagem -->
+    <div id="preview-container">
+        <span id="preview-placeholder">Adicione uma imagem!</span>
+        <img id="preview" alt="Pré-visualização da imagem">
+    </div>
 </div>
 
 <footer class="footer mt-5 py-4">
@@ -120,97 +187,115 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const usuarioLogado = localStorage.getItem("usuarioLogado");
-
-      if (!usuarioLogado) {
-        window.location.href = "login.html";
-        return;
-      }
-
-      // guarda o id globalmente para o fetch
-      const login = JSON.parse(usuarioLogado);
-      window.loginId = login.id;
+        const usuarioLogado = localStorage.getItem("usuarioLogado");
+/*
+        if (!usuarioLogado) {
+            window.location.href = "login.html";
+            return;
+        }
+*/
+        const login = JSON.parse(usuarioLogado);
+        window.loginId = login.id;
     });
 
     document.querySelector("form").addEventListener("submit", async (e) => {
-      e.preventDefault();
+        e.preventDefault();
 
-      const tipo = document.querySelector("#tipo").value; // "carro" ou "moto"
-      const nome = document.querySelector("#nome").value;
-      const cor = document.querySelector("#cor").value;
-      const ano = parseInt(document.querySelector("#ano").value);
-      const valor = parseFloat(document.querySelector("#valor").value);
-      const imagemInput = document.querySelector("#imagem");
-      const imagemArquivo = imagemInput.files[0];
+        const tipo = document.querySelector("#tipo").value;
+        const nome = document.querySelector("#nome").value;
+        const cor = document.querySelector("#cor").value;
+        const ano = parseInt(document.querySelector("#ano").value);
+        const valor = parseFloat(document.querySelector("#valor").value);
+        const imagemInput = document.querySelector("#imagem");
+        const imagemArquivo = imagemInput.files[0];
+        const loginId = window.loginId;
 
-      const loginId = window.loginId;
+        if (!loginId) {
+            alert("Nenhum usuário logado! Faça login antes de anunciar.");
+            return;
+        }
 
-      if (!loginId) {
-        alert("Nenhum usuário logado! Faça login antes de anunciar.");
-        return;
-      }
+        let nomeImagem = "";
 
-      let nomeImagem = "";
+        if (imagemArquivo) {
+            nomeImagem = imagemArquivo.name;
 
-      // Faz upload da imagem, se houver
-      if (imagemArquivo) {
-        nomeImagem = imagemArquivo.name;
+            const formData = new FormData();
+            formData.append("file", imagemArquivo);
 
-        const formData = new FormData();
-        formData.append("file", imagemArquivo);
+            try {
+                const uploadResp = await fetch("http://localhost:8080/uploads", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!uploadResp.ok) {
+                    const erroTexto = await uploadResp.text();
+                    alert("Erro ao enviar imagem: " + erroTexto);
+                    return;
+                }
+
+                console.log("Imagem enviada com sucesso:", nomeImagem);
+            } catch (err) {
+                console.error(err);
+                alert("Erro na conexão durante upload!");
+                return;
+            }
+        }
+
+        const dados = {
+            [`${tipo}Nome`]: nome,
+            [`${tipo}Cor`]: cor,
+            [`${tipo}Ano`]: ano,
+            [`${tipo}Valor`]: valor,
+            [`${tipo}Imagem`]: nomeImagem,
+            loginId: parseInt(loginId)
+        };
+
+        const url = `http://localhost:8080/veiculos/${tipo}`;
 
         try {
-          const uploadResp = await fetch("http://localhost:8080/uploads", {
-            method: "POST",
-            body: formData
-          });
+            const resposta = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            });
 
-          if (!uploadResp.ok) {
-            const erroTexto = await uploadResp.text();
-            alert("Erro ao enviar imagem: " + erroTexto);
-            return;
-          }
-
-          console.log("Imagem enviada com sucesso:", nomeImagem);
+            if (resposta.ok) {
+                alert(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} anunciado com sucesso!`);
+                e.target.reset();
+                document.getElementById("preview").src = "";
+                document.getElementById("preview").classList.remove("show");
+                document.getElementById("preview-placeholder").style.display = "block";
+            } else {
+                const erro = await resposta.text();
+                alert("Erro ao salvar " + tipo + ": " + erro);
+            }
         } catch (err) {
-          console.error(err);
-          alert("Erro na conexão durante upload!");
-          return;
+            console.error(err);
+            alert("Erro ao conectar com o servidor!");
         }
-      }
+    });
 
-      // Monta o corpo do JSON conforme o tipo de veículo
-      const dados = {
-        [`${tipo}Nome`]: nome,
-        [`${tipo}Cor`]: cor,
-        [`${tipo}Ano`]: ano,
-        [`${tipo}Valor`]: valor,
-        [`${tipo}Imagem`]: nomeImagem,
-        loginId: parseInt(loginId)
-      };
+    // Preview da imagem com fade-in
+    document.getElementById("imagem").addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        const preview = document.getElementById("preview");
+        const placeholder = document.getElementById("preview-placeholder");
 
-      // Define a URL conforme o tipo
-      const url = `http://localhost:8080/veiculos/${tipo}`;
-
-      try {
-        const resposta = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(dados)
-        });
-
-        if (resposta.ok) {
-          const texto = await resposta.text();
-          alert(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} anunciado com sucesso!`);
-          e.target.reset();
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                placeholder.style.display = "none";
+                preview.classList.add("show");
+            };
+            reader.readAsDataURL(file);
         } else {
-          const erro = await resposta.text();
-          alert("Erro ao salvar " + tipo + ": " + erro);
+            preview.src = "";
+            preview.classList.remove("show");
+            placeholder.style.display = "block";
         }
-      } catch (err) {
-        console.error(err);
-        alert("Erro ao conectar com o servidor!");
-      }
     });
 </script>
 
