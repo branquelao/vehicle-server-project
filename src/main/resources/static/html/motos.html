@@ -14,7 +14,7 @@
 <div class="container mt-4">
     <div class="menuP d-flex justify-content-around align-items-center">
         <a href="index.html">Home</a>
-        <a href="carros.html">Carros</a>
+        <a href="motos.html">Carros</a>
         <a href="motos.html">Motos</a>
         <a href="anunciar.html">Anunciar</a>
     </div>
@@ -33,7 +33,7 @@
 <footer class="footer mt-5 py-4">
     <div class="container text-center">
         <h5 class="mb-3">Loja de carrinhos 🚗🏍️</h5>
-        <p class="mb-2">Seu portal de carros e motos incríveis</p>
+        <p class="mb-2">Seu portal de motos e motos incríveis</p>
 
         <div class="social-icons mb-3">
             <a href="#"><i class="bi bi-facebook"></i></a>
@@ -47,23 +47,25 @@
 </footer>
 
 <script>
-    async function carregarMotos() {
+    async function carregarCarros() {
+      const container = document.getElementById('motos-container');
+      container.innerHTML = '<p class="text-center text-secondary">Carregando veículos...</p>';
+
       try {
         const response = await fetch('http://localhost:8080/login');
-        if (!response.ok) throw new Error('Erro ao buscar logins');
+        if (!response.ok) throw new Error('Erro ao buscar dados do servidor');
 
         const logins = await response.json();
-        const container = document.getElementById('motos-container');
-        container.innerHTML = '';
+        container.innerHTML = ''; // limpa o "Carregando"
 
-        let encontrouMoto = false;
+        let encontrouCarros = false;
 
         logins.forEach(login => {
           const usuario = login.usuario;
           const telefone = login.telefone;
 
           if (login.motos && login.motos.length > 0) {
-            encontrouMoto = true;
+            encontrouCarros = true;
 
             login.motos.forEach(moto => {
               const imagem = moto.motoImagem
@@ -73,45 +75,37 @@
               const card = document.createElement('div');
               card.classList.add('col-12', 'col-sm-6', 'col-md-4', 'col-lg-3');
               card.innerHTML = `
-                <div class="card h-100 text-center expandable-card">
+                <div class="card h-100 text-center expandable-card shadow-sm">
                   <img src="${imagem}" class="card-img-top" alt="${moto.motoNome}">
                   <div class="card-body">
                     <h5 class="card-title">${moto.motoNome}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">${usuario} - ${telefone}</h6>
-                    <button class="card-toggle-btn btn btn-primary mt-2">Detalhes</button>
-                    <div class="card-extra mt-3" style="display:none;">
-                      <p><strong>Valor:</strong> R$ ${moto.motoValor.toLocaleString('pt-BR')}</p>
-                      <p><strong>Ano:</strong> ${moto.motoAno}</p>
-                      <p><strong>Cor:</strong> ${moto.motoCor}</p>
-                    </div>
+                    <p class="card-text mt-3 mb-0">
+                      <strong>Valor:</strong> R$ ${moto.motoValor.toLocaleString('pt-BR')}<br>
+                      <strong>Ano:</strong> ${moto.motoAno}<br>
+                      <strong>Cor:</strong> ${moto.motoCor}
+                    </p>
                   </div>
                 </div>
               `;
+
               container.appendChild(card);
             });
           }
         });
 
-        if (!encontrouMoto) {
-          container.innerHTML = '<p class="text-center text-secondary">Nenhuma moto encontrada.</p>';
+        if (!encontrouCarros) {
+          container.innerHTML = '<p class="text-center text-muted">Nenhum moto encontrado no momento.</p>';
         }
-
-        // Adiciona eventos aos botões de detalhes
-        document.querySelectorAll('.card-toggle-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const extra = btn.parentElement.querySelector('.card-extra');
-            extra.style.display = extra.style.display === 'none' ? 'block' : 'none';
-          });
-        });
 
       } catch (error) {
         console.error(error);
-        document.getElementById('motos-container').innerHTML =
-          '<p class="text-center text-danger">Erro ao carregar as motos.</p>';
+        container.innerHTML =
+          '<p class="text-center text-danger">Erro ao carregar os motos. Tente novamente mais tarde.</p>';
       }
     }
 
-    document.addEventListener('DOMContentLoaded', carregarMotos);
+    document.addEventListener('DOMContentLoaded', carregarCarros);
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
