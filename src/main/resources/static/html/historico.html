@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Veículos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-4">
+    <div class="menuP d-flex justify-content-around align-items-center">
+        <a href="index.html">Home</a>
+        <a href="carros.html">Carros</a>
+        <a href="motos.html">Motos</a>
+        <a href="anunciar.html">Anunciar</a>
+    </div>
+</div>
+
+<a href="perfil.html" class="btn btn-black rounded-circle perfil-btn">
+    <i class="bi bi-person-fill"></i>
+</a>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Histórico de Veículos</h2>
+    <div id="veiculosContainer" class="row g-4 justify-content-center">
+        <!-- Cards serão inseridos aqui dinamicamente -->
+    </div>
+</div>
+
+<footer class="footer mt-5 py-4">
+    <div class="container text-center">
+        <h5 class="mb-3">Loja de carrinhos 🚗🏍️</h5>
+        <p class="mb-2">Seu portal de carros e motos incríveis</p>
+
+        <div class="social-icons mb-3">
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-twitter-x"></i></a>
+            <a href="#"><i class="bi bi-youtube"></i></a>
+        </div>
+
+        <p class="mb-0">&copy; 2025 Veiculos Neon | Henrique the dark sous 2 gamer</p>
+    </div>
+</footer>
+
+<script>
+    async function carregarHistorico() {
+      const loginId = localStorage.getItem('loginId');
+      if (!loginId) {
+        alert("Você precisa estar logado para ver seu histórico!");
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const resp = await fetch(`http://localhost:8080/login/${loginId}`);
+        if (!resp.ok) throw new Error("Erro ao buscar dados do usuário");
+
+        const usuario = await resp.json();
+        const veiculosContainer = document.getElementById("veiculosContainer");
+        veiculosContainer.innerHTML = "";
+
+        // === Carros ===
+        usuario.carros.forEach(carro => {
+          const card = `
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <div class="card h-100 text-center expandable-card">
+                <img src="../uploads/${carro.carroImagem}" class="card-img-top" alt="${carro.carroNome}">
+                <div class="card-body">
+                  <h5 class="card-title">${carro.carroNome}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">${carro.carroAno}</h6>
+                  <p class="card-text">Cor: ${carro.carroCor}</p>
+                  <p class="card-price">Valor: R$ ${carro.carroValor.toLocaleString()}</p>
+                  <div class="d-flex justify-content-around mt-3">
+                    <button class="btn btn-warning" onclick="editarVeiculo('carro', ${carro.id})">
+                      <i class="bi bi-pencil-fill"></i> Editar
+                    </button>
+                    <button class="btn btn-danger" onclick="removerVeiculo('carro', ${carro.id})">
+                      <i class="bi bi-trash-fill"></i> Remover
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+          veiculosContainer.innerHTML += card;
+        });
+
+        // === Motos ===
+        usuario.motos.forEach(moto => {
+          const card = `
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <div class="card h-100 text-center expandable-card">
+                <img src="../uploads/${moto.motoImagem}" class="card-img-top" alt="${moto.motoNome}">
+                <div class="card-body">
+                  <h5 class="card-title">${moto.motoNome}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">${moto.motoAno}</h6>
+                  <p class="card-text">Cor: ${moto.motoCor}</p>
+                  <p class="card-price">Valor: R$ ${moto.motoValor.toLocaleString()}</p>
+                  <div class="d-flex justify-content-around mt-3">
+                    <button class="btn btn-warning" onclick="editarVeiculo('moto', ${moto.id})">
+                      <i class="bi bi-pencil-fill"></i> Editar
+                    </button>
+                    <button class="btn btn-danger" onclick="removerVeiculo('moto', ${moto.id})">
+                      <i class="bi bi-trash-fill"></i> Remover
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+          veiculosContainer.innerHTML += card;
+        });
+
+      } catch (erro) {
+        console.error(erro);
+        alert("Erro ao carregar histórico de veículos!");
+      }
+    }
+
+    function editarVeiculo(tipo, id) {
+      // redireciona para a página de edição futura
+      window.location.href = `editar-${tipo}.html?id=${id}`;
+    }
+
+    async function removerVeiculo(tipo, id) {
+      if (!confirm("Tem certeza que deseja remover este veículo?")) return;
+
+      try {
+        const resp = await fetch(`http://localhost:8080/veiculos/${tipo}/${id}`, {
+          method: "DELETE"
+        });
+
+        if (resp.ok) {
+          alert(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} removido com sucesso!`);
+          carregarHistorico();
+        } else {
+          alert("Erro ao remover veículo!");
+        }
+      } catch (erro) {
+        console.error(erro);
+        alert("Erro ao tentar remover veículo!");
+      }
+    }
+
+    carregarHistorico();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

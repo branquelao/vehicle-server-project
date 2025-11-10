@@ -32,6 +32,7 @@
   <div class="perfil-acoes d-flex flex-column align-items-center gap-3 mt-4">
       <a href="editarPerfil.html" class="btn btn-cyber w-50">Editar Perfil</a>
       <a href="editarSaldo.html" class="btn btn-cyber w-50">Adcionar Saldo</a>
+      <a href="historico.html" class="btn btn-cyber w-50">Histórico</a>
     <button class="btn btn-cyber w-50" onclick="logout()">Sair</button>
   </div>
 </div>
@@ -57,12 +58,10 @@
     document.addEventListener("DOMContentLoaded", () => {
       const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-/*
       if (!usuarioLogado) {
         window.location.href = "login.html";
         return;
       }
-*/
 
       const nomeEl = document.querySelector(".perfil-nome");
       const saldoEl = document.querySelector(".saldo-valor");
