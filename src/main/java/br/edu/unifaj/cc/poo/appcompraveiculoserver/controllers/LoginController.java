@@ -59,6 +59,16 @@ public class LoginController {
         return ResponseEntity.ok(login.get());
     }
 
+    @GetMapping("/login/verificar")
+    public ResponseEntity<Login> verificarLogin(
+            @RequestParam String usuario,
+            @RequestParam String senha) {
+        Optional<Login> loginOpt = loginRepository.findByUsuarioAndSenha(usuario, senha);
+        return loginOpt.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    }
+
+
     @PostMapping("/login")
     public Login postLogin(@RequestBody Login l) {
         return loginRepository.save(l);

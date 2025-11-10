@@ -122,83 +122,89 @@
       const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
       if (!usuarioLogado) {
-        alert("Você precisa estar logado para editar o perfil!");
+        alert("Você precisa estar logado para acessar a carteira!");
         window.location.href = "login.html";
         return;
       }
 
-      // Preenche os campos com os dados atuais
-      document.getElementById("usuario").value = usuarioLogado.usuario;
-      document.getElementById("telefone").value = usuarioLogado.telefone;
+      const saldoAtualElem = document.getElementById("saldoAtual");
+      saldoAtualElem.textContent = `R$ ${usuarioLogado.carteira.toFixed(2)}`;
 
-      const form = document.getElementById("editarPerfilForm");
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
+      const inputValor = document.getElementById("valor");
+      const inputSenha = document.getElementById("senhaConfirmacao");
 
-        const usuario = document.getElementById("usuario").value.trim();
-        const telefone = document.getElementById("telefone").value.trim();
-        const senha = document.getElementById("senha").value.trim();
-        const confirmarSenha = document.getElementById("confirmarSenha").value.trim();
+      const atualizarCarteira = (operacao) => {
+        const valor = parseFloat(inputValor.value);
+        const senha = inputSenha.value.trim();
 
-        if (!usuario || !telefone || !senha || !confirmarSenha) {
-          alert("Preencha todos os campos!");
+        if (isNaN(valor) || valor <= 0) {
+          alert("Digite um valor válido!");
           return;
         }
 
-        if (senha !== confirmarSenha) {
-          alert("As senhas não coincidem!");
+        if (!senha) {
+          alert("Digite sua senha para confirmar!");
           return;
         }
 
-        const objAtualizado = {
-          id: usuarioLogado.id,
-          usuario: usuario,
-          telefone: telefone,
-          senha: senha,
-          carteira: usuarioLogado.carteira // mantém o saldo atual
-        };
+        // 1️⃣ Verifica a senha com um GET (ex: /login/verificar?usuario=...&senha=...)
+        fetch(`http://localhost:8080/login/verificar?usuario=${usuarioLogado.usuario}&senha=${senha}`)
+          .then(res => {
+            if (!res.ok) throw new Error("Senha incorreta ou erro na verificação!");
+            return res.json();
+          })
+          .then(usuarioVerificado => {
+            // 2️⃣ Aplica a operação de soma/subtração
+            let novoSaldo = usuarioLogado.carteira;
+            if (operacao === "add") novoSaldo += valor;
+            else if (operacao === "remove") novoSaldo -= valor;
 
-        fetch(`http://localhost:8080/login/${usuarioLogado.id}`, {
-          method: "PUT",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(objAtualizado)
-        })
-        .then(res => {
-          if (!res.ok) throw new Error("Erro ao atualizar perfil. Código: " + res.status);
-          return res.json();
-        })
-        .then(usuarioAtualizado => {
-          alert("Perfil atualizado com sucesso!");
+            if (novoSaldo < 0) {
+              alert("Saldo insuficiente!");
+              return;
+            }
 
-          // Atualiza os dados no localStorage
-          localStorage.setItem("usuarioLogado", JSON.stringify(usuarioAtualizado));
+            const objAtualizado = {
+              id: usuarioLogado.id,
+              usuario: usuarioLogado.usuario,
+              telefone: usuarioLogado.telefone,
+              senha: usuarioLogado.senha,
+              carteira: novoSaldo
+            };
 
-          // Redireciona para o perfil
-          window.location.href = "perfil.html";
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Erro ao atualizar o perfil. Verifique o console para detalhes.");
-        });
-      });
+            // 3️⃣ PUT para atualizar o usuário
+            fetch(`http://localhost:8080/login/${usuarioLogado.id}`, {
+              method: "PUT",
+              headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(objAtualizado)
+            })
+            .then(res => {
+              if (!res.ok) throw new Error("Erro ao atualizar carteira.");
+              return res.json();
+            })
+            .then(usuarioAtualizado => {
+              alert("Carteira atualizada com sucesso!");
+              localStorage.setItem("usuarioLogado", JSON.stringify(usuarioAtualizado));
+              saldoAtualElem.textContent = `R$ ${usuarioAtualizado.carteira.toFixed(2)}`;
+              inputValor.value = "";
+              inputSenha.value = "";
+            })
+            .catch(err => {
+              console.error(err);
+              alert("Erro ao atualizar a carteira.");
+            });
+          })
+          .catch(err => {
+            console.error(err);
+            alert("Senha incorreta ou erro ao validar usuário.");
+          });
+      };
 
-      // Preview da imagem de perfil
-      const inputFoto = document.getElementById("inputFoto");
-      const fotoPerfil = document.getElementById("fotoPerfil");
-
-      inputFoto.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            fotoPerfil.src = event.target.result;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+      document.getElementById("btnAdicionar").addEventListener("click", () => atualizarCarteira("add"));
+      document.getElementById("btnRemover").addEventListener("click", () => atualizarCarteira("remove"));
     });
 </script>
 </body>
