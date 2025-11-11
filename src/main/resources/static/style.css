@@ -115,17 +115,34 @@ h2 {
   font-family: 'Orbitron', sans-serif;
   color: #00eaff;
   font-weight: bold;
-  text-shadow: 0 0 10px #00eaff, 0 0 20px #ff005e, 0 0 40px #f9f002;
+  text-shadow: 0 0 10px #00eaff, 0 0 20px #000, 0 0 40px #000;
 }
 
-/* Setas personalizadas do carrossel */
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: transparent;
-  background-size: 30px;
-  background-repeat: no-repeat;
-  background-position: center;
+/* === BRILHO NEON DOS BOTÕES DO CARROSSEL === */
+.carousel-control-prev,
+.carousel-control-next {
+  filter: drop-shadow(0 0 10px #f9f002)
+          drop-shadow(0 0 20px #00eaff)
+          drop-shadow(0 0 30px #ff005e);
+  transition: all 0.3s ease;
+  opacity: 0.9; /* leve transparência para o fundo */
 }
+
+/* Quando passa o mouse — brilho ainda mais forte */
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  filter: drop-shadow(0 0 20px #f9f002)
+          drop-shadow(0 0 40px #00eaff)
+          drop-shadow(0 0 60px #ff005e);
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  animation: neonPulse 1.5s ease-in-out infinite alternate;
+}
+
 
 .carousel-control-prev-icon {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23f9f002" viewBox="0 0 8 8"><path d="M5.5 0L7 1.5 3.5 4 7 6.5 5.5 8 1 4 5.5 0z"/></svg>');
