@@ -61,7 +61,7 @@ body {
 /* === BOTÃO DE PERFIL === */
 .perfil-btn {
   background-color: #00eaff;
-  color: #000;
+  color: #fff;
   position: absolute;
   top: 28px;
   right: 25px;
@@ -81,8 +81,16 @@ body {
   background-color: #f9f002;
   color: #000;
   text-shadow: 0 0 10px #f9f002, 0 0 20px #ff005e;
+  box-shadow: 0 0 10px #f9f002, 0 0 10px #f9f002;
 }
 
+.perfil-btn:active {
+  background-color: #f9f002 !important;
+  color: #000 !important;
+  opacity: 1 !important;
+  transform: scale(0.93); /* leve efeito de clique */
+  box-shadow: 0 0 15px #f9f002, 0 0 25px #f9f002;
+}
 
 /* === CARROSSEIS === */
 h2 {
@@ -348,6 +356,14 @@ h2 {
   color: #000;
   text-shadow: 0 0 10px #f9f002, 0 0 20px #00eaff;
 }
+
+.btn-cyber:active {
+  background-color: #f9f002 !important;
+  color: #000 !important;
+  opacity: 1 !important;
+  transform: scale(0.80); /* opcional - dá um efeito de clique */
+}
+
 
 /* === ADMIN PAGE === */
 .admin-container {
