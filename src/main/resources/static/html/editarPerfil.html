@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Perfil</title>
+    <link rel="icon" type="image/png" href="/img/favicon-full.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
@@ -95,15 +96,15 @@
 
         <div class="d-flex flex-column align-items-center gap-3 mt-4">
             <button type="submit" class="btn btn-cyber w-50">Salvar Alterações</button>
-            <button type="button" class="btn btn-outline-light w-50" onclick="window.location.href='perfil.html'">Cancelar</button>
+            <button type="button" class="btn btn-cyber w-50" onclick="window.location.href='perfil.html'">Cancelar</button>
         </div>
     </form>
 </div>
 
 <footer class="footer mt-5 py-4">
     <div class="container text-center">
-        <h5 class="mb-3">Loja de carrinhos 🚗🏍️</h5>
-        <p class="mb-2">Seu portal de carros e motos incríveis</p>
+        <h5 class="mb-3">Burnout Zone! 🚗🏍️</h5>
+        <p class="mb-2">O melhor site para anúncios dos melhores veículos!</p>
 
         <div class="social-icons mb-3">
             <a href="#"><i class="bi bi-facebook"></i></a>
@@ -112,7 +113,7 @@
             <a href="#"><i class="bi bi-youtube"></i></a>
         </div>
 
-        <p class="mb-0">&copy; 2025 Veículos Neon | Amigos, Henrique the dark sous 2 gamer</p>
+        <p class="mb-0">&copy; 2025 - Burnout Zone!™ | Feito por grupo Na Mão de Deus</p>
     </div>
 </footer>
 
@@ -120,13 +121,13 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
       const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
-
+/*
       if (!usuarioLogado) {
         alert("Você precisa estar logado para acessar a carteira!");
         window.location.href = "login.html";
         return;
       }
-
+*/
       const saldoAtualElem = document.getElementById("saldoAtual");
       saldoAtualElem.textContent = `R$ ${usuarioLogado.carteira.toFixed(2)}`;
 

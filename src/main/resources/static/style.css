@@ -514,3 +514,14 @@ main {
   transform: scale(1.03);
   transition: transform 0.2s ease;
 }
+
+/* Animação Fade-in da Logo */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1.2s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
