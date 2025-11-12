@@ -88,16 +88,18 @@
                 <div class="card-body">
                   <h5 class="card-title">${carro.carroNome}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">${carro.carroAno}</h6>
-                  <p class="card-text">Cor: ${carro.carroCor}</p>
-                  <p class="card-price">Valor: R$ ${carro.carroValor.toLocaleString()}</p>
-                    <div class="d-flex justify-content-around mt-3">
+                  <p class="card-text">
+                  <strong>Cor:</strong> ${carro.carroCor}<br>
+                  <strong>Valor:</strong> R$ ${carro.carroValor.toLocaleString('pt-BR')}
+                  </p>
+                </div>
+                <div class="d-flex justify-content-around mt-0 mb-3">
                       <button class="btn btn-warning" onclick="editarVeiculo('carro', ${carro.id})">
                       <i class="bi bi-pencil-fill"></i> Editar
                       </button>
                       <button class="btn btn-danger" onclick="removerVeiculo('carro', ${carro.id})">
                       <i class="bi bi-trash-fill"></i> Remover
                       </button>
-                      </div>
                 </div>
               </div>
             </div>
@@ -114,16 +116,18 @@
                 <div class="card-body">
                   <h5 class="card-title">${moto.motoNome}</h5>
                   <h6 class="card-subtitle mb-2 text-muted">${moto.motoAno}</h6>
-                  <p class="card-text">Cor: ${moto.motoCor}</p>
-                  <p class="card-price">Valor: R$ ${moto.motoValor.toLocaleString()}</p>
-                  <div class="d-flex justify-content-around mt-3">
+                  <p class="card-text">
+                  <strong>Cor:</strong> ${moto.motoCor}<br>
+                  <strong>Valor:</strong> R$ ${moto.motoValor.toLocaleString('pt-BR')}
+                  </p>
+                </div>
+                <div class="d-flex justify-content-around mt-3 mb-3">
                     <button class="btn btn-warning" onclick="editarVeiculo('moto', ${moto.id})">
                     <i class="bi bi-pencil-fill"></i> Editar
                     </button>
                     <button class="btn btn-danger" onclick="removerVeiculo('moto', ${moto.id})">
                     <i class="bi bi-trash-fill"></i> Remover
                     </button>
-                    </div>
                 </div>
               </div>
             </div>
