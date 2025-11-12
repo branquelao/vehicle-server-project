@@ -1,11 +1,20 @@
-# 🚘 App Compra Veículo - Server
+# 🚘 App Compra Veículo - Server + Burnout Zone! (Frontend)
 
-Este projeto é uma aplicação **backend** desenvolvida em **Spring Boot**, que fornece uma **API REST** para gerenciamento de **veículos (carros e motos)** e **usuários/login**.  
-A aplicação utiliza **JPA** para persistência de dados e segue os princípios **RESTful**.
+Este projeto é uma aplicação **full stack** composta por:
+
+- 🖥️ **Backend (API REST em Spring Boot)** — Gerencia **veículos (carros e motos)** e **usuários/login**
+- 🌐 **Frontend (Burnout Zone!)** — Interface web para exibição e anúncio de veículos
 
 ---
 
-## 📋 Funcionalidades
+## 📦 Visão Geral
+
+A aplicação **permite cadastrar, listar e atualizar veículos e usuários**, fornecendo endpoints REST consumidos por uma interface moderna feita em **HTML + Bootstrap**.  
+O banco de dados é **H2** (em memória), ideal para testes e prototipagem rápida.
+
+---
+
+## 📋 Funcionalidades do Backend
 
 ### 🚗 Gestão de Carros
 - **GET** `/veiculos/carro` — Lista todos os carros  
@@ -13,6 +22,7 @@ A aplicação utiliza **JPA** para persistência de dados e segue os princípios
 - **POST** `/veiculos/carro` — Cria um novo carro  
 - **PUT** `/veiculos/carro/{id}` — Atualiza um carro existente  
 - **DELETE** `/veiculos/carro/{id}` — Remove um carro  
+- **GET** `/veiculos/carro/recentes` — Retorna os carros mais recentes (para o carrossel do site)
 
 ### 🏍️ Gestão de Motos
 - **GET** `/veiculos/moto` — Lista todas as motos  
@@ -20,6 +30,7 @@ A aplicação utiliza **JPA** para persistência de dados e segue os princípios
 - **POST** `/veiculos/moto` — Cria uma nova moto  
 - **PUT** `/veiculos/moto/{id}` — Atualiza uma moto existente  
 - **DELETE** `/veiculos/moto/{id}` — Remove uma moto  
+- **GET** `/veiculos/moto/recentes` — Retorna as motos mais recentes (para o carrossel do site)
 
 ### 👥 Gestão de Usuários (Login)
 - **GET** `/login` — Lista todos os usuários  
@@ -50,17 +61,64 @@ src/
 │           │   ├── MotoRepository.java
 │           │   └── LoginRepository.java
 │           └── AppcompraveiculoserverApplication.java
+└── resources/
+    ├── static/           ← Arquivos do site (HTML, CSS, JS, imagens)
+    ├── templates/
+    └── application.properties
 ```
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
+### Backend
 - **Java Spring Boot** — Framework principal  
 - **Spring Data JPA** — Persistência de dados  
-- **H2 Database** — Banco de dados em memória (ou outro configurado)  
+- **H2 Database** — Banco de dados em memória  
 - **Lombok** — Redução de código boilerplate  
-- **Maven** — Gerenciamento de dependências  
+- **Maven** — Gerenciador de dependências  
+
+### Frontend (Burnout Zone!)
+- **HTML5 / CSS3 / JavaScript**  
+- **Bootstrap 5** + **Bootstrap Icons**  
+- **Google Fonts (Orbitron)**  
+- **Fetch API** para consumir endpoints REST  
+- **Carrossel dinâmico** exibindo veículos cadastrados  
+
+---
+
+## 🌐 Interface (Burnout Zone!)
+
+O frontend “**Burnout Zone!**” é um site estático localizado em `src/main/resources/static/`, consumindo os endpoints REST do servidor.  
+Exemplo da página principal (`menu.html` ou `index.html`):
+
+```html
+<h2 class="text-center mt-5 mb-3">Carros em destaque</h2>
+<div id="carouselCarros" class="carousel slide" data-bs-ride="carousel">
+  <!-- slides carregados dinamicamente -->
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  carregarDestaques("carro");
+  carregarDestaques("moto");
+});
+
+function carregarDestaques(tipo) {
+  const endpoint = tipo === "carro"
+    ? "http://localhost:8080/veiculos/carro/recentes"
+    : "http://localhost:8080/veiculos/moto/recentes";
+
+  fetch(endpoint)
+    .then(res => res.json())
+    .then(lista => {
+      // popula o carrossel dinamicamente
+    });
+}
+</script>
+```
+
+O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostrando nome, ano e valor formatado.
 
 ---
 
@@ -73,7 +131,8 @@ src/
   "carroNome": "Fusca",
   "carroCor": "Azul",
   "carroAno": 1972,
-  "carroValor": 15000.0
+  "carroValor": 15000.0,
+  "carroImagem": "fusca.jpg"
 }
 ```
 
@@ -84,7 +143,8 @@ src/
   "motoNome": "CG 160",
   "motoCor": "Vermelha",
   "motoAno": 2020,
-  "motoValor": 12000.0
+  "motoValor": 12000.0,
+  "motoImagem": "cg160.jpg"
 }
 ```
 
@@ -94,8 +154,8 @@ src/
   "id": 1,
   "nome": "João",
   "senha": "1234",
-  "telefone": 999999999,
-  "carteira": 5000
+  "telefone": "199988776655",
+  "carteira": 5000.0
 }
 ```
 
@@ -108,93 +168,38 @@ src/
    git clone [url-do-repositorio]
    ```
 
-2. **Navegue até o diretório do projeto:**
+2. **Acesse a pasta do projeto:**
    ```bash
    cd appcompraveiculoserver
    ```
 
-3. **Execute a aplicação:**
+3. **Execute o servidor:**
    ```bash
    ./mvnw spring-boot:run
    ```
-   ou
-   ```bash
-   mvn spring-boot:run
-   ```
 
-4. **Acesse a aplicação:**
+4. **Acesse no navegador:**
    ```
-   http://localhost:8080
+   http://localhost:8080/html/start.html
    ```
-
 ---
 
-## 📡 Endpoints da API
+## ⚙️ Banco de Dados H2
 
-### Carros
-```
-GET    /veiculos/carro
-GET    /veiculos/carro/{id}
-POST   /veiculos/carro
-PUT    /veiculos/carro/{id}
-DELETE /veiculos/carro/{id}
-```
-
-### Motos
-```
-GET    /veiculos/moto
-GET    /veiculos/moto/{id}
-POST   /veiculos/moto
-PUT    /veiculos/moto/{id}
-DELETE /veiculos/moto/{id}
-```
-
-### Login
-```
-GET    /login
-GET    /login/{id}
-POST   /login
-PUT    /login/{id}
-DELETE /login/{id}
-```
-
----
-
-## ⚙️ Configuração
-
-Certifique-se de ter as seguintes dependências no `pom.xml`:
-
-- `spring-boot-starter-web`  
-- `spring-boot-starter-data-jpa`  
-- `com.h2database:h2`  
-- `lombok`  
-
-A configuração do banco H2 é automática com o Spring Boot.  
-Acesse o console do H2 em:  
+Acesse o console do banco em:
 ```
 http://localhost:8080/h2-console
 ```
 
----
-
-## 🔧 Observações
-
-- Os repositórios estendem `JpaRepository`, fornecendo operações CRUD básicas.  
-- As entidades utilizam a anotação `@Entity` para mapeamento JPA.  
-- O **Lombok** é usado para gerar automaticamente getters, setters e construtores.  
-- A aplicação segue o padrão **RESTful** para design de APIs.  
+Credenciais padrão:
+```
+JDBC URL: jdbc:h2:mem:testdb
+User: sa
+Password:
+```
 
 ---
 
-## 📝 Próximos Passos Sugeridos
-
-1. Implementar autenticação e autorização (Spring Security)  
-2. Adicionar validação de dados (Bean Validation)  
-3. Criar tratamento de erros personalizado (ControllerAdvice)  
-4. Adicionar documentação com **Swagger/OpenAPI**  
-5. Configurar banco de dados **PostgreSQL** para produção  
-6. Criar **testes unitários e de integração**
-
----
-
-📘 **Desenvolvido como parte do curso de Ciência da Computação - UNIFAJ**
+📘 **Desenvolvido como parte do curso de Ciência da Computação - UNIFAJ**  
+🚗 **Backend:** Java Spring Boot  
+🏍️ **Frontend:** Burnout Zone! (HTML + Bootstrap)
