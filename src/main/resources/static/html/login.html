@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Loja de Carros</title>
+    <title>Login - Burnout Zone!</title>
     <link rel="preload" href="/img/fundo.jpg" as="image">
     <link rel="preload" href="/img/fundo.webp" as="image">
     <link rel="icon" type="image/png" href="/img/favicon-full.png">
@@ -54,7 +54,7 @@
 
                 <div class="d-grid gap-2">
                     <button class="btn btn-primary" type="button" onclick="logarConta()">Entrar</button>
-                    <button class="btn btn-outline-primary" type="button" onclick="criarConta()">Cadastrar</button>
+                    <a href="criarConta.html" class="btn btn-primary">Crie sua Conta</a>
                     <button class="btn btn-link text-decoration-none" type="button">Esqueci a senha</button>
                 </div>
             </div>
@@ -80,43 +80,6 @@
 </footer>
 
 <script>
-    function criarConta() {
-      const obj = {
-        usuario: document.getElementById("usuario").value.trim(),
-        senha: document.getElementById("senha").value.trim(),
-        telefone: document.getElementById("telefone").value.trim() || "0",
-        carteira: 0.0
-      };
-
-      if (!obj.usuario || !obj.senha) {
-        alert("Preencha usuário e senha!");
-        return;
-      }
-
-      fetch("http://localhost:8080/login", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(obj)
-      })
-      .then(res => {
-        if (!res.ok) throw new Error("Erro ao cadastrar. Código: " + res.status);
-        return res.json();
-      })
-      .then(res => {
-        alert("Conta criada com sucesso! ID: " + res.id);
-        document.getElementById("usuario").value = "";
-        document.getElementById("senha").value = "";
-        document.getElementById("telefone").value = "";
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Falha ao conectar ao servidor.");
-      });
-    }
-
     function logarConta() {
       const usuario = document.getElementById("usuario").value.trim();
       const senha = document.getElementById("senha").value.trim();

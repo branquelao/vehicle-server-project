@@ -3,23 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vindo! - Burnout Zone!</title>
+    <title>Criar Conta - Burnout Zone!</title>
     <link rel="preload" href="/img/fundo.jpg" as="image">
     <link rel="preload" href="/img/fundo.webp" as="image">
     <link rel="icon" type="image/png" href="/img/favicon-full.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-
     <link rel="stylesheet" href="../style.css">
 </head>
-
-<style>
-    .lead {
-        text-shadow:
-          1px 1px 5px rgba(0, 0, 0, 0.8),
-          0 0 8px rgba(0, 0, 0, 0.6);
-      }
-</style>
 
 <body>
 <!-- ======= Menu ======= -->
@@ -36,30 +27,20 @@
 
 <!-- ======= Conteúdo principal ======= -->
 <main class="container my-5">
-    <div class="row justify-content-center align-items-center">
-
-        <!-- Coluna da mensagem de boas-vindas -->
-        <div class="col-md-8 d-flex flex-column align-items-center justify-content-center text-center fade-in">
-            <img src="/img/sitelogo.png" alt="Logo Burnout Zone" class="mb-2" style="width: 700px;">
-            <p class="lead fw-semibold">
-                Aqui na Burnout Zone, você pode anunciar, visualizar e gerenciar seus veículos facilmente!
-            </p>
-        </div>
-
-        <!-- Coluna da caixa de login -->
-        <div class="col-md-5 col-lg-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
             <div class="card shadow-sm p-4 glass-container">
-                <h3 class="text-center mb-4">Acesse sua conta</h3>
+                <h3 class="text-center mb-4">Crie seu login!</h3>
 
                 <div class="mb-3">
                     <label for="usuario" class="form-label">Usuário</label>
-                    <input type="text" id="usuario" class="form-control" placeholder="Digite seu usuário">
+                    <input type="text" id="usuario" class="form-control" placeholder="Digite um novo usuário">
                 </div>
 
                 <div class="mb-3">
                     <label for="senha" class="form-label">Senha</label>
                     <div class="input-group">
-                        <input type="password" id="senha" class="form-control" placeholder="Digite sua senha">
+                        <input type="password" id="senha" class="form-control" placeholder="Digite uma nova senha">
                         <button class="btn btn-outline-secondary" type="button" onclick="mostrarSenha()">
                             <i class="bi bi-eye"></i>
                         </button>
@@ -67,14 +48,20 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="telefone" class="form-label">Telefone (opcional)</label>
+                    <label for="senha" class="form-label">Confirme a Senha</label>
+                    <div class="input-group">
+                        <input type="password" id="senhaConfirmar" class="form-control" placeholder="Confirme sua senha">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefone" class="form-label">Telefone</label>
                     <input type="text" id="telefone" class="form-control" placeholder="(xx) xxxxx-xxxx">
                 </div>
 
                 <div class="d-grid gap-2">
-                    <button class="btn btn-primary" type="button" onclick="logarConta()">Entrar</button>
-                    <a href="criarConta.html" class="btn btn-primary">Crie sua Conta</a>
-                    <button class="btn btn-link text-decoration-none" type="button">Esqueci a senha</button>
+                    <button class="btn btn-outline-primary" type="button" onclick="criarConta()">Cadastrar</button>
+                    <a href="login.html" class="btn btn-primary">Voltar ao login</a>
                 </div>
             </div>
         </div>
@@ -98,47 +85,63 @@
     </div>
 </footer>
 
-<!-- ======= Script ======= -->
 <script>
-    function logarConta() {
+    function criarConta() {
       const usuario = document.getElementById("usuario").value.trim();
       const senha = document.getElementById("senha").value.trim();
+      const senhaConfirmar = document.getElementById("senhaConfirmar").value.trim();
       const telefone = document.getElementById("telefone").value.trim() || "0";
 
-      if (!usuario || !senha) {
-        alert("Preencha usuário e senha!");
+      // Verifica se os campos obrigatórios foram preenchidos
+      if (!usuario || !senha || !senhaConfirmar) {
+        alert("Preencha todos os campos obrigatórios!");
         return;
       }
 
-      fetch("http://localhost:8080/login")
-        .then(res => {
-          if (!res.ok) throw new Error("Erro ao buscar logins: " + res.status);
-          return res.json();
-        })
-        .then(lista => {
-          const login = lista.find(l =>
-            l.usuario === usuario && l.senha === senha && l.telefone === telefone
-          );
+      // Verifica se as senhas coincidem
+      if (senha !== senhaConfirmar) {
+        alert("As senhas não coincidem! Verifique e tente novamente.");
+        return;
+      }
 
-          if (login) {
-            alert("Login bem-sucedido! Bem-vindo, " + login.usuario + "!");
-            localStorage.setItem("usuarioLogado", JSON.stringify(login));
-            localStorage.setItem("loginId", login.id);
-            window.location.href = "index.html";
-          } else {
-            alert("Usuário, senha ou telefone incorretos.");
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert("Falha ao conectar ao servidor.");
-        });
+      const obj = {
+        usuario: usuario,
+        senha: senha,
+        telefone: telefone,
+        carteira: 0.0
+      };
+
+      // Envia o cadastro apenas se tudo estiver correto
+      fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(obj)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Erro ao cadastrar. Código: " + res.status);
+        return res.json();
+      })
+      .then(res => {
+        alert("Conta criada com sucesso! ID: " + res.id);
+        document.getElementById("usuario").value = "";
+        document.getElementById("senha").value = "";
+        document.getElementById("senhaConfirmar").value = "";
+        document.getElementById("telefone").value = "";
+        window.location.href = "login.html";
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Falha ao conectar ao servidor.");
+      });
     }
 
     function mostrarSenha() {
       const senha = document.getElementById("senha");
-      const botao = event.currentTarget; // pega o botão clicado
-      const icone = botao.querySelector("i"); // pega o ícone dentro do botão
+      const botao = event.currentTarget;
+      const icone = botao.querySelector("i");
 
       if (senha.type === "password") {
         senha.type = "text";
@@ -149,5 +152,6 @@
       }
     }
 </script>
+
 </body>
 </html>

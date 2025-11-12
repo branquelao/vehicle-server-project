@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Motos</title>
+    <title>Catálogo de Motos - Burnout Zone!</title>
     <link rel="preload" href="/img/fundo.jpg" as="image">
     <link rel="preload" href="/img/fundo.webp" as="image">
     <link rel="icon" type="image/png" href="/img/favicon-full.png">
@@ -82,7 +82,8 @@
                   <img src="${imagem}" class="card-img-top" alt="${moto.motoNome}">
                   <div class="card-body">
                     <h5 class="card-title">${moto.motoNome}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">${usuario} - ${telefone}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted"><strong>Usuário:</strong> ${usuario}</h6>
+                    <h6 class="card-subtitle mb-2 text-muted"><strong>Telefone:</strong> ${telefone}</h6>
                     <p class="card-text mt-3 mb-0">
                       <strong>Valor:</strong> R$ ${moto.motoValor.toLocaleString('pt-BR')}<br>
                       <strong>Ano:</strong> ${moto.motoAno}<br>
