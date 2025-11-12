@@ -5,9 +5,16 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -87,6 +94,54 @@ public class LoginController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/login/{id}/imagem")
+    public ResponseEntity<Login> atualizarImagem(
+            @PathVariable Long id,
+            @RequestParam("imagem") MultipartFile imagem) {
+        try {
+            Optional<Login> optionalLogin = loginRepository.findById(id);
+            if (optionalLogin.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Login login = optionalLogin.get();
+
+            // Caminho da pasta de uploads
+            Path pastaUploads = Paths.get("uploads");
+            if (!Files.exists(pastaUploads)) {
+                Files.createDirectories(pastaUploads);
+            }
+
+            // Exclui a imagem antiga, se existir
+            if (login.getLoginImagem() != null && !login.getLoginImagem().isBlank()) {
+                Path caminhoAntigo = pastaUploads.resolve(login.getLoginImagem());
+                if (Files.exists(caminhoAntigo)) {
+                    try {
+                        Files.delete(caminhoAntigo);
+                    } catch (IOException e) {
+                        System.err.println("⚠️ Não foi possível excluir a imagem antiga: " + e.getMessage());
+                    }
+                }
+            }
+
+            // Salva a nova imagem
+            String nomeArquivo = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
+            Path caminhoNovo = pastaUploads.resolve(nomeArquivo);
+            Files.copy(imagem.getInputStream(), caminhoNovo, StandardCopyOption.REPLACE_EXISTING);
+
+            // Atualiza no banco
+            login.setLoginImagem(nomeArquivo);
+            loginRepository.save(login);
+
+            return ResponseEntity.ok(login);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     @DeleteMapping("/login/{id}")
     public void Login(@PathVariable Long id){
