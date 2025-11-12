@@ -11,7 +11,7 @@ html, body {
 body {
   margin: 0;
   height: 100vh;
-  background-image: url('img/fundo.jpg');
+  background-image: url('img/fundo.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -25,7 +25,6 @@ body {
   from { opacity: 0.2; }
   to { opacity: 0.8; }
 }
-
 
 /* === MENU PRINCIPAL === */
 .menuP {
@@ -557,4 +556,101 @@ main {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------------------ */
+/* === ESTILOS PARA EDITAR PERFIL === */
+/* ------------------------------------------------ */
+
+
+.perfil-foto {
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #00ffff; /* Borda ciano/azul neon */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #111, #000);
+  box-shadow: 0 0 15px #00ffff55;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.foto-preview {
+  width: 106%;
+  height: 106%;
+}
+
+.camera-icon {
+  margin-right: 19px;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: #00ffff;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); /* Sombra neon na câmera */
+}
+
+.camera-icon:hover {
+  background: rgba(0, 255, 255, 0.9);
+  color: #000;
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+}
+
+/* Título (para garantir que o H1 do editar perfil pegue o estilo) */
+.perfil-header h1.perfil-nome {
+    color: #f9f002;
+    text-shadow: 0 0 10px #f9f002, 0 0 20px #ff005e;
+}
+
+/* 💥 ESTILOS DO ANUNCIAR APLICADOS AQUI 💥 */
+
+/* Estilo para os Labels (Texto "Usuário", "Telefone", etc.) - CORES DO ANUNCIAR */
+#formPadronizado .form-label {
+    color: #f9f002; /* Amarelo Neon */
+    font-weight: bold;
+    text-shadow: 0 0 5px #ff005e, 0 0 10px #f9f002; /* Sombra Rosa/Amarelo */
+    padding-bottom: 5px;
+}
+
+/* === INPUTS PERSONALIZADOS PARA O FORMULÁRIO DE EDIÇÃO === */
+/* Estilo geral para todos os inputs, textareas e selects DENTRO DO FORM - CORES DO ANUNCIAR */
+#formPadronizado .form-control {
+  background-color: #000 !important;
+  color: #00eaff !important; /* Texto interno CIANO NEON */
+  border: 1px solid #ff005e !important; /* Borda ROSA NEON */
+  box-shadow: 0 0 8px rgba(255, 0, 94, 0.3) !important; /* Brilho suave */
+  transition: all 0.3s ease;
+  padding: 10px 15px;
+  font-size: 1rem;
+}
+
+#formPadronizado .form-control:hover,
+#formPadronizado .form-control:focus {
+  background-color: #000 !important;
+  color: #00eaff !important; /* Texto interno CIANO NEON */
+  border: 1px solid #f9f002 !important; /* Borda AMARELA NEON ao focar/hover */
+  box-shadow: 0 0 15px #f9f002 !important; /* Brilho AMARELO NEON mais intenso */
+  outline: none;
+}
+
+#formPadronizado .form-control::placeholder {
+  color: rgba(0, 234, 255, 0.5) !important; /* Placeholder Ciano mais suave */
+}
+
+#formPadronizado input[type="file"]::file-selector-button {
+  background-color: #ff005e;
+  color: #000000;
+  border: none;
+  border-radius: 6;
+  padding: 6px 12px;
+  font-weight: 600;
+  transition: 0.3s;
 }
