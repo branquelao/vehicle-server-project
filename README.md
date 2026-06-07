@@ -1,22 +1,22 @@
-# 🚘 App Compra Veículo - Server + Burnout Zone! (Frontend)
+# App Compra Veículo - Server + Burnout Zone! (Frontend)
 
 Este projeto é uma aplicação **full stack** composta por:
 
-- 🖥️ **Backend (API REST em Spring Boot)** — Gerencia **veículos (carros e motos)** e **usuários/login**
-- 🌐 **Frontend (Burnout Zone!)** — Interface web para exibição e anúncio de veículos
+- **Backend (API REST em Spring Boot)** — Gerencia **veículos (carros e motos)** e **usuários/login**
+- **Frontend (Burnout Zone!)** — Interface web para exibição e anúncio de veículos
 
 ---
 
-## 📦 Visão Geral
+## Visão Geral
 
 A aplicação **permite cadastrar, listar e atualizar veículos e usuários**, fornecendo endpoints REST consumidos por uma interface moderna feita em **HTML + Bootstrap**.  
 O banco de dados é **H2** (em memória), ideal para testes e prototipagem rápida.
 
 ---
 
-## 📋 Funcionalidades do Backend
+## Funcionalidades do Backend
 
-### 🚗 Gestão de Carros
+### Gestão de Carros
 - **GET** `/veiculos/carro` — Lista todos os carros  
 - **GET** `/veiculos/carro/{id}` — Busca carro por ID  
 - **POST** `/veiculos/carro` — Cria um novo carro  
@@ -24,7 +24,7 @@ O banco de dados é **H2** (em memória), ideal para testes e prototipagem rápi
 - **DELETE** `/veiculos/carro/{id}` — Remove um carro  
 - **GET** `/veiculos/carro/recentes` — Retorna os carros mais recentes (para o carrossel do site)
 
-### 🏍️ Gestão de Motos
+### Gestão de Motos
 - **GET** `/veiculos/moto` — Lista todas as motos  
 - **GET** `/veiculos/moto/{id}` — Busca moto por ID  
 - **POST** `/veiculos/moto` — Cria uma nova moto  
@@ -32,7 +32,7 @@ O banco de dados é **H2** (em memória), ideal para testes e prototipagem rápi
 - **DELETE** `/veiculos/moto/{id}` — Remove uma moto  
 - **GET** `/veiculos/moto/recentes` — Retorna as motos mais recentes (para o carrossel do site)
 
-### 👥 Gestão de Usuários (Login)
+### Gestão de Usuários (Login)
 - **GET** `/login` — Lista todos os usuários  
 - **GET** `/login/{id}` — Busca usuário por ID  
 - **POST** `/login` — Cria um novo usuário  
@@ -41,7 +41,7 @@ O banco de dados é **H2** (em memória), ideal para testes e prototipagem rápi
 
 ---
 
-## 🏗️ Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 src/
@@ -69,7 +69,7 @@ src/
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 ### Backend
 - **Java Spring Boot** — Framework principal  
@@ -87,7 +87,7 @@ src/
 
 ---
 
-## 🌐 Interface (Burnout Zone!)
+## Interface (Burnout Zone!)
 
 O frontend “**Burnout Zone!**” é um site estático localizado em `src/main/resources/static/`, consumindo os endpoints REST do servidor.  
 Exemplo da página principal (`menu.html` ou `index.html`):
@@ -122,9 +122,9 @@ O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostra
 
 ---
 
-## 📦 Modelos de Dados
+## Modelos de Dados
 
-### 🚗 Carro
+### Carro
 ```json
 {
   "id": 1,
@@ -136,7 +136,7 @@ O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostra
 }
 ```
 
-### 🏍️ Moto
+### Moto
 ```json
 {
   "id": 1,
@@ -148,7 +148,7 @@ O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostra
 }
 ```
 
-### 👤 Login (Usuário)
+### Login (Usuário)
 ```json
 {
   "id": 1,
@@ -161,7 +161,7 @@ O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostra
 
 ---
 
-## 🚀 Como Executar
+## Como Executar
 
 1. **Clone o repositório:**
    ```bash
@@ -184,7 +184,7 @@ O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostra
    ```
 ---
 
-## ⚙️ Banco de Dados H2
+## Banco de Dados H2
 
 Acesse o console do banco em:
 ```
@@ -200,6 +200,6 @@ Password:
 
 ---
 
-📘 **Desenvolvido como parte do curso de Ciência da Computação - UNIFAJ**  
-🚗 **Backend:** Java Spring Boot  
-🏍️ **Frontend:** Burnout Zone! (HTML + Bootstrap)
+**Desenvolvido como parte do curso de Ciência da Computação - UNIFAJ**  
+**Backend:** Java Spring Boot  
+**Frontend:** Burnout Zone! (HTML + Bootstrap)
