@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,9 +17,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "*")
 public class CarroController {
 
     private final CarroRepository carroRepository;
@@ -27,6 +28,10 @@ public class CarroController {
     public CarroController(CarroRepository carroRepository, LoginRepository loginRepository) {
         this.carroRepository = carroRepository;
         this.loginRepository = loginRepository;
+    }
+
+    private Path uploadDir() {
+        return Paths.get(System.getProperty("user.dir"), "uploads");
     }
 
     @GetMapping("/veiculos/carro")
@@ -46,8 +51,12 @@ public class CarroController {
 
     @PostMapping("/veiculos/carro")
     public ResponseEntity<?> postCarro(@RequestBody CarroDTO dto) {
-        Path pastaUploads = Paths.get(System.getProperty("user.dir"), "uploads");
-        Path caminhoArquivo = pastaUploads.resolve(dto.getCarroImagem());
+        Path caminhoArquivo;
+        try {
+            caminhoArquivo = UploadPathResolver.resolveDentroDeUploads(uploadDir(), dto.getCarroImagem());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nome de imagem inválido.");
+        }
 
         if (!Files.exists(caminhoArquivo)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -66,26 +75,25 @@ public class CarroController {
         carro.setLogin(login);
 
         carroRepository.save(carro);
-        return ResponseEntity.ok("Carro salvo com sucesso!");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Carro salvo com sucesso!");
     }
 
     @PostMapping("/uploads")
-    public ResponseEntity<String> uploadImagem(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, String>> uploadImagem(@RequestParam("file") MultipartFile file) {
         try {
-            Path pastaUploads = Paths.get(System.getProperty("user.dir"), "uploads");
-
+            Path pastaUploads = uploadDir();
             if (!Files.exists(pastaUploads)) {
                 Files.createDirectories(pastaUploads);
             }
 
-            Path destino = pastaUploads.resolve(file.getOriginalFilename());
+            String nomeArquivo = UploadPathResolver.gerarNomeSeguro(file.getOriginalFilename());
+            Path destino = UploadPathResolver.resolveDentroDeUploads(pastaUploads, nomeArquivo);
             Files.copy(file.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
 
-            return ResponseEntity.ok("Imagem enviada com sucesso!");
+            return ResponseEntity.ok(Map.of("arquivo", nomeArquivo));
         } catch (IOException e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao enviar a imagem: " + e.getMessage());
+                    .body(Map.of("erro", "Erro ao enviar a imagem: " + e.getMessage()));
         }
     }
 
@@ -99,17 +107,10 @@ public class CarroController {
 
                     if (novaImagem != null && !novaImagem.isEmpty() && !novaImagem.equals(imagemAntiga)) {
                         try {
-                            Path uploadDir = Paths.get("uploads");
-                            Path caminhoAntigo = uploadDir.resolve(imagemAntiga);
-
-                            // Exclui a imagem antiga se existir
-                            Files.deleteIfExists(caminhoAntigo);
-
-                            System.out.println("Imagem antiga removida: " + caminhoAntigo);
+                            UploadPathResolver.apagarSeExistir(uploadDir(), imagemAntiga);
                         } catch (IOException e) {
                             System.err.println("Erro ao remover imagem antiga: " + e.getMessage());
                         }
-
                         c.setCarroImagem(novaImagem);
                     }
 
@@ -130,12 +131,7 @@ public class CarroController {
                 .map(carro -> {
                     // Exclui a imagem antiga, se existir
                     try {
-                        if (carro.getCarroImagem() != null && !carro.getCarroImagem().isEmpty()) {
-                            Path uploadDir = Paths.get("uploads");
-                            Path caminhoImagem = uploadDir.resolve(carro.getCarroImagem());
-                            Files.deleteIfExists(caminhoImagem);
-                            System.out.println("Imagem do carro removida: " + caminhoImagem);
-                        }
+                        UploadPathResolver.apagarSeExistir(uploadDir(), carro.getCarroImagem());
                     } catch (IOException e) {
                         System.err.println("Erro ao remover imagem do carro: " + e.getMessage());
                     }

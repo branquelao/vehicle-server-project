@@ -8,6 +8,7 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.MotoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +17,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
 public class MotoController {
 
     private final MotoRepository motoRepository;
@@ -25,6 +25,10 @@ public class MotoController {
     public MotoController(MotoRepository motoRepository, LoginRepository loginRepository) {
         this.motoRepository = motoRepository;
         this.loginRepository = loginRepository;
+    }
+
+    private Path uploadDir() {
+        return Paths.get(System.getProperty("user.dir"), "uploads");
     }
 
     @GetMapping("/veiculos/moto")
@@ -44,8 +48,12 @@ public class MotoController {
 
     @PostMapping("/veiculos/moto")
     public ResponseEntity<?> postMoto(@RequestBody MotoDTO dto) {
-        Path pastaUploads = Paths.get(System.getProperty("user.dir"), "uploads");
-        Path caminhoArquivo = pastaUploads.resolve(dto.getMotoImagem());
+        Path caminhoArquivo;
+        try {
+            caminhoArquivo = UploadPathResolver.resolveDentroDeUploads(uploadDir(), dto.getMotoImagem());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nome de imagem inválido.");
+        }
 
         if (!Files.exists(caminhoArquivo)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -64,8 +72,7 @@ public class MotoController {
         moto.setLogin(login);
 
         motoRepository.save(moto);
-
-        return ResponseEntity.ok("Moto salva com sucesso!");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Moto salva com sucesso!");
     }
 
     @PutMapping("/veiculos/moto/{id}")
@@ -78,17 +85,10 @@ public class MotoController {
 
                     if (novaImagem != null && !novaImagem.isEmpty() && !novaImagem.equals(imagemAntiga)) {
                         try {
-                            Path uploadDir = Paths.get("uploads");
-                            Path caminhoAntigo = uploadDir.resolve(imagemAntiga);
-
-                            // Exclui o arquivo antigo se existir
-                            Files.deleteIfExists(caminhoAntigo);
-
-                            System.out.println("Imagem antiga de moto removida: " + caminhoAntigo);
+                            UploadPathResolver.apagarSeExistir(uploadDir(), imagemAntiga);
                         } catch (IOException e) {
                             System.err.println("Erro ao remover imagem antiga da moto: " + e.getMessage());
                         }
-
                         m.setMotoImagem(novaImagem);
                     }
 
@@ -109,14 +109,9 @@ public class MotoController {
                 .map(moto -> {
                     // Exclui a imagem antiga, se existir
                     try {
-                        if (moto.getMotoImagem() != null && !moto.getMotoImagem().isEmpty()) {
-                            Path uploadDir = Paths.get("uploads");
-                            Path caminhoImagem = uploadDir.resolve(moto.getMotoImagem());
-                            Files.deleteIfExists(caminhoImagem);
-                            System.out.println("🗑️ Imagem da moto removida: " + caminhoImagem);
-                        }
+                        UploadPathResolver.apagarSeExistir(uploadDir(), moto.getMotoImagem());
                     } catch (IOException e) {
-                        System.err.println("⚠️ Erro ao remover imagem da moto: " + e.getMessage());
+                        System.err.println("Erro ao remover imagem da moto: " + e.getMessage());
                     }
 
                     motoRepository.deleteById(id);

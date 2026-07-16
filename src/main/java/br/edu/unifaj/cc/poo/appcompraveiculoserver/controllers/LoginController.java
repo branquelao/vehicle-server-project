@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.LoginResponseDTO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,20 +17,24 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "*")
 public class LoginController {
 
     private final LoginRepository loginRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public LoginController(LoginRepository loginRepository) {
+    public LoginController(LoginRepository loginRepository, PasswordEncoder passwordEncoder) {
         this.loginRepository = loginRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/login")
-    public List<Login> getLogins(){
-        return loginRepository.findAll();
+    public List<LoginResponseDTO> getLogins() {
+        return loginRepository.findAll().stream()
+                .map(LoginResponseDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     /*
@@ -52,99 +58,99 @@ public class LoginController {
     */
 
     @GetMapping("/login/{id}")
-    public ResponseEntity<Login> getLoginId(@PathVariable Long id) {
-        Optional<Login> login = loginRepository.findById(id);
-
-        if (login.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Força o carregamento das listas (porque estão LAZY)
-        login.get().getCarros().size();
-        login.get().getMotos().size();
-
-        return ResponseEntity.ok(login.get());
+    public ResponseEntity<LoginResponseDTO> getLoginId(@PathVariable Long id) {
+        return loginRepository.findById(id)
+                .map(login -> {
+                    login.getCarros().size();
+                    login.getMotos().size();
+                    return ResponseEntity.ok(LoginResponseDTO.fromEntity(login));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/login/verificar")
-    public ResponseEntity<Login> verificarLogin(
+    public ResponseEntity<LoginResponseDTO> verificarLogin(
             @RequestParam String usuario,
             @RequestParam String senha) {
-        Optional<Login> loginOpt = loginRepository.findByUsuarioAndSenha(usuario, senha);
-        return loginOpt.map(ResponseEntity::ok)
+        return loginRepository.findByUsuario(usuario)
+                .filter(login -> passwordEncoder.matches(senha, login.getSenha()))
+                .map(login -> ResponseEntity.ok(LoginResponseDTO.fromEntity(login)))
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
-
     @PostMapping("/login")
-    public Login postLogin(@RequestBody Login l) {
-        return loginRepository.save(l);
+    public ResponseEntity<LoginResponseDTO> postLogin(@RequestBody Login l) {
+        l.setSenha(passwordEncoder.encode(l.getSenha()));
+        Login salvo = loginRepository.save(l);
+        return ResponseEntity.status(HttpStatus.CREATED).body(LoginResponseDTO.fromEntity(salvo));
     }
 
     @PutMapping("/login/{id}")
-    public ResponseEntity<Login> atualizar(@PathVariable Long id, @RequestBody Login novoLogin) {
+    public ResponseEntity<LoginResponseDTO> atualizar(@PathVariable Long id, @RequestBody Login novoLogin) {
         return loginRepository.findById(id)
                 .map(login -> {
                     login.setUsuario(novoLogin.getUsuario());
-                    login.setSenha(novoLogin.getSenha());
+                    if (novoLogin.getSenha() != null && !novoLogin.getSenha().isBlank()) {
+                        login.setSenha(passwordEncoder.encode(novoLogin.getSenha()));
+                    }
                     login.setTelefone(novoLogin.getTelefone());
                     login.setCarteira(novoLogin.getCarteira());
-                    loginRepository.save(login);
-                    return ResponseEntity.ok(login);
+                    Login salvo = loginRepository.save(login);
+                    return ResponseEntity.ok(LoginResponseDTO.fromEntity(salvo));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/login/{id}/imagem")
-    public ResponseEntity<Login> atualizarImagem(
+    public ResponseEntity<LoginResponseDTO> atualizarImagem(
             @PathVariable Long id,
             @RequestParam("imagem") MultipartFile imagem) {
+        Optional<Login> optionalLogin = loginRepository.findById(id);
+        if (optionalLogin.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Login login = optionalLogin.get();
+
         try {
-            Optional<Login> optionalLogin = loginRepository.findById(id);
-            if (optionalLogin.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Login login = optionalLogin.get();
-
-            // Caminho da pasta de uploads
-            Path pastaUploads = Paths.get("uploads");
+            Path pastaUploads = Paths.get(System.getProperty("user.dir"), "uploads");
             if (!Files.exists(pastaUploads)) {
                 Files.createDirectories(pastaUploads);
             }
 
-            // Exclui a imagem antiga, se existir
             if (login.getLoginImagem() != null && !login.getLoginImagem().isBlank()) {
-                Path caminhoAntigo = pastaUploads.resolve(login.getLoginImagem());
-                if (Files.exists(caminhoAntigo)) {
-                    try {
-                        Files.delete(caminhoAntigo);
-                    } catch (IOException e) {
-                        System.err.println("⚠️ Não foi possível excluir a imagem antiga: " + e.getMessage());
-                    }
+                Path caminhoAntigo = pastaUploads.resolve(login.getLoginImagem()).normalize();
+                if (caminhoAntigo.startsWith(pastaUploads)) {
+                    Files.deleteIfExists(caminhoAntigo);
                 }
             }
 
-            // Salva a nova imagem
-            String nomeArquivo = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
+            String extensao = extrairExtensao(imagem.getOriginalFilename());
+            String nomeArquivo = UUID.randomUUID() + extensao;
             Path caminhoNovo = pastaUploads.resolve(nomeArquivo);
             Files.copy(imagem.getInputStream(), caminhoNovo, StandardCopyOption.REPLACE_EXISTING);
 
-            // Atualiza no banco
             login.setLoginImagem(nomeArquivo);
-            loginRepository.save(login);
+            Login salvo = loginRepository.save(login);
 
-            return ResponseEntity.ok(login);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            return ResponseEntity.ok(LoginResponseDTO.fromEntity(salvo));
+        } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+    private String extrairExtensao(String nomeOriginal) {
+        if (nomeOriginal == null || !nomeOriginal.contains(".")) {
+            return "";
+        }
+        return nomeOriginal.substring(nomeOriginal.lastIndexOf('.'));
+    }
 
     @DeleteMapping("/login/{id}")
-    public void Login(@PathVariable Long id){
+    public ResponseEntity<Void> deletarLogin(@PathVariable Long id) {
+        if (!loginRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         loginRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
