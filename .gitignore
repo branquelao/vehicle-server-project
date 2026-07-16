@@ -32,3 +32,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Dados gerados em runtime (não devem ir pro Git) ###
+/data/
+/uploads/*
+!/uploads/.gitkeep
