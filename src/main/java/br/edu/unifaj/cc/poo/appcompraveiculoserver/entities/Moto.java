@@ -27,6 +27,5 @@ public class Moto {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime motoAtualizadaEm;
 
-    @JsonBackReference
-    private Login login;
+    private Long loginId;
 }
