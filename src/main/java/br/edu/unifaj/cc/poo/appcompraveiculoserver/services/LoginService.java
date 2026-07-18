@@ -54,7 +54,6 @@ public class LoginService {
             login.setSenha(passwordEncoder.encode(novoLogin.getSenha()));
         }
         login.setTelefone(novoLogin.getTelefone());
-        login.setCarteira(novoLogin.getCarteira());
 
         return loginRepository.save(login);
     }

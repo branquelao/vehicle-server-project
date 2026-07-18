@@ -13,7 +13,6 @@ public class LoginResponseDTO {
     private Long id;
     private String usuario;
     private String telefone;
-    private float carteira;
     private String loginImagem;
     private LocalDateTime loginCriadoEm;
     private LocalDateTime loginAtualizadoEm;
@@ -21,8 +20,7 @@ public class LoginResponseDTO {
     public static LoginResponseDTO fromEntity(Login login) {
         return new LoginResponseDTO(
                 login.getId(), login.getUsuario(), login.getTelefone(),
-                login.getCarteira(), login.getLoginImagem(),
-                login.getLoginCriadoEm(), login.getLoginAtualizadoEm()
+                login.getLoginImagem(), login.getLoginCriadoEm(), login.getLoginAtualizadoEm()
         );
     }
 }

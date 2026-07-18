@@ -16,7 +16,6 @@ public class Login {
     private String usuario;
     private String senha;
     private String telefone;
-    private float carteira;
     private String loginImagem;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS login (
     usuario VARCHAR(100) NOT NULL,
     senha VARCHAR(255) NOT NULL,
     telefone VARCHAR(20) NOT NULL,
-    carteira FLOAT NOT NULL DEFAULT 0,
     loginImagem VARCHAR(100),
     loginCriadoEm TIMESTAMP NOT NULL,
     loginAtualizadoEm TIMESTAMP NOT NULL

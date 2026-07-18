@@ -29,7 +29,6 @@ public class LoginRepository {
         l.setUsuario(rs.getString("usuario"));
         l.setSenha(rs.getString("senha"));
         l.setTelefone(rs.getString("telefone"));
-        l.setCarteira(rs.getFloat("carteira"));
         l.setLoginImagem(rs.getString("loginImagem"));
         l.setLoginCriadoEm(rs.getTimestamp("loginCriadoEm").toLocalDateTime());
         l.setLoginAtualizadoEm(rs.getTimestamp("loginAtualizadoEm").toLocalDateTime());
@@ -60,19 +59,18 @@ public class LoginRepository {
     }
 
     private Login insert(Login login) {
-        LocalDateTime agora = LocalDateTime.now();
+        LocalDateTime agora = LocalDateTime .now();
         login.setLoginCriadoEm(agora);
         login.setLoginAtualizadoEm(agora);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO login (usuario, senha, telefone, carteira, loginImagem, loginCriadoEm, loginAtualizadoEm) VALUES (?,?,?,?,?,?,?)",
+                    "INSERT INTO login (usuario, senha, telefone, loginImagem, loginCriadoEm, loginAtualizadoEm) VALUES (?,?,?,?,?,?,?)",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, login.getUsuario());
             ps.setString(2, login.getSenha());
             ps.setString(3, login.getTelefone());
-            ps.setFloat(4, login.getCarteira());
             ps.setString(5, login.getLoginImagem());
             ps.setTimestamp(6, Timestamp.valueOf(login.getLoginCriadoEm()));
             ps.setTimestamp(7, Timestamp.valueOf(login.getLoginAtualizadoEm()));
@@ -85,9 +83,9 @@ public class LoginRepository {
 
     private Login update(Login login) {
         login.setLoginAtualizadoEm(LocalDateTime.now());
-        jdbc.update("UPDATE login SET usuario=?, senha=?, telefone=?, carteira=?, loginImagem=?, loginAtualizadoEm=? WHERE id=?",
-                login.getUsuario(), login.getSenha(), login.getTelefone(), login.getCarteira(),
-                login.getLoginImagem(), Timestamp.valueOf(login.getLoginAtualizadoEm()), login.getId());
+        jdbc.update("UPDATE login SET usuario=?, senha=?, telefone=?, loginImagem=?, loginAtualizadoEm=? WHERE id=?",
+                login.getUsuario(), login.getSenha(), login.getTelefone(),login.getLoginImagem(),
+                Timestamp.valueOf(login.getLoginAtualizadoEm()), login.getId());
         return login;
     }
 
