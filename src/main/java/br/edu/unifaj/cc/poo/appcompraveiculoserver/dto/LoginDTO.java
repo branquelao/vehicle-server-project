@@ -12,8 +12,4 @@ public class LoginDTO {
     private String usuario;
     private String senha;
     private String telefone;
-    private float carteira;
-
-    //Arquivo da Imagem
-    private String loginImagem;
 }

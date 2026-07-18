@@ -1,5 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
@@ -40,20 +41,23 @@ public class LoginService {
                 .filter(login -> passwordEncoder.matches(senha, login.getSenha()));
     }
 
-    public Login criar(Login login) {
-        login.setSenha(passwordEncoder.encode(login.getSenha()));
+    public Login criar(LoginDTO dto) {
+        Login login = new Login();
+        login.setUsuario(dto.getUsuario());
+        login.setSenha(passwordEncoder.encode(dto.getSenha()));
+        login.setTelefone(dto.getTelefone());
         return loginRepository.save(login);
     }
 
-    public Login atualizar(Long id, Login novoLogin) {
+    public Login atualizar(Long id, LoginDTO dto) {
         Login login = loginRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + id));
 
-        login.setUsuario(novoLogin.getUsuario());
-        if (novoLogin.getSenha() != null && !novoLogin.getSenha().isBlank()) {
-            login.setSenha(passwordEncoder.encode(novoLogin.getSenha()));
+        login.setUsuario(dto.getUsuario());
+        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
+            login.setSenha(passwordEncoder.encode(dto.getSenha()));
         }
-        login.setTelefone(novoLogin.getTelefone());
+        login.setTelefone(dto.getTelefone());
 
         return loginRepository.save(login);
     }

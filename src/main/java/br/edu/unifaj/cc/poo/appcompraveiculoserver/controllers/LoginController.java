@@ -1,5 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.LoginResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
@@ -52,15 +53,15 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> postLogin(@RequestBody Login l) {
-        Login salvo = loginService.criar(l);
+    public ResponseEntity<LoginResponseDTO> postLogin(@RequestBody LoginDTO dto) {
+        Login salvo = loginService.criar(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(LoginResponseDTO.fromEntity(salvo));
     }
 
     @PutMapping("/login/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Login novoLogin) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody LoginDTO dto) {
         try {
-            Login salvo = loginService.atualizar(id, novoLogin);
+            Login salvo = loginService.atualizar(id, dto);
             return ResponseEntity.ok(LoginResponseDTO.fromEntity(salvo));
         } catch (RecursoNaoEncontradoException e) {
             return ResponseEntity.notFound().build();
