@@ -1,124 +1,58 @@
-# App Compra Veículo - Server + Burnout Zone! (Frontend)
+# Vehicle Server API
+Uma **API REST para um marketplace de veículos usados**, inspirada em plataformas como **OLX** e **Webmotors**, construída com **Spring Boot** e **JDBC puro**.
 
-Este projeto é uma aplicação **full stack** composta por:
-
-- **Backend (API REST em Spring Boot)** — Gerencia **veículos (carros e motos)** e **usuários/login**
-- **Frontend (Burnout Zone!)** — Interface web para exibição e anúncio de veículos
+> Este repositório contém apenas o backend. Ele alimenta um site e um app Android (ambos em processo de reformulação) que consomem essa API.
 
 ---
 
-## Visão Geral
+## Funcionalidades
 
-A aplicação **permite cadastrar, listar e atualizar veículos e usuários**, fornecendo endpoints REST consumidos por uma interface moderna feita em **HTML + Bootstrap**.  
-O banco de dados é **H2** (em memória), ideal para testes e prototipagem rápida.
+### Autenticação
+- Hash de senha com BCrypt (nenhuma senha armazenada em texto puro)
+- Endpoint de verificação de login
+- Upload de imagem de perfil por usuário
 
----
+### Gestão de Veículos
+- CRUD completo para **carros** e **motos**
+- Upload de imagem com nomes de arquivo gerados pelo servidor (evita path traversal e colisões)
+- Endpoint de "anúncios recentes" para cada tipo de veículo (usado em destaques na página inicial)
+- Cada anúncio é vinculado ao vendedor (`Login`) que o criou
 
-## Funcionalidades do Backend
+### Gestão de Usuários
+- CRUD completo para usuários
+- DTOs de resposta que nunca expõem o hash da senha
+- DTOs de requisição que só aceitam os campos que o cliente deveria poder definir (sem bind direto na entidade)
 
-### Gestão de Carros
-- **GET** `/veiculos/carro` — Lista todos os carros  
-- **GET** `/veiculos/carro/{id}` — Busca carro por ID  
-- **POST** `/veiculos/carro` — Cria um novo carro  
-- **PUT** `/veiculos/carro/{id}` — Atualiza um carro existente  
-- **DELETE** `/veiculos/carro/{id}` — Remove um carro  
-- **GET** `/veiculos/carro/recentes` — Retorna os carros mais recentes (para o carrossel do site)
+### Documentação da API
+- Swagger UI interativo pra explorar e testar cada endpoint direto pelo navegador — sem precisar de nenhum cliente separado
+- Disponível em `/docs`
 
-### Gestão de Motos
-- **GET** `/veiculos/moto` — Lista todas as motos  
-- **GET** `/veiculos/moto/{id}` — Busca moto por ID  
-- **POST** `/veiculos/moto` — Cria uma nova moto  
-- **PUT** `/veiculos/moto/{id}` — Atualiza uma moto existente  
-- **DELETE** `/veiculos/moto/{id}` — Remove uma moto  
-- **GET** `/veiculos/moto/recentes` — Retorna as motos mais recentes (para o carrossel do site)
-
-### Gestão de Usuários (Login)
-- **GET** `/login` — Lista todos os usuários  
-- **GET** `/login/{id}` — Busca usuário por ID  
-- **POST** `/login` — Cria um novo usuário  
-- **PUT** `/login/{id}` — Atualiza um usuário existente  
-- **DELETE** `/login/{id}` — Remove um usuário  
+### Arquitetura
+- API REST em Spring Boot
+- JDBC puro (`JdbcTemplate`) — sem ORM/Hibernate
+- Camada de Service separando regra de negócio dos controllers
+- Exceptions customizadas mapeadas pros status HTTP corretos
+- CORS configurável via `application.properties`
+- Banco H2 baseado em arquivo
 
 ---
 
-## Estrutura do Projeto
+## Como Executar
 
+### Pré-requisitos
+- JDK 17+
+- Maven
+
+### Rodando a Aplicação
+1. Clone o repositório
+2. Execute:
+```bash
+   ./mvnw spring-boot:run
 ```
-src/
-├── main/
-│   └── java/
-│       └── br/edu/unifaj/cc/poo/appcompraveiculoserver/
-│           ├── controllers/
-│           │   ├── CarroController.java
-│           │   ├── MotoController.java
-│           │   └── LoginController.java
-│           ├── entities/
-│           │   ├── Carro.java
-│           │   ├── Moto.java
-│           │   └── Login.java
-│           ├── repositories/
-│           │   ├── CarroRepository.java
-│           │   ├── MotoRepository.java
-│           │   └── LoginRepository.java
-│           └── AppcompraveiculoserverApplication.java
-└── resources/
-    ├── static/           ← Arquivos do site (HTML, CSS, JS, imagens)
-    ├── templates/
-    └── application.properties
-```
-
----
-
-## Tecnologias Utilizadas
-
-### Backend
-- **Java Spring Boot** — Framework principal  
-- **Spring Data JPA** — Persistência de dados  
-- **H2 Database** — Banco de dados em memória  
-- **Lombok** — Redução de código boilerplate  
-- **Maven** — Gerenciador de dependências  
-
-### Frontend (Burnout Zone!)
-- **HTML5 / CSS3 / JavaScript**  
-- **Bootstrap 5** + **Bootstrap Icons**  
-- **Google Fonts (Orbitron)**  
-- **Fetch API** para consumir endpoints REST  
-- **Carrossel dinâmico** exibindo veículos cadastrados  
-
----
-
-## Interface (Burnout Zone!)
-
-O frontend “**Burnout Zone!**” é um site estático localizado em `src/main/resources/static/`, consumindo os endpoints REST do servidor.  
-Exemplo da página principal (`menu.html` ou `index.html`):
-
-```html
-<h2 class="text-center mt-5 mb-3">Carros em destaque</h2>
-<div id="carouselCarros" class="carousel slide" data-bs-ride="carousel">
-  <!-- slides carregados dinamicamente -->
-</div>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  carregarDestaques("carro");
-  carregarDestaques("moto");
-});
-
-function carregarDestaques(tipo) {
-  const endpoint = tipo === "carro"
-    ? "http://localhost:8080/veiculos/carro/recentes"
-    : "http://localhost:8080/veiculos/moto/recentes";
-
-  fetch(endpoint)
-    .then(res => res.json())
-    .then(lista => {
-      // popula o carrossel dinamicamente
-    });
-}
-</script>
-```
-
-O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostrando nome, ano e valor formatado.
+3. Swagger UI abre em:
+   `http://localhost:8080/docs`
+4. Console do H2 (pra inspecionar o banco) em:
+   `http://localhost:8080/h2-console`
 
 ---
 
@@ -132,7 +66,8 @@ O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostra
   "carroCor": "Azul",
   "carroAno": 1972,
   "carroValor": 15000.0,
-  "carroImagem": "fusca.jpg"
+  "carroImagem": "a1b2c3.jpg",
+  "loginId": 1
 }
 ```
 
@@ -144,62 +79,61 @@ O carrossel exibe os **veículos mais recentes** cadastrados via backend, mostra
   "motoCor": "Vermelha",
   "motoAno": 2020,
   "motoValor": 12000.0,
-  "motoImagem": "cg160.jpg"
+  "motoImagem": "d4e5f6.jpg",
+  "loginId": 1
 }
 ```
 
 ### Login (Usuário)
+Requisição (`POST`/`PUT /login`):
+```json
+{
+  "usuario": "joao123",
+  "senha": "minhaSenha",
+  "telefone": "19999887766"
+}
+```
+Resposta (nunca inclui a senha):
 ```json
 {
   "id": 1,
-  "nome": "João",
-  "senha": "1234",
-  "telefone": "199988776655",
-  "carteira": 5000.0
+  "usuario": "joao123",
+  "telefone": "19999887766",
+  "loginImagem": null,
+  "loginCriadoEm": "18/07/2026 14:32:00",
+  "loginAtualizadoEm": "18/07/2026 14:32:00"
 }
 ```
 
 ---
 
-## Como Executar
-
-1. **Clone o repositório:**
-   ```bash
-   git clone [url-do-repositorio]
-   ```
-
-2. **Acesse a pasta do projeto:**
-   ```bash
-   cd appcompraveiculoserver
-   ```
-
-3. **Execute o servidor:**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-4. **Acesse no navegador:**
-   ```
-   http://localhost:8080/html/start.html
-   ```
----
-
-## Banco de Dados H2
-
-Acesse o console do banco em:
-```
-http://localhost:8080/h2-console
-```
-
-Credenciais padrão:
-```
-JDBC URL: jdbc:h2:mem:testdb
-User: sa
-Password:
-```
+## Tecnologias
+- Java / Spring Boot
+- Spring JDBC (`JdbcTemplate`)
+- H2 Database
+- Spring Security Crypto (BCrypt)
+- springdoc-openapi (Swagger UI)
+- Lombok
+- Maven
 
 ---
 
-**Desenvolvido como parte do curso de Ciência da Computação - UNIFAJ**  
-**Backend:** Java Spring Boot  
-**Frontend:** Burnout Zone! (HTML + Bootstrap)
+## Status do Projeto
+Em desenvolvimento — sendo refatorado de um projeto de faculdade pra um backend de portfólio.
+
+### Concluído
+- ✅ CRUD completo pra carros, motos e usuários
+- ✅ Migração de JPA/Hibernate para JDBC puro
+- ✅ Camada de Service separando regra de negócio dos controllers
+- ✅ Hash de senha (BCrypt)
+- ✅ Proteção contra path traversal em uploads de arquivo
+- ✅ CORS configurável (sem mais `origins = "*"`)
+- ✅ DTOs pra requisições e respostas (sem expor entidade/senha crua)
+- ✅ Documentação com Swagger UI
+- ✅ Banco de dados/uploads removidos do versionamento
+
+### Planejado
+- 🔲 Frontend web redesenhado e simplificado
+- 🔲 App Android redesenhado
+- 🔲 Autenticação baseada em JWT
+- 🔲 Testes automatizados
