@@ -14,13 +14,15 @@ public class LoginResponseDTO {
     private String usuario;
     private String telefone;
     private String loginImagem;
+    private String role;
     private LocalDateTime loginCriadoEm;
     private LocalDateTime loginAtualizadoEm;
 
     public static LoginResponseDTO fromEntity(Login login) {
         return new LoginResponseDTO(
                 login.getId(), login.getUsuario(), login.getTelefone(),
-                login.getLoginImagem(), login.getLoginCriadoEm(), login.getLoginAtualizadoEm()
+                login.getLoginImagem(), login.getRole(),
+                login.getLoginCriadoEm(), login.getLoginAtualizadoEm()
         );
     }
 }
