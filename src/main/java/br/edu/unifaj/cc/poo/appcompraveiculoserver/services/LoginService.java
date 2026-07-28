@@ -5,6 +5,9 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,9 +39,16 @@ public class LoginService {
         return loginRepository.findById(id);
     }
 
-    public Optional<Login> verificar(String usuario, String senha) {
-        return loginRepository.findByUsuario(usuario)
-                .filter(login -> passwordEncoder.matches(senha, login.getSenha()));
+    private void verificarPermissao(Login alvo) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = auth.getName();
+
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin && !alvo.getUsuario().equals(usuarioLogado)) {
+            throw new AccessDeniedException("Você não tem permissão para modificar esta conta");
+        }
     }
 
     public Login criar(LoginDTO dto) {
@@ -53,6 +63,8 @@ public class LoginService {
         Login login = loginRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + id));
 
+        verificarPermissao(login);
+
         login.setUsuario(dto.getUsuario());
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
             login.setSenha(passwordEncoder.encode(dto.getSenha()));
@@ -65,6 +77,8 @@ public class LoginService {
     public Login atualizarImagem(Long id, MultipartFile imagem, Path uploadDir) throws IOException {
         Login login = loginRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + id));
+
+        verificarPermissao(login);
 
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
@@ -82,9 +96,11 @@ public class LoginService {
     }
 
     public void deletar(Long id) {
-        if (!loginRepository.existsById(id)) {
-            throw new RecursoNaoEncontradoException("Login não encontrado: " + id);
-        }
+        Login login = loginRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + id));
+
+        verificarPermissao(login);
+
         loginRepository.deleteById(id);
     }
 

@@ -1,12 +1,16 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.MotoDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Moto;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.ImagemInvalidaException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.MotoRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,12 +42,23 @@ public class MotoService {
         return motoRepository.findTop3ByOrderByIdDesc();
     }
 
+    private void verificarPermissao(Login dono) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = auth.getName();
+
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin && !dono.getUsuario().equals(usuarioLogado)) {
+            throw new AccessDeniedException("Você não tem permissão para modificar este anúncio");
+        }
+    }
+
     public Moto criar(MotoDTO dto, Path uploadDir) {
         validarImagemExiste(dto.getMotoImagem(), uploadDir);
 
-        if (!loginRepository.existsById(dto.getLoginId())) {
-            throw new RecursoNaoEncontradoException("Login não encontrado: " + dto.getLoginId());
-        }
+        Login login = loginRepository.findById(dto.getLoginId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + dto.getLoginId()));
 
         Moto moto = new Moto();
         moto.setMotoNome(dto.getMotoNome());
@@ -51,7 +66,7 @@ public class MotoService {
         moto.setMotoAno(dto.getMotoAno());
         moto.setMotoValor(dto.getMotoValor());
         moto.setMotoImagem(dto.getMotoImagem());
-        moto.setLoginId(dto.getLoginId());
+        moto.setLogin(login);
 
         return motoRepository.save(moto);
     }
@@ -59,6 +74,8 @@ public class MotoService {
     public Moto atualizar(Long id, MotoDTO novoDto, Path uploadDir) {
         Moto moto = motoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Moto não encontrada: " + id));
+
+        verificarPermissao(moto.getLogin());
 
         String imagemAntiga = moto.getMotoImagem();
         String novaImagem = novoDto.getMotoImagem();
@@ -83,6 +100,8 @@ public class MotoService {
     public void deletar(Long id, Path uploadDir) {
         Moto moto = motoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Moto não encontrada: " + id));
+
+        verificarPermissao(moto.getLogin());
 
         try {
             UploadPathResolver.apagarSeExistir(uploadDir, moto.getMotoImagem());

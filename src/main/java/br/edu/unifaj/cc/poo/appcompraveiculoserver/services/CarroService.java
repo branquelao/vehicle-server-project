@@ -2,12 +2,16 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.CarroDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Carro;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.ImagemInvalidaException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.CarroRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,12 +42,23 @@ public class CarroService {
         return carroRepository.findTop3ByOrderByIdDesc();
     }
 
+    private void verificarPermissao(Login dono) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = auth.getName();
+
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin && !dono.getUsuario().equals(usuarioLogado)) {
+            throw new AccessDeniedException("Você não tem permissão para modificar este anúncio");
+        }
+    }
+
     public Carro criar(CarroDTO dto, Path uploadDir) {
         validarImagemExiste(dto.getCarroImagem(), uploadDir);
 
-        if (!loginRepository.existsById(dto.getLoginId())) {
-            throw new RecursoNaoEncontradoException("Login não encontrado: " + dto.getLoginId());
-        }
+        Login login = loginRepository.findById(dto.getLoginId())
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + dto.getLoginId()));
 
         Carro carro = new Carro();
         carro.setCarroNome(dto.getCarroNome());
@@ -51,7 +66,7 @@ public class CarroService {
         carro.setCarroAno(dto.getCarroAno());
         carro.setCarroValor(dto.getCarroValor());
         carro.setCarroImagem(dto.getCarroImagem());
-        carro.setLoginId(dto.getLoginId());
+        carro.setLogin(login);
 
         return carroRepository.save(carro);
     }
@@ -59,6 +74,8 @@ public class CarroService {
     public Carro atualizar(Long id, CarroDTO novoDto, Path uploadDir) {
         Carro carro = carroRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Carro não encontrado: " + id));
+
+        verificarPermissao(carro.getLogin());
 
         String imagemAntiga = carro.getCarroImagem();
         String novaImagem = novoDto.getCarroImagem();
@@ -83,6 +100,8 @@ public class CarroService {
     public void deletar(Long id, Path uploadDir) {
         Carro carro = carroRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Carro não encontrado: " + id));
+
+        verificarPermissao(carro.getLogin());
 
         try {
             UploadPathResolver.apagarSeExistir(uploadDir, carro.getCarroImagem());
