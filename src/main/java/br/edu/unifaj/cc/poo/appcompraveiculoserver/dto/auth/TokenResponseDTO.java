@@ -1,4 +1,4 @@
-package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto;
+package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
-import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.LoginDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;

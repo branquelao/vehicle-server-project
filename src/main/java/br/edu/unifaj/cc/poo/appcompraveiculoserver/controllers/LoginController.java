@@ -1,7 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
-import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.LoginDTO;
-import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.LoginResponseDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.services.LoginService;
 import jakarta.validation.Valid;

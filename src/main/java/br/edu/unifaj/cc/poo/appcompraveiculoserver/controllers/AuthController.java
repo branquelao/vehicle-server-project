@@ -1,7 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
-import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.LoginRequestDTO;
-import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.TokenResponseDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.auth.LoginRequestDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.auth.TokenResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.security.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

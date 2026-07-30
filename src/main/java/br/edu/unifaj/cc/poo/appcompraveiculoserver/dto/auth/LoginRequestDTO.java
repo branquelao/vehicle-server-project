@@ -1,4 +1,4 @@
-package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto;
+package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

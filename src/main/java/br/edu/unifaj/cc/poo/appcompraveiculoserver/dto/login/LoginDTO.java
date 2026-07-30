@@ -1,4 +1,4 @@
-package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto;
+package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

@@ -3,6 +3,7 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.handler;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.ErroResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.ImagemInvalidaException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
+import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -67,5 +68,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErroResponseDTO> handleIOException(IOException ex) {
         return construir(HttpStatus.INTERNAL_SERVER_ERROR, "Falha no processamento de arquivo",
                 "Não foi possível processar o upload da imagem", null);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErroResponseDTO> handleValidationException(ValidationException ex) {
+        return construir(HttpStatus.BAD_REQUEST, "Erro de validação", ex.getMessage(), null);
     }
 }
