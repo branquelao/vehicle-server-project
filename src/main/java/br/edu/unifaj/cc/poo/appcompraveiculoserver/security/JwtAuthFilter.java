@@ -38,18 +38,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7);
-        String usuario = jwtService.extrairUsuario(token);
+        try {
+            String token = authHeader.substring(7);
+            String usuario = jwtService.extrairUsuario(token);
 
-        if (usuario != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(usuario);
+            if (usuario != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(usuario);
 
-            if (jwtService.tokenValido(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if (jwtService.tokenValido(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
+        } catch (Exception ex) {
+            // Token inválido, expirado ou usuário não encontrado: simplesmente não autentica.
+            // A rota decide, via SecurityConfig, se exige autenticação ou não.
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
