@@ -1,5 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.entities;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoPerfil;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,4 +51,14 @@ public class Login {
     protected void aoAtualizar() {
         loginAtualizadoEm = LocalDateTime.now();
     }
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_perfil", nullable = false, length = 15)
+    private TipoPerfil tipoPerfil = TipoPerfil.PESSOA_FISICA;
+
+    @Column(name = "razao_social", length = 100)
+    private String razaoSocial;
+
+    @Column(length = 18)
+    private String cnpj;
 }
