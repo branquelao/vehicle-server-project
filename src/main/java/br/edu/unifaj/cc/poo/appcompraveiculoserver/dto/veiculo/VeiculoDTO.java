@@ -52,6 +52,8 @@ public class VeiculoDTO {
     @NotNull(message = "Estado de conservação é obrigatório")
     private EstadoConservacao estadoConservacao;
 
+    private StatusAnuncio status;
+
     @Positive(message = "Valor deve ser maior que zero")
     private float valor;
 

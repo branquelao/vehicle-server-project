@@ -2,6 +2,7 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.*;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.StatusAnuncio;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoVeiculo;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.ImagemInvalidaException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
@@ -9,7 +10,7 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.OpcionalRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.VeiculoRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.ValidationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
