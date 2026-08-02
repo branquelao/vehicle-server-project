@@ -49,6 +49,13 @@ public class VeiculoController {
                 .toList();
     }
 
+    @GetMapping("/cidade/{cidade}")
+    public List<VeiculoResponseDTO> porCidade(@PathVariable String cidade) {
+        return veiculoService.listarPorCidade(cidade).stream()
+                .map(VeiculoResponseDTO::fromEntity)
+                .toList();
+    }
+
     @PostMapping
     public ResponseEntity<VeiculoResponseDTO> postVeiculo(@Valid @RequestBody VeiculoDTO dto) {
         Veiculo salvo = veiculoService.criar(dto, uploadDir());

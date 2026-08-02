@@ -36,16 +36,24 @@ public class VeiculoService {
         this.opcionalRepository = opcionalRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Veiculo> listarTodos() {
         return veiculoRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Veiculo> buscarPorId(Long id) {
         return veiculoRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<Veiculo> listarRecentes() {
         return veiculoRepository.findTop3ByOrderByIdDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Veiculo> listarPorCidade(String cidade) {
+        return veiculoRepository.findByCidadeAndStatus(cidade, StatusAnuncio.ATIVO);
     }
 
     private void verificarPermissao(Login dono) {
@@ -192,6 +200,11 @@ public class VeiculoService {
         veiculo.setCilindradaMoto(dto.getCilindradaMoto());
         veiculo.setCategoriaMoto(dto.getCategoriaMoto());
         veiculo.setTipoPartida(dto.getTipoPartida());
+        veiculo.setCidade(dto.getCidade());
+        veiculo.setEstado(dto.getEstado());
+        if (dto.getStatus() != null) {
+            veiculo.setStatus(dto.getStatus());
+        }
         veiculo.setLogin(login);
         return veiculo;
     }
