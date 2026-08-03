@@ -42,6 +42,9 @@ public class VeiculoResponseDTO {
 
     private StatusAnuncio status;
 
+    private String cidade;
+    private String estado;
+
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime anunciadoEm;
 
@@ -78,6 +81,8 @@ public class VeiculoResponseDTO {
         dto.setCategoriaMoto(v.getCategoriaMoto());
         dto.setTipoPartida(v.getTipoPartida());
         dto.setStatus(v.getStatus());
+        dto.setCidade(v.getCidade());
+        dto.setEstado(v.getEstado());
         dto.setAnunciadoEm(v.getAnunciadoEm());
         dto.setAtualizadoEm(v.getAtualizadoEm());
         dto.setLoginId(v.getLogin().getId());

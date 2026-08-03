@@ -2,6 +2,7 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.*;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.StatusAnuncio;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoVeiculo;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.ImagemInvalidaException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
@@ -9,7 +10,7 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.OpcionalRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.VeiculoRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.ValidationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -36,16 +37,24 @@ public class VeiculoService {
         this.opcionalRepository = opcionalRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Veiculo> listarTodos() {
         return veiculoRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Veiculo> buscarPorId(Long id) {
         return veiculoRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<Veiculo> listarRecentes() {
         return veiculoRepository.findTop3ByOrderByIdDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Veiculo> listarPorCidade(String cidade) {
+        return veiculoRepository.findByCidadeAndStatus(cidade, StatusAnuncio.ATIVO);
     }
 
     private void verificarPermissao(Login dono) {
@@ -192,6 +201,11 @@ public class VeiculoService {
         veiculo.setCilindradaMoto(dto.getCilindradaMoto());
         veiculo.setCategoriaMoto(dto.getCategoriaMoto());
         veiculo.setTipoPartida(dto.getTipoPartida());
+        veiculo.setCidade(dto.getCidade());
+        veiculo.setEstado(dto.getEstado());
+        if (dto.getStatus() != null) {
+            veiculo.setStatus(dto.getStatus());
+        }
         veiculo.setLogin(login);
         return veiculo;
     }

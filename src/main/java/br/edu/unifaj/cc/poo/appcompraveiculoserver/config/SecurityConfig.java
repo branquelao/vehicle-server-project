@@ -39,9 +39,11 @@ public class SecurityConfig {
                         // Público: cadastro, login, docs, imagens
                         .requestMatchers("/login", "/auth/login").permitAll()
                         .requestMatchers("/docs/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/arquivos/**").permitAll()
                         // Leitura pública de anúncios (qualquer visitante pode ver)
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/veiculos/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/logins/*/avaliacoes/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/opcionais").permitAll()
                         // Todo o resto exige token válido
                         .anyRequest().authenticated()
                 )

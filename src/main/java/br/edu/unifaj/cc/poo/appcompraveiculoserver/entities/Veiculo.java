@@ -137,4 +137,14 @@ public class Veiculo {
     protected void aoAtualizar() {
         atualizadoEm = LocalDateTime.now();
     }
+
+    @Column(nullable = false, length = 100)
+    private String cidade;
+
+    @Column(nullable = false, length = 2)
+    private String estado;
+
+    private Double latitude;
+
+    private Double longitude;
 }

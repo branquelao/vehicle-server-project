@@ -52,6 +52,8 @@ public class VeiculoDTO {
     @NotNull(message = "Estado de conservação é obrigatório")
     private EstadoConservacao estadoConservacao;
 
+    private StatusAnuncio status;
+
     @Positive(message = "Valor deve ser maior que zero")
     private float valor;
 
@@ -76,4 +78,12 @@ public class VeiculoDTO {
     private List<String> imagens; // nomes de arquivo já enviados via /uploads
 
     private Set<Long> opcionalIds; // ids do catálogo de opcionais
+
+    @NotBlank(message = "Cidade é obrigatória")
+    @Size(max = 100)
+    private String cidade;
+
+    @NotBlank(message = "Estado é obrigatório")
+    @Pattern(regexp = "[A-Z]{2}", message = "Estado deve ser a sigla UF (ex: SP)")
+    private String estado;
 }
