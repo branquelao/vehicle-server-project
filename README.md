@@ -14,23 +14,34 @@ Uma **API REST para um marketplace de veículos usados**, inspirada em plataform
 - Perfis de acesso: `USER` (dono de anúncio) e `ADMIN` (moderação/gestão)
 - Regra de autorização: usuário só edita/exclui os próprios anúncios e a própria conta, exceto `ADMIN`
 - Endpoints de escrita (POST/PUT/DELETE) protegidos; leitura de anúncios (`GET /veiculos/**`) é pública
-- Upload de imagem de perfil por usuário
 
 ### Gestão de Veículos
 - Entidade única `Veiculo` (carros e motos), diferenciada pelo campo `tipo`, eliminando duplicação de código
 - Ficha técnica ampliada: marca, modelo, ano de fabricação/modelo, km, combustível, câmbio, único dono, aceita troca, estado de conservação, e campos específicos por tipo (carroceria/portas para carro, cilindrada/categoria para moto)
-- Ciclo de vida do anúncio via `status`: `ATIVO`, `PAUSADO`, `VENDIDO`, `EXPIRADO`
+- Localização do anúncio (cidade/estado, com filtro `GET /veiculos/cidade/{cidade}`) — a localização pertence ao veículo, não ao vendedor, já que lojas podem ter pátios em cidades diferentes
+- Ciclo de vida do anúncio via `status`: `ATIVO`, `PAUSADO`, `VENDIDO`, `EXPIRADO`, atualizável via `PUT /veiculos/{id}`
 - Múltiplas imagens por anúncio, com imagem principal e ordenação
-- Catálogo de opcionais/equipamentos (relação N:N)
-- Upload de imagem com nomes de arquivo gerados pelo servidor (evita path traversal e colisões)
+- Catálogo de opcionais/equipamentos (relação N:N), consultável publicamente via `GET /opcionais`
 - Endpoint de "anúncios recentes" para destaque na página inicial
 - Cada anúncio é vinculado ao vendedor (`Login`) que o criou
+
+### Interação Comprador-Vendedor
+- **Favoritos**: usuário favorita/desfavorita anúncios (`POST`/`DELETE /veiculos/{id}/favoritos`) e lista os próprios (`GET /favoritos`); operação idempotente, e não é possível favoritar o próprio anúncio
+- **Mensagens**: comprador inicia uma conversa sobre um veículo específico (`POST /veiculos/{id}/mensagens`); mensagens seguintes reaproveitam a mesma conversa (`POST /conversas/{id}/mensagens`); só os participantes (comprador e vendedor) podem ler ou responder
+- **Avaliação de vendedor**: reputação é do vendedor (`Login`), não do veículo; só é possível avaliar quem já teve uma conversa iniciada; uma avaliação por par avaliador/avaliado, atualizável; resumo público com média e total (`GET /logins/{id}/avaliacoes/resumo`)
 
 ### Gestão de Usuários
 - CRUD completo para usuários
 - Perfil de vendedor: pessoa física ou loja/revenda (com razão social e CNPJ quando aplicável)
+- Upload de imagem de perfil por usuário
 - DTOs de resposta que nunca expõem o hash da senha
 - DTOs de requisição que só aceitam os campos que o cliente deveria poder definir (sem bind direto na entidade)
+
+### Upload de Arquivos
+- Upload rastreado no banco (`Upload`), com nome original, nome gerado pelo servidor e autor — `POST /uploads` (autenticado)
+- Listagem dos próprios uploads via `GET /uploads` (autenticado)
+- Arquivos servidos publicamente via `/arquivos/{nome}`, separado da API de gerenciamento (`/uploads`) para evitar que metadados privados fiquem expostos junto do conteúdo estático
+- Nomes de arquivo gerados pelo servidor (evita path traversal e colisões)
 
 ### Documentação da API
 - Swagger UI interativo pra explorar e testar cada endpoint direto pelo navegador, incluindo autenticação Bearer
@@ -57,7 +68,7 @@ Uma **API REST para um marketplace de veículos usados**, inspirada em plataform
 
 ### Rodando a Aplicação
 1. Clone o repositório
-2. Configure as credenciais do banco em `application.properties` (ou via variáveis de ambiente)
+2. Configure as credenciais do banco e o segredo JWT via variáveis de ambiente (`DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`) — se omitidas, valores padrão de desenvolvimento são usados
 3. Execute:
 ```bash
    ./mvnw spring-boot:run
@@ -90,6 +101,8 @@ Uma **API REST para um marketplace de veículos usados**, inspirada em plataform
   "carroceria": "HATCH",
   "portas": 2,
   "status": "ATIVO",
+  "cidade": "Pedreira",
+  "estado": "SP",
   "anunciadoEm": "18/07/2026 14:32:00",
   "atualizadoEm": "18/07/2026 14:32:00",
   "loginId": 1,
@@ -138,6 +151,42 @@ Resposta:
 }
 ```
 
+### Conversa
+Resposta (`GET /conversas`):
+```json
+{
+  "id": 1,
+  "veiculoId": 1,
+  "veiculoTitulo": "Volkswagen Fusca",
+  "compradorId": 2,
+  "compradorUsuario": "maria456",
+  "vendedorId": 1,
+  "vendedorUsuario": "joao123",
+  "criadaEm": "02/08/2026 16:30:43",
+  "atualizadaEm": "02/08/2026 16:31:07"
+}
+```
+
+### Avaliação
+Resposta (`GET /logins/{id}/avaliacoes`):
+```json
+{
+  "id": 1,
+  "avaliadorId": 2,
+  "avaliadorUsuario": "maria456",
+  "nota": 5,
+  "comentario": "Vendedor muito atencioso",
+  "criadaEm": "02/08/2026 16:40:00"
+}
+```
+Resumo (`GET /logins/{id}/avaliacoes/resumo`):
+```json
+{
+  "media": 4.67,
+  "total": 3
+}
+```
+
 ---
 
 ## Tecnologias
@@ -161,9 +210,13 @@ Em desenvolvimento — sendo refatorado de um projeto de faculdade pra um backen
 - ✅ Versionamento de schema com Flyway
 - ✅ Unificação de `Carro`/`Moto` em entidade `Veiculo` única
 - ✅ Múltiplas imagens por anúncio
-- ✅ Catálogo de opcionais (N:N)
-- ✅ Ciclo de vida do anúncio (status)
+- ✅ Catálogo de opcionais (N:N), com endpoint público de consulta
+- ✅ Ciclo de vida do anúncio (status), editável via PUT
 - ✅ Perfil de vendedor (pessoa física / loja)
+- ✅ Favoritos, mensagens comprador-vendedor e avaliação de vendedor
+- ✅ Localização do anúncio, com filtro por cidade
+- ✅ Upload de arquivos rastreado no banco, com serving estático separado da API de gerenciamento
+- ✅ Segredos (senha do banco, JWT) externalizados via variáveis de ambiente
 - ✅ Tratamento de erro centralizado (`@RestControllerAdvice`)
 - ✅ Hash de senha (BCrypt)
 - ✅ Proteção contra path traversal em uploads de arquivo
@@ -172,7 +225,6 @@ Em desenvolvimento — sendo refatorado de um projeto de faculdade pra um backen
 - ✅ Documentação com Swagger UI (incluindo autenticação Bearer)
 
 ### Planejado
-- 🔲 Favoritos, mensagens comprador-vendedor e avaliação de vendedor
 - 🔲 Busca e filtros avançados com paginação
 - 🔲 Destaque pago de anúncio (Mercado Pago)
 - 🔲 Testes automatizados, Docker e CI/CD
