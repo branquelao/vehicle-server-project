@@ -4,6 +4,7 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.ErroResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.ImagemInvalidaException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
 import jakarta.validation.ValidationException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -13,6 +14,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -73,5 +75,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErroResponseDTO> handleValidationException(ValidationException ex) {
         return construir(HttpStatus.BAD_REQUEST, "Erro de validação", ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ErroResponseDTO> handlePropriedadeInvalida(PropertyReferenceException ex) {
+        return construir(HttpStatus.BAD_REQUEST, "Parâmetro de ordenação inválido",
+                "O campo '" + ex.getPropertyName() + "' não existe ou não pode ser usado para ordenar", null);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErroResponseDTO> handleTipoInvalido(MethodArgumentTypeMismatchException ex) {
+        String tipoEsperado = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "desconhecido";
+        String mensagem = String.format("O valor '%s' informado para o parâmetro '%s' é inválido (esperado: %s)",
+                ex.getValue(), ex.getName(), tipoEsperado);
+        return construir(HttpStatus.BAD_REQUEST, "Parâmetro inválido", mensagem, null);
     }
 }
