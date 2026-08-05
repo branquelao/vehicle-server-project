@@ -7,7 +7,7 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontra
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.FavoritoRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.VeiculoRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.ValidationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

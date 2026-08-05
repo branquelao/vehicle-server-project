@@ -10,7 +10,7 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.ConversaReposito
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.MensagemRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.VeiculoRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.ValidationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;

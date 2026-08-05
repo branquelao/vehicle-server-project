@@ -1,6 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoFiltroDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.*;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.StatusAnuncio;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoVeiculo;
@@ -9,13 +10,16 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontra
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.OpcionalRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.VeiculoRepository;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.specification.VeiculoSpecification;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import jakarta.validation.ValidationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,11 +42,6 @@ public class VeiculoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Veiculo> listarTodos() {
-        return veiculoRepository.findAll();
-    }
-
-    @Transactional(readOnly = true)
     public Optional<Veiculo> buscarPorId(Long id) {
         return veiculoRepository.findById(id);
     }
@@ -53,8 +52,8 @@ public class VeiculoService {
     }
 
     @Transactional(readOnly = true)
-    public List<Veiculo> listarPorCidade(String cidade) {
-        return veiculoRepository.findByCidadeAndStatus(cidade, StatusAnuncio.ATIVO);
+    public Page<Veiculo> buscar(VeiculoFiltroDTO filtro, Pageable pageable) {
+        return veiculoRepository.findAll(VeiculoSpecification.comFiltros(filtro), pageable);
     }
 
     private void verificarPermissao(Login dono) {
