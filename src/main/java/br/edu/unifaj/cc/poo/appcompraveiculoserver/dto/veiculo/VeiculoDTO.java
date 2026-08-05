@@ -1,6 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -61,15 +62,29 @@ public class VeiculoDTO {
     private String descricao;
 
     // Específicos de carro (validados manualmente no Service conforme o tipo)
+    @Schema(description = "Obrigatório quando tipo=CARRO. Não enviar quando tipo=MOTO.")
     private Carroceria carroceria;
+
+    @Schema(description = "Obrigatório quando tipo=CARRO. Não enviar quando tipo=MOTO.")
     private Integer portas;
+
+    @Schema(description = "Específico de CARRO. Não enviar quando tipo=MOTO.")
     private Integer potenciaCv;
+
+    @Schema(description = "Específico de CARRO. Não enviar quando tipo=MOTO.")
     private String cilindradaCarro;
+
+    @Schema(description = "Específico de CARRO. Não enviar quando tipo=MOTO.")
     private Boolean blindado;
 
     // Específicos de moto
+    @Schema(description = "Obrigatório quando tipo=MOTO. Não enviar quando tipo=CARRO.")
     private Integer cilindradaMoto;
+
+    @Schema(description = "Obrigatório quando tipo=MOTO. Não enviar quando tipo=CARRO.")
     private CategoriaMoto categoriaMoto;
+
+    @Schema(description = "Específico de MOTO. Não enviar quando tipo=CARRO.")
     private TipoPartida tipoPartida;
 
     @NotNull(message = "Login (loginId) é obrigatório")
