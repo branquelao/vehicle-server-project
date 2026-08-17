@@ -9,10 +9,7 @@ COPY mvnw pom.xml ./
 COPY src ./src
 RUN chmod +x mvnw
 
-# Cache mount do repositório Maven local: persiste entre builds independente do
-# cache de camadas do Docker, sem precisar do dependency:go-offline (que tenta
-# baixar todo o BOM herdado do Flyway — incluindo suporte a bancos que este
-# projeto não usa — e deixa o build extremamente lento).
+# Cache do Maven entre builds
 RUN --mount=type=cache,target=/root/.m2 \
     ./mvnw clean package -DskipTests -B
 
