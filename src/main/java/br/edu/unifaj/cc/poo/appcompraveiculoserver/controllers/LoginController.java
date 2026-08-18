@@ -42,13 +42,12 @@ public class LoginController {
 
     @Operation(
             summary = "Listar todos os usuários",
-            description = "Retorna todos os usuários cadastrados. Endpoint público, não exige autenticação."
+            description = "Retorna todos os usuários cadastrados. Restrito a administradores."
     )
     @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     array = @io.swagger.v3.oas.annotations.media.ArraySchema(
                             schema = @Schema(implementation = LoginResponseDTO.class))))
-    @SecurityRequirements // público
     @GetMapping("/login")
     public List<LoginResponseDTO> getLogins() {
         return loginService.listarTodos().stream()
@@ -58,13 +57,16 @@ public class LoginController {
 
     @Operation(
             summary = "Buscar usuário por ID",
-            description = "Retorna os dados de um usuário específico. Requer autenticação (Bearer token)."
+            description = "Retorna os dados de um usuário específico. Restrito ao próprio dono da conta ou a um administrador."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuário encontrado",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = LoginResponseDTO.class))),
             @ApiResponse(responseCode = "401", description = "Não autenticado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class))),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para visualizar este usuário",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ErroResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Usuário não encontrado",

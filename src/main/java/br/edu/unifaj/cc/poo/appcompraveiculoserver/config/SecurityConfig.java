@@ -37,7 +37,9 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint()))
                 .authorizeHttpRequests(auth -> auth
                         // Público: cadastro, login, docs, imagens
-                        .requestMatchers("/login", "/auth/login").permitAll()
+                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/login").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/login").hasRole("ADMIN")
                         .requestMatchers("/docs/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/arquivos/**").permitAll()
                         // Leitura pública de anúncios (qualquer visitante pode ver)
