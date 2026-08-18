@@ -68,6 +68,8 @@ class VeiculoServiceTest {
         dono.setUsuario("joao123");
         dono.setRole("USER");
 
+        autenticarComo("joao123", "USER");
+
         // Arquivo "existente" no diretório de upload, pra satisfazer a validação de imagem
         Files.createFile(uploadDir.resolve("foto1.jpg"));
     }
@@ -81,7 +83,7 @@ class VeiculoServiceTest {
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 usuario, null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
         SecurityContext context = mock(SecurityContext.class);
-        when(context.getAuthentication()).thenReturn(auth);
+        lenient().when(context.getAuthentication()).thenReturn(auth);
         SecurityContextHolder.setContext(context);
     }
 
@@ -152,9 +154,9 @@ class VeiculoServiceTest {
     }
 
     @Test
-    void criar_deveLancarExcecaoQuandoLoginNaoExiste() {
+    void criar_deveLancarExcecaoQuandoUsuarioLogadoNaoEncontrado() {
         VeiculoDTO dto = veiculoDtoValido();
-        when(loginRepository.findById(1L)).thenReturn(Optional.empty());
+        when(loginRepository.findByUsuario("joao123")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> veiculoService.criar(dto, uploadDir))
                 .isInstanceOf(RecursoNaoEncontradoException.class);
@@ -165,7 +167,7 @@ class VeiculoServiceTest {
         VeiculoDTO dto = veiculoDtoValido();
         dto.setOpcionalIds(Set.of(10L, 20L));
 
-        when(loginRepository.findById(1L)).thenReturn(Optional.of(dono));
+        when(loginRepository.findByUsuario("joao123")).thenReturn(Optional.of(dono));
         when(opcionalRepository.findAllById(dto.getOpcionalIds())).thenReturn(List.of(
                 new Opcional(10L, "Ar condicionado"),
                 new Opcional(20L, "Freio ABS")
@@ -187,7 +189,7 @@ class VeiculoServiceTest {
         VeiculoDTO dto = veiculoDtoValido();
         dto.setOpcionalIds(Set.of(10L, 20L));
 
-        when(loginRepository.findById(1L)).thenReturn(Optional.of(dono));
+        when(loginRepository.findByUsuario("joao123")).thenReturn(Optional.of(dono));
         when(opcionalRepository.findAllById(dto.getOpcionalIds()))
                 .thenReturn(List.of(new Opcional(10L, "Ar condicionado"))); // só achou 1 de 2
 

@@ -87,7 +87,7 @@ public class VeiculoDTO {
     @Schema(description = "Específico de MOTO. Não enviar quando tipo=CARRO.")
     private TipoPartida tipoPartida;
 
-    @NotNull(message = "Login (loginId) é obrigatório")
+    @Schema(description = "Ignorado. O dono do anúncio é sempre o usuário autenticado.")
     private Long loginId;
 
     private List<String> imagens; // nomes de arquivo já enviados via /uploads

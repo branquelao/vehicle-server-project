@@ -56,6 +56,12 @@ public class VeiculoService {
         return veiculoRepository.findAll(VeiculoSpecification.comFiltros(filtro), pageable);
     }
 
+    private Login usuarioLogado() {
+        String usuario = SecurityContextHolder.getContext().getAuthentication().getName();
+        return loginRepository.findByUsuario(usuario)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário logado não encontrado"));
+    }
+
     private void verificarPermissao(Login dono) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String usuarioLogado = auth.getName();
@@ -119,8 +125,7 @@ public class VeiculoService {
         validarCamposPorTipo(dto);
         validarImagens(dto.getImagens(), uploadDir);
 
-        Login login = loginRepository.findById(dto.getLoginId())
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + dto.getLoginId()));
+        Login login = usuarioLogado();
 
         Veiculo veiculo = montarVeiculo(new Veiculo(), dto, login);
 
