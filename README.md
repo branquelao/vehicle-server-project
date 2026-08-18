@@ -142,8 +142,8 @@ The API is available at `http://localhost:8080`, and Swagger UI at `http://local
 | Method | Endpoint | Description | Access |
 |---|---|---|---|
 | POST | `/auth/login` | Authenticates a user and returns a JWT token. | Public |
-| GET | `/login` | Lists all registered users. | Public |
-| GET | `/login/{id}` | Gets a specific user's data. | Authenticated |
+| GET | `/login` | Lists all registered users. | ADMIN |
+| GET | `/login/{id}` | Gets a specific user's data. | Owner / ADMIN |
 | POST | `/login` | Registers a new user account. | Public |
 | PUT | `/login/{id}` | Updates a user's data: username, phone, password. | Owner / ADMIN |
 | PUT | `/login/{id}/imagem` | Updates a user's profile picture. | Owner / ADMIN |
