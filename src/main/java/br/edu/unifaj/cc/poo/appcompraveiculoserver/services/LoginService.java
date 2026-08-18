@@ -36,7 +36,9 @@ public class LoginService {
     }
 
     public Optional<Login> buscarPorId(Long id) {
-        return loginRepository.findById(id);
+        Optional<Login> login = loginRepository.findById(id);
+        login.ifPresent(this::verificarPermissao);
+        return login;
     }
 
     private void verificarPermissao(Login alvo) {
