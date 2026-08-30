@@ -236,9 +236,12 @@ Request (`POST`/`PUT /login`):
 {
   "usuario": "joao123",
   "senha": "minhaSenha",
-  "telefone": "19999887766"
+  "telefone": "19999887766",
+  "tipoPerfil": "PESSOA_FISICA"
 }
 ```
+
+`tipoPerfil` accepts `PESSOA_FISICA` or `LOJA`. When `LOJA`, `razaoSocial` and `cnpj` become required. When `PESSOA_FISICA`, both are ignored and stored as `null` even if sent.
 
 Response, never includes the password:
 
@@ -249,6 +252,9 @@ Response, never includes the password:
   "telefone": "19999887766",
   "loginImagem": null,
   "role": "USER",
+  "tipoPerfil": "PESSOA_FISICA",
+  "razaoSocial": null,
+  "cnpj": null,
   "loginCriadoEm": "18/07/2026 14:32:00",
   "loginAtualizadoEm": "18/07/2026 14:32:00"
 }
