@@ -328,7 +328,7 @@ Runs the full suite: unit tests for services and the matching job, plus integrat
 
 ## Project Status
 
-In development, being reworked from a college project into a portfolio backend.
+Finished, reworked from a college project into a portfolio backend.
 
 ### Done
 
@@ -355,10 +355,6 @@ In development, being reworked from a college project into a portfolio backend.
 - Docker and Docker Compose
 - CI with GitHub Actions
 - Saved searches with automatic alerts for matching new listings
-
-### Planned
-
-- Paid listing highlight through Mercado Pago
 
 ## Contributing
 
