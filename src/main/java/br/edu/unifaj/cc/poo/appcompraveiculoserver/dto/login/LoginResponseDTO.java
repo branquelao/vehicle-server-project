@@ -1,6 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoPerfil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,9 @@ public class LoginResponseDTO {
     private String telefone;
     private String loginImagem;
     private String role;
+    private TipoPerfil tipoPerfil;
+    private String razaoSocial;
+    private String cnpj;
     private LocalDateTime loginCriadoEm;
     private LocalDateTime loginAtualizadoEm;
 
@@ -22,6 +26,7 @@ public class LoginResponseDTO {
         return new LoginResponseDTO(
                 login.getId(), login.getUsuario(), login.getTelefone(),
                 login.getLoginImagem(), login.getRole(),
+                login.getTipoPerfil(), login.getRazaoSocial(), login.getCnpj(),
                 login.getLoginCriadoEm(), login.getLoginAtualizadoEm()
         );
     }

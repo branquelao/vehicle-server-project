@@ -2,9 +2,11 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoPerfil;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
+import jakarta.validation.ValidationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,11 +56,27 @@ public class LoginService {
     }
 
     public Login criar(LoginDTO dto) {
+        validarCamposPorTipoPerfil(dto);
+
         Login login = new Login();
         login.setUsuario(dto.getUsuario());
         login.setSenha(passwordEncoder.encode(dto.getSenha()));
         login.setTelefone(dto.getTelefone());
+        login.setTipoPerfil(dto.getTipoPerfil());
+        login.setRazaoSocial(dto.getTipoPerfil() == TipoPerfil.LOJA ? dto.getRazaoSocial() : null);
+        login.setCnpj(dto.getTipoPerfil() == TipoPerfil.LOJA ? dto.getCnpj() : null);
         return loginRepository.save(login);
+    }
+
+    private void validarCamposPorTipoPerfil(LoginDTO dto) {
+        if (dto.getTipoPerfil() == TipoPerfil.LOJA) {
+            if (dto.getRazaoSocial() == null || dto.getRazaoSocial().isBlank()) {
+                throw new ValidationException("Razão social é obrigatória para perfil de loja");
+            }
+            if (dto.getCnpj() == null || dto.getCnpj().isBlank()) {
+                throw new ValidationException("CNPJ é obrigatório para perfil de loja");
+            }
+        }
     }
 
     public Login atualizar(Long id, LoginDTO dto) {
@@ -66,12 +84,16 @@ public class LoginService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + id));
 
         verificarPermissao(login);
+        validarCamposPorTipoPerfil(dto);
 
         login.setUsuario(dto.getUsuario());
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
             login.setSenha(passwordEncoder.encode(dto.getSenha()));
         }
         login.setTelefone(dto.getTelefone());
+        login.setTipoPerfil(dto.getTipoPerfil());
+        login.setRazaoSocial(dto.getTipoPerfil() == TipoPerfil.LOJA ? dto.getRazaoSocial() : null);
+        login.setCnpj(dto.getTipoPerfil() == TipoPerfil.LOJA ? dto.getCnpj() : null);
 
         return loginRepository.save(login);
     }
