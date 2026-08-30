@@ -1,5 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.NovoStatusVeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoFiltroDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
@@ -279,5 +280,43 @@ class VeiculoControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(veiculoService).deletar(1L);
+    }
+
+    // ---------- PATCH /veiculos/{id}/status ----------
+    @Test
+    void deveAtualizarStatusERetornar200() throws Exception {
+        Veiculo atualizado = veiculoSalvo(1L);
+        atualizado.setStatus(StatusAnuncio.VENDIDO);
+        when(veiculoService.atualizarStatus(eq(1L), any(NovoStatusVeiculoDTO.class))).thenReturn(atualizado);
+
+        NovoStatusVeiculoDTO dto = new NovoStatusVeiculoDTO(StatusAnuncio.VENDIDO);
+
+        mockMvc.perform(patch("/veiculos/1/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("VENDIDO"));
+    }
+
+    @Test
+    void deveRetornar400QuandoStatusNaoInformado() throws Exception {
+        mockMvc.perform(patch("/veiculos/1/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.erro").value("Erro de validação"));
+    }
+
+    @Test
+    void deveRetornar404AoAtualizarStatusDeVeiculoInexistente() throws Exception {
+        when(veiculoService.atualizarStatus(eq(99L), any(NovoStatusVeiculoDTO.class)))
+                .thenThrow(new RecursoNaoEncontradoException("Veículo não encontrado: 99"));
+
+        NovoStatusVeiculoDTO dto = new NovoStatusVeiculoDTO(StatusAnuncio.VENDIDO);
+
+        mockMvc.perform(patch("/veiculos/99/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isNotFound());
     }
 }

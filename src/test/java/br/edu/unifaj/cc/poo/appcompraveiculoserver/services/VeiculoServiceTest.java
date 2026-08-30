@@ -1,5 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.NovoStatusVeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Opcional;
@@ -301,5 +302,70 @@ class VeiculoServiceTest {
                 .isInstanceOf(RecursoNaoEncontradoException.class);
 
         verifyNoMoreInteractions(veiculoRepository);
+    }
+
+    // ---------- atualizarStatus() ----------
+    @Test
+    void atualizarStatus_deveLancarAccessDeniedQuandoUsuarioNaoEDonoNemAdmin() {
+        Veiculo existente = new Veiculo();
+        existente.setId(1L);
+        existente.setLogin(dono);
+
+        when(veiculoRepository.findById(1L)).thenReturn(Optional.of(existente));
+        autenticarComo("outroUsuario", "USER");
+
+        NovoStatusVeiculoDTO dto = new NovoStatusVeiculoDTO(StatusAnuncio.PAUSADO);
+
+        assertThatThrownBy(() -> veiculoService.atualizarStatus(1L, dto))
+                .isInstanceOf(AccessDeniedException.class);
+
+        verify(veiculoRepository, never()).save(any());
+    }
+
+    @Test
+    void atualizarStatus_devePermitirQuandoUsuarioEDono() {
+        Veiculo existente = new Veiculo();
+        existente.setId(1L);
+        existente.setLogin(dono);
+        existente.setStatus(StatusAnuncio.ATIVO);
+
+        when(veiculoRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(veiculoRepository.save(any(Veiculo.class))).thenAnswer(inv -> inv.getArgument(0));
+        autenticarComo("joao123", "USER");
+
+        NovoStatusVeiculoDTO dto = new NovoStatusVeiculoDTO(StatusAnuncio.VENDIDO);
+
+        Veiculo atualizado = veiculoService.atualizarStatus(1L, dto);
+
+        assertThat(atualizado.getStatus()).isEqualTo(StatusAnuncio.VENDIDO);
+        verify(veiculoRepository).save(existente);
+    }
+
+    @Test
+    void atualizarStatus_devePermitirQuandoUsuarioEAdmin() {
+        Veiculo existente = new Veiculo();
+        existente.setId(1L);
+        existente.setLogin(dono);
+        existente.setStatus(StatusAnuncio.ATIVO);
+
+        when(veiculoRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(veiculoRepository.save(any(Veiculo.class))).thenAnswer(inv -> inv.getArgument(0));
+        autenticarComo("admin", "ADMIN");
+
+        NovoStatusVeiculoDTO dto = new NovoStatusVeiculoDTO(StatusAnuncio.PAUSADO);
+
+        Veiculo atualizado = veiculoService.atualizarStatus(1L, dto);
+
+        assertThat(atualizado.getStatus()).isEqualTo(StatusAnuncio.PAUSADO);
+    }
+
+    @Test
+    void atualizarStatus_deveLancarExcecaoQuandoVeiculoNaoExiste() {
+        when(veiculoRepository.findById(99L)).thenReturn(Optional.empty());
+
+        NovoStatusVeiculoDTO dto = new NovoStatusVeiculoDTO(StatusAnuncio.VENDIDO);
+
+        assertThatThrownBy(() -> veiculoService.atualizarStatus(99L, dto))
+                .isInstanceOf(RecursoNaoEncontradoException.class);
     }
 }
