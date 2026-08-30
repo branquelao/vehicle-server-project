@@ -2,8 +2,10 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoPerfil;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontradoException;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
+import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,7 +74,12 @@ class LoginServiceTest {
     }
 
     private LoginDTO loginDto(String usuario, String senha, String telefone) {
-        return new LoginDTO(usuario, senha, telefone);
+        LoginDTO dto = new LoginDTO();
+        dto.setUsuario(usuario);
+        dto.setSenha(senha);
+        dto.setTelefone(telefone);
+        dto.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
+        return dto;
     }
 
     // ---------- listarTodos() / buscarPorId() ----------
@@ -104,6 +111,106 @@ class LoginServiceTest {
         assertThat(salvo.getSenha()).isEqualTo("senhaCodificada");
         assertThat(salvo.getTelefone()).isEqualTo("19999887766");
         verify(passwordEncoder).encode("senha123");
+    }
+
+    // ---------- criar() com perfil de vendedor ----------
+    @Test
+    void criar_deveLancarExcecaoQuandoLojaSemRazaoSocial() {
+        LoginDTO dto = loginDto("joao123", "senha123", "19999887766");
+        dto.setTipoPerfil(TipoPerfil.LOJA);
+        dto.setCnpj("12345678000190");
+
+        assertThatThrownBy(() -> loginService.criar(dto))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Razão social");
+
+        verifyNoInteractions(loginRepository);
+    }
+
+    @Test
+    void criar_deveLancarExcecaoQuandoLojaSemCnpj() {
+        LoginDTO dto = loginDto("joao123", "senha123", "19999887766");
+        dto.setTipoPerfil(TipoPerfil.LOJA);
+        dto.setRazaoSocial("Joao Veiculos LTDA");
+
+        assertThatThrownBy(() -> loginService.criar(dto))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CNPJ");
+
+        verifyNoInteractions(loginRepository);
+    }
+
+    @Test
+    void criar_devePermitirPessoaFisicaSemRazaoSocialECnpj() {
+        LoginDTO dto = loginDto("joao123", "senha123", "19999887766");
+        dto.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
+
+        when(passwordEncoder.encode("senha123")).thenReturn("senhaCodificada");
+        when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Login salvo = loginService.criar(dto);
+
+        assertThat(salvo.getTipoPerfil()).isEqualTo(TipoPerfil.PESSOA_FISICA);
+        assertThat(salvo.getRazaoSocial()).isNull();
+        assertThat(salvo.getCnpj()).isNull();
+    }
+
+    @Test
+    void criar_devePermitirLojaComRazaoSocialECnpj() {
+        LoginDTO dto = loginDto("joao123", "senha123", "19999887766");
+        dto.setTipoPerfil(TipoPerfil.LOJA);
+        dto.setRazaoSocial("Joao Veiculos LTDA");
+        dto.setCnpj("12345678000190");
+
+        when(passwordEncoder.encode("senha123")).thenReturn("senhaCodificada");
+        when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Login salvo = loginService.criar(dto);
+
+        assertThat(salvo.getTipoPerfil()).isEqualTo(TipoPerfil.LOJA);
+        assertThat(salvo.getRazaoSocial()).isEqualTo("Joao Veiculos LTDA");
+        assertThat(salvo.getCnpj()).isEqualTo("12345678000190");
+    }
+
+    // ---------- atualizar() com perfil de vendedor ----------
+    @Test
+    void atualizar_deveLimparRazaoSocialECnpjAoTrocarParaPessoaFisica() {
+        Login existente = login(1L, "joao123");
+        existente.setTipoPerfil(TipoPerfil.LOJA);
+        existente.setRazaoSocial("Joao Veiculos LTDA");
+        existente.setCnpj("12345678000190");
+
+        when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
+        autenticarComo("joao123", "USER");
+
+        LoginDTO dto = loginDto("joao123", "novaSenha", "19988887777");
+        dto.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
+
+        Login atualizado = loginService.atualizar(1L, dto);
+
+        assertThat(atualizado.getTipoPerfil()).isEqualTo(TipoPerfil.PESSOA_FISICA);
+        assertThat(atualizado.getRazaoSocial()).isNull();
+        assertThat(atualizado.getCnpj()).isNull();
+    }
+
+    @Test
+    void atualizar_deveLancarExcecaoAoTrocarParaLojaSemCnpj() {
+        Login existente = login(1L, "joao123");
+        existente.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
+
+        when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
+        autenticarComo("joao123", "USER");
+
+        LoginDTO dto = loginDto("joao123", "novaSenha", "19988887777");
+        dto.setTipoPerfil(TipoPerfil.LOJA);
+        dto.setRazaoSocial("Joao Veiculos LTDA");
+
+        assertThatThrownBy(() -> loginService.atualizar(1L, dto))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("CNPJ");
+
+        verify(loginRepository, never()).save(any());
     }
 
     // ---------- atualizar() ----------
