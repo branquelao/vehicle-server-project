@@ -1,5 +1,6 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.NovoStatusVeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoFiltroDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.*;
@@ -168,6 +169,18 @@ public class VeiculoService {
 
         montarVeiculo(veiculo, dto, veiculo.getLogin());
         veiculo.setOpcionais(buscarOpcionais(dto.getOpcionalIds()));
+
+        return veiculoRepository.save(veiculo);
+    }
+
+    @Transactional
+    public Veiculo atualizarStatus(Long id, NovoStatusVeiculoDTO dto) {
+        Veiculo veiculo = veiculoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Veículo não encontrado: " + id));
+
+        verificarPermissao(veiculo.getLogin());
+
+        veiculo.setStatus(dto.getStatus());
 
         return veiculoRepository.save(veiculo);
     }

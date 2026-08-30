@@ -2,6 +2,7 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.ErroResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.PaginaResponseDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.NovoStatusVeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoFiltroDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.veiculo.VeiculoResponseDTO;
@@ -183,6 +184,35 @@ public class VeiculoController {
     @PutMapping("/{id}")
     public ResponseEntity<VeiculoResponseDTO> putVeiculo(@Valid @RequestBody VeiculoDTO novoDto, @PathVariable Long id) {
         return ResponseEntity.ok(VeiculoResponseDTO.fromEntity(veiculoService.atualizar(id, novoDto, uploadDir())));
+    }
+
+    @Operation(
+            summary = "Atualizar status do anúncio",
+            description = "Atualiza apenas o status de um anúncio (ex: pausar, marcar como vendido), sem exigir " +
+                    "o reenvio dos demais campos. Apenas o dono do anúncio ou um ADMIN pode realizar essa operação."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Status atualizado com sucesso",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = VeiculoResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Status inválido",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Não autenticado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class))),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para editar este anúncio",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Veículo não encontrado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class)))
+    })
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<VeiculoResponseDTO> patchStatus(@PathVariable Long id,
+                                                          @Valid @RequestBody NovoStatusVeiculoDTO dto) {
+        Veiculo atualizado = veiculoService.atualizarStatus(id, dto);
+        return ResponseEntity.ok(VeiculoResponseDTO.fromEntity(atualizado));
     }
 
     @Operation(
