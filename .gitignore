@@ -37,3 +37,16 @@ build/
 /data/
 /uploads/*
 !/uploads/.gitkeep
+
+### Variáveis de ambiente e segredos ###
+.env
+.env.local
+.env.*.local
+
+### Logs ###
+*.log
+logs/
+
+### Sistema operacional ###
+.DS_Store
+Thumbs.db
