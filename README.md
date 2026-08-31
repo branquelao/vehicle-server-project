@@ -259,11 +259,13 @@ Request (`POST`/`PUT /login`):
 ```json
 {
   "usuario": "joao123",
-  "senha": "minhaSenha",
+  "senha": "minhaSenha123",
   "telefone": "19999887766",
   "tipoPerfil": "PESSOA_FISICA"
 }
 ```
+
+`senha` must be at least 8 characters long and contain at least one letter and one digit.
 
 `tipoPerfil` accepts `PESSOA_FISICA` or `LOJA`. When `LOJA`, `razaoSocial` and `cnpj` become required. When `PESSOA_FISICA`, both are ignored and stored as `null` even if sent.
 

@@ -146,6 +146,18 @@ class LoginControllerTest {
                 .andExpect(jsonPath("$.erro").value("Erro de validação"));
     }
 
+    @Test
+    void deveRetornar400QuandoSenhaNaoAtendeARegra() throws Exception {
+        LoginDTO dto = loginDtoValido();
+        dto.setSenha("semnumero"); // sem dígito
+
+        mockMvc.perform(post("/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.erro").value("Erro de validação"));
+    }
+
     // ---------- PUT /login/{id} ----------
     @Test
     void deveAtualizarLoginERetornar200() throws Exception {

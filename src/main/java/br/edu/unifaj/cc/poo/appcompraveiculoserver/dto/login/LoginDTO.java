@@ -20,7 +20,8 @@ public class LoginDTO {
     private String usuario;
 
     @NotBlank(message = "Senha é obrigatória")
-    @Size(min = 6, message = "Senha deve ter no mínimo 6 caracteres")
+    @Size(min = 8, message = "Senha deve ter no mínimo 8 caracteres")
+    @Pattern(regexp = "(?=.*[A-Za-z])(?=.*\\d).+", message = "Senha deve conter ao menos uma letra e um número")
     private String senha;
 
     @NotBlank(message = "Telefone é obrigatório")
