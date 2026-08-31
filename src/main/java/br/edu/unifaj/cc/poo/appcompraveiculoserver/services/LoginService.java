@@ -7,11 +7,14 @@ import br.edu.unifaj.cc.poo.appcompraveiculoserver.exceptions.RecursoNaoEncontra
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.repositories.LoginRepository;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.util.UploadPathResolver;
 import jakarta.validation.ValidationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,8 +36,21 @@ public class LoginService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<Login> listarTodos() {
-        return loginRepository.findAll();
+    @Transactional(readOnly = true)
+    public Page<Login> listarTodos(String role, TipoPerfil tipoPerfil, Pageable pageable) {
+        boolean temRole = role != null && !role.isBlank();
+        boolean temTipoPerfil = tipoPerfil != null;
+
+        if (temRole && temTipoPerfil) {
+            return loginRepository.findByRoleIgnoreCaseAndTipoPerfil(role, tipoPerfil, pageable);
+        }
+        if (temRole) {
+            return loginRepository.findByRoleIgnoreCase(role, pageable);
+        }
+        if (temTipoPerfil) {
+            return loginRepository.findByTipoPerfil(tipoPerfil, pageable);
+        }
+        return loginRepository.findAll(pageable);
     }
 
     public Optional<Login> buscarPorId(Long id) {
