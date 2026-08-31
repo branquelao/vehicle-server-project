@@ -38,6 +38,7 @@ A REST API for a used vehicle marketplace, built with Spring Boot, Spring Securi
 ### User Management
 
 - Full CRUD for user accounts.
+- `GET /login` combines filters (role, tipoPerfil) with pagination and sorting, restricted to admins. Sortable fields are whitelisted (`usuario`, `role`, `tipoPerfil`, `loginCriadoEm`, `loginAtualizadoEm`), same pattern as vehicle search.
 - Seller profile supports individuals and dealerships, with company name and tax ID (CNPJ) when it applies.
 - Profile picture upload per user.
 - Response DTOs never expose the password hash.
@@ -142,7 +143,7 @@ The API is available at `http://localhost:8080`, and Swagger UI at `http://local
 | Method | Endpoint | Description | Access |
 |---|---|---|---|
 | POST | `/auth/login` | Authenticates a user and returns a JWT token. | Public |
-| GET | `/login` | Lists all registered users. | ADMIN |
+| GET | `/login` | Lists users, with pagination and optional filters by role and tipoPerfil. | ADMIN |
 | GET | `/login/{id}` | Gets a specific user's data. | Owner / ADMIN |
 | POST | `/login` | Registers a new user account. | Public |
 | PUT | `/login/{id}` | Updates a user's data: username, phone, password. | Owner / ADMIN |
@@ -153,6 +154,7 @@ The API is available at `http://localhost:8080`, and Swagger UI at `http://local
 | GET | `/veiculos/recentes` | Lists the 3 most recently published listings. | Public |
 | POST | `/veiculos` | Creates a new vehicle listing, car or motorcycle. | Authenticated |
 | PUT | `/veiculos/{id}` | Updates a vehicle listing. | Owner / ADMIN |
+| PATCH | `/veiculos/{id}/status` | Updates only the listing status, without resending the other fields. | Owner / ADMIN |
 | DELETE | `/veiculos/{id}` | Deletes a vehicle listing. | Owner / ADMIN |
 | GET | `/opcionais` | Lists the catalog of available optionals. | Public |
 | POST | `/uploads` | Uploads an image for later use in a listing. | Authenticated |
@@ -223,6 +225,28 @@ Paginated response:
   "totalPaginas": 3,
   "totalElementos": 27,
   "tamanhoPagina": 10,
+  "primeira": true,
+  "ultima": false
+}
+```
+
+### User Search
+
+`GET /login` accepts filters and pagination as query params, all optional. Restricted to admins.
+
+```
+GET /login?role=USER&tipoPerfil=LOJA&page=0&size=20&sort=usuario,asc
+```
+
+Paginated response:
+
+```json
+{
+  "conteudo": [ /* list of LoginResponseDTO */ ],
+  "paginaAtual": 0,
+  "totalPaginas": 2,
+  "totalElementos": 27,
+  "tamanhoPagina": 20,
   "primeira": true,
   "ultima": false
 }
@@ -372,4 +396,4 @@ Finished, reworked from a college project into a portfolio backend.
 
 ## License
 
-Distributed under the MIT license. See `LICENSE.md` for more information.
+Distributed under the MIT license. See `LICENSE` for more information.

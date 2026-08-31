@@ -1,9 +1,11 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.ErroResponseDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.PaginaResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoPerfil;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.services.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +16,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,19 +48,35 @@ public class LoginController {
         return Paths.get(System.getProperty("user.dir"), "uploads");
     }
 
+    private static final Set<String> CAMPOS_ORDENACAO_PERMITIDOS_LOGIN = Set.of(
+            "usuario", "role", "tipoPerfil", "loginCriadoEm", "loginAtualizadoEm"
+    );
+    private static final Sort ORDENACAO_PADRAO_LOGIN = Sort.by(Sort.Direction.DESC, "loginCriadoEm");
+
+    private Pageable pageableSeguro(Pageable pageable) {
+        List<Sort.Order> validos = pageable.getSort().stream()
+                .filter(o -> CAMPOS_ORDENACAO_PERMITIDOS_LOGIN.contains(o.getProperty()))
+                .toList();
+        Sort sortFinal = validos.isEmpty() ? ORDENACAO_PADRAO_LOGIN : Sort.by(validos);
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sortFinal);
+    }
+
     @Operation(
-            summary = "Listar todos os usuários",
-            description = "Retorna todos os usuários cadastrados. Restrito a administradores."
+            summary = "Listar usuários",
+            description = "Retorna usuários cadastrados, com paginação e filtros opcionais por role e tipoPerfil. Restrito a administradores."
     )
-    @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso",
+    @ApiResponse(responseCode = "200", description = "Página de usuários retornada com sucesso",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @io.swagger.v3.oas.annotations.media.ArraySchema(
-                            schema = @Schema(implementation = LoginResponseDTO.class))))
+                    schema = @Schema(implementation = PaginaResponseDTO.class)))
     @GetMapping("/login")
-    public List<LoginResponseDTO> getLogins() {
-        return loginService.listarTodos().stream()
-                .map(LoginResponseDTO::fromEntity)
-                .collect(Collectors.toList());
+    public PaginaResponseDTO<LoginResponseDTO> getLogins(
+            @Parameter(description = "Filtra por role (USER ou ADMIN)") @RequestParam(required = false) String role,
+            @Parameter(description = "Filtra por tipo de perfil") @RequestParam(required = false) TipoPerfil tipoPerfil,
+            @Parameter(description = "Campos aceitos: usuario, role, tipoPerfil, loginCriadoEm, loginAtualizadoEm")
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        Page<Login> pagina = loginService.listarTodos(role, tipoPerfil, pageableSeguro(pageable));
+        return PaginaResponseDTO.fromPage(pagina, LoginResponseDTO::fromEntity);
     }
 
     @Operation(

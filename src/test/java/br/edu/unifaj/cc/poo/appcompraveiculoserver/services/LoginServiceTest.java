@@ -13,6 +13,10 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,11 +36,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Testes unitários do LoginService.
- * Foco: codificação de senha, permissão de dono/admin, atualização condicional de
- * senha e imagem de perfil — isolados de banco/Spring context (JUnit 5 + Mockito).
- */
 @ExtendWith(MockitoExtension.class)
 class LoginServiceTest {
 
@@ -82,15 +81,45 @@ class LoginServiceTest {
         return dto;
     }
 
-    // ---------- listarTodos() / buscarPorId() ----------
+    // ---------- listarTodos() ----------
     @Test
-    void listarTodos_deveRetornarTodosOsLogins() {
-        List<Login> logins = List.of(login(1L, "joao123"), login(2L, "maria456"));
-        when(loginRepository.findAll()).thenReturn(logins);
+    void listarTodos_deveUsarFindAllQuandoSemFiltros() {
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Login> pagina = new PageImpl<>(List.of(login(1L, "joao123")));
+        when(loginRepository.findAll(pageable)).thenReturn(pagina);
 
-        assertThat(loginService.listarTodos()).containsExactlyElementsOf(logins);
+        assertThat(loginService.listarTodos(null, null, pageable)).isEqualTo(pagina);
     }
 
+    @Test
+    void listarTodos_deveFiltrarApenasPorRole() {
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Login> pagina = new PageImpl<>(List.of(login(1L, "admin")));
+        when(loginRepository.findByRoleIgnoreCase("ADMIN", pageable)).thenReturn(pagina);
+
+        assertThat(loginService.listarTodos("ADMIN", null, pageable)).isEqualTo(pagina);
+    }
+
+    @Test
+    void listarTodos_deveFiltrarApenasPorTipoPerfil() {
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Login> pagina = new PageImpl<>(List.of());
+        when(loginRepository.findByTipoPerfil(TipoPerfil.LOJA, pageable)).thenReturn(pagina);
+
+        assertThat(loginService.listarTodos(null, TipoPerfil.LOJA, pageable)).isEqualTo(pagina);
+    }
+
+    @Test
+    void listarTodos_deveCombinarRoleETipoPerfil() {
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Login> pagina = new PageImpl<>(List.of());
+        when(loginRepository.findByRoleIgnoreCaseAndTipoPerfil("USER", TipoPerfil.PESSOA_FISICA, pageable))
+                .thenReturn(pagina);
+
+        assertThat(loginService.listarTodos("USER", TipoPerfil.PESSOA_FISICA, pageable)).isEqualTo(pagina);
+    }
+
+    // ---------- buscarPorId() ----------
     @Test
     void buscarPorId_deveRetornarVazioQuandoNaoExiste() {
         when(loginRepository.findById(99L)).thenReturn(Optional.empty());
