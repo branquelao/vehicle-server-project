@@ -1,5 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.AlterarSenhaDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginAtualizarDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoPerfil;
@@ -78,6 +80,21 @@ class LoginServiceTest {
         dto.setSenha(senha);
         dto.setTelefone(telefone);
         dto.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
+        return dto;
+    }
+
+    private LoginAtualizarDTO loginAtualizarDto(String usuario, String telefone) {
+        LoginAtualizarDTO dto = new LoginAtualizarDTO();
+        dto.setUsuario(usuario);
+        dto.setTelefone(telefone);
+        dto.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
+        return dto;
+    }
+
+    private AlterarSenhaDTO alterarSenhaDto(String senhaAtual, String novaSenha) {
+        AlterarSenhaDTO dto = new AlterarSenhaDTO();
+        dto.setSenhaAtual(senhaAtual);
+        dto.setNovaSenha(novaSenha);
         return dto;
     }
 
@@ -213,7 +230,7 @@ class LoginServiceTest {
         when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
         autenticarComo("joao123", "USER");
 
-        LoginDTO dto = loginDto("joao123", "novaSenha", "19988887777");
+        LoginAtualizarDTO dto = loginAtualizarDto("joao123", "19988887777");
         dto.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
 
         Login atualizado = loginService.atualizar(1L, dto);
@@ -231,7 +248,7 @@ class LoginServiceTest {
         when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
         autenticarComo("joao123", "USER");
 
-        LoginDTO dto = loginDto("joao123", "novaSenha", "19988887777");
+        LoginAtualizarDTO dto = loginAtualizarDto("joao123", "19988887777");
         dto.setTipoPerfil(TipoPerfil.LOJA);
         dto.setRazaoSocial("Joao Veiculos LTDA");
 
@@ -247,7 +264,7 @@ class LoginServiceTest {
     void atualizar_deveLancarExcecaoQuandoLoginNaoExiste() {
         when(loginRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> loginService.atualizar(99L, loginDto("x", "senha123", "19999887766")))
+        assertThatThrownBy(() -> loginService.atualizar(99L, loginAtualizarDto("x", "19999887766")))
                 .isInstanceOf(RecursoNaoEncontradoException.class);
 
         verifyNoInteractions(passwordEncoder);
@@ -259,7 +276,7 @@ class LoginServiceTest {
         when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
         autenticarComo("outroUsuario", "USER");
 
-        assertThatThrownBy(() -> loginService.atualizar(1L, loginDto("joao123", "novaSenha", "19999887766")))
+        assertThatThrownBy(() -> loginService.atualizar(1L, loginAtualizarDto("joao123", "19999887766")))
                 .isInstanceOf(AccessDeniedException.class);
 
         verify(loginRepository, never()).save(any());
@@ -270,13 +287,12 @@ class LoginServiceTest {
         Login existente = login(1L, "joao123");
         when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
         when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(passwordEncoder.encode("novaSenha")).thenReturn("novaSenhaCodificada");
         autenticarComo("joao123", "USER");
 
-        Login atualizado = loginService.atualizar(1L, loginDto("joao123", "novaSenha", "19988887777"));
+        Login atualizado = loginService.atualizar(1L, loginAtualizarDto("joao123", "19988887777"));
 
         assertThat(atualizado.getTelefone()).isEqualTo("19988887777");
-        assertThat(atualizado.getSenha()).isEqualTo("novaSenhaCodificada");
+        verifyNoInteractions(passwordEncoder);
     }
 
     @Test
@@ -286,24 +302,103 @@ class LoginServiceTest {
         when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
         autenticarComo("admin", "ADMIN");
 
-        Login atualizado = loginService.atualizar(1L, loginDto("joao123", null, "19988887777"));
+        Login atualizado = loginService.atualizar(1L, loginAtualizarDto("joao123", "19988887777"));
 
         assertThat(atualizado.getTelefone()).isEqualTo("19988887777");
         verifyNoInteractions(passwordEncoder);
     }
 
     @Test
-    void atualizar_deveManterSenhaAtualQuandoSenhaNaoInformada() {
+    void atualizar_naoDeveAlterarSenha() {
         Login existente = login(1L, "joao123");
         existente.setSenha("hashAntigo");
         when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
         when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
         autenticarComo("joao123", "USER");
 
-        Login atualizado = loginService.atualizar(1L, loginDto("joao123", "   ", "19988887777"));
+        Login atualizado = loginService.atualizar(1L, loginAtualizarDto("joao123", "19988887777"));
 
         assertThat(atualizado.getSenha()).isEqualTo("hashAntigo");
         verifyNoInteractions(passwordEncoder);
+    }
+
+    // ---------- alterarSenha() ----------
+    @Test
+    void alterarSenha_deveLancarExcecaoQuandoLoginNaoExiste() {
+        when(loginRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> loginService.alterarSenha(99L, alterarSenhaDto("hashAntigo", "novaSenha123")))
+                .isInstanceOf(RecursoNaoEncontradoException.class);
+    }
+
+    @Test
+    void alterarSenha_deveLancarAccessDeniedQuandoUsuarioNaoEDonoNemAdmin() {
+        Login existente = login(1L, "joao123");
+        when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
+        autenticarComo("outroUsuario", "USER");
+
+        assertThatThrownBy(() -> loginService.alterarSenha(1L, alterarSenhaDto("hashAntigo", "novaSenha123")))
+                .isInstanceOf(AccessDeniedException.class);
+
+        verify(loginRepository, never()).save(any());
+    }
+
+    @Test
+    void alterarSenha_deveLancarExcecaoQuandoDonoNaoInformaSenhaAtual() {
+        Login existente = login(1L, "joao123");
+        when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
+        autenticarComo("joao123", "USER");
+
+        assertThatThrownBy(() -> loginService.alterarSenha(1L, alterarSenhaDto(null, "novaSenha123")))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("Senha atual");
+
+        verify(loginRepository, never()).save(any());
+    }
+
+    @Test
+    void alterarSenha_deveLancarExcecaoQuandoSenhaAtualNaoConfere() {
+        Login existente = login(1L, "joao123");
+        existente.setSenha("hashAntigo");
+        when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(passwordEncoder.matches("senhaErrada", "hashAntigo")).thenReturn(false);
+        autenticarComo("joao123", "USER");
+
+        assertThatThrownBy(() -> loginService.alterarSenha(1L, alterarSenhaDto("senhaErrada", "novaSenha123")))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("incorreta");
+
+        verify(loginRepository, never()).save(any());
+    }
+
+    @Test
+    void alterarSenha_devePermitirQuandoDonoInformaSenhaAtualCorreta() {
+        Login existente = login(1L, "joao123");
+        existente.setSenha("hashAntigo");
+        when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(passwordEncoder.matches("senhaCorreta", "hashAntigo")).thenReturn(true);
+        when(passwordEncoder.encode("novaSenha123")).thenReturn("novaSenhaCodificada");
+        when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
+        autenticarComo("joao123", "USER");
+
+        Login atualizado = loginService.alterarSenha(1L, alterarSenhaDto("senhaCorreta", "novaSenha123"));
+
+        assertThat(atualizado.getSenha()).isEqualTo("novaSenhaCodificada");
+    }
+
+    @Test
+    void alterarSenha_devePermitirAdminResetarSemSenhaAtual() {
+        Login existente = login(1L, "joao123");
+        existente.setSenha("hashAntigo");
+        when(loginRepository.findById(1L)).thenReturn(Optional.of(existente));
+        when(passwordEncoder.encode("novaSenha123")).thenReturn("novaSenhaCodificada");
+        when(loginRepository.save(any(Login.class))).thenAnswer(inv -> inv.getArgument(0));
+        autenticarComo("admin", "ADMIN");
+
+        Login atualizado = loginService.alterarSenha(1L, alterarSenhaDto(null, "novaSenha123"));
+
+        assertThat(atualizado.getSenha()).isEqualTo("novaSenhaCodificada");
+        verify(passwordEncoder, never()).matches(any(), any());
     }
 
     // ---------- atualizarImagem() ----------
