@@ -1,5 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.services;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.AlterarSenhaDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginAtualizarDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoPerfil;
@@ -72,7 +74,7 @@ public class LoginService {
     }
 
     public Login criar(LoginDTO dto) {
-        validarCamposPorTipoPerfil(dto);
+        validarCamposPorTipoPerfil(dto.getTipoPerfil(), dto.getRazaoSocial(), dto.getCnpj());
 
         Login login = new Login();
         login.setUsuario(dto.getUsuario());
@@ -84,33 +86,53 @@ public class LoginService {
         return loginRepository.save(login);
     }
 
-    private void validarCamposPorTipoPerfil(LoginDTO dto) {
-        if (dto.getTipoPerfil() == TipoPerfil.LOJA) {
-            if (dto.getRazaoSocial() == null || dto.getRazaoSocial().isBlank()) {
+    private void validarCamposPorTipoPerfil(TipoPerfil tipoPerfil, String razaoSocial, String cnpj) {
+        if (tipoPerfil == TipoPerfil.LOJA) {
+            if (razaoSocial == null || razaoSocial.isBlank()) {
                 throw new ValidationException("Razão social é obrigatória para perfil de loja");
             }
-            if (dto.getCnpj() == null || dto.getCnpj().isBlank()) {
+            if (cnpj == null || cnpj.isBlank()) {
                 throw new ValidationException("CNPJ é obrigatório para perfil de loja");
             }
         }
     }
 
-    public Login atualizar(Long id, LoginDTO dto) {
+    public Login atualizar(Long id, LoginAtualizarDTO dto) {
         Login login = loginRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + id));
 
         verificarPermissao(login);
-        validarCamposPorTipoPerfil(dto);
+        validarCamposPorTipoPerfil(dto.getTipoPerfil(), dto.getRazaoSocial(), dto.getCnpj());
 
         login.setUsuario(dto.getUsuario());
-        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
-            login.setSenha(passwordEncoder.encode(dto.getSenha()));
-        }
         login.setTelefone(dto.getTelefone());
         login.setTipoPerfil(dto.getTipoPerfil());
         login.setRazaoSocial(dto.getTipoPerfil() == TipoPerfil.LOJA ? dto.getRazaoSocial() : null);
         login.setCnpj(dto.getTipoPerfil() == TipoPerfil.LOJA ? dto.getCnpj() : null);
 
+        return loginRepository.save(login);
+    }
+
+    public Login alterarSenha(Long id, AlterarSenhaDTO dto) {
+        Login login = loginRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Login não encontrado: " + id));
+
+        verificarPermissao(login);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean donoTrocandoAPropriaSenha = auth.getName().equals(login.getUsuario());
+
+        if (donoTrocandoAPropriaSenha) {
+            if (dto.getSenhaAtual() == null || dto.getSenhaAtual().isBlank()) {
+                throw new ValidationException("Senha atual é obrigatória para trocar a própria senha");
+            }
+            if (!passwordEncoder.matches(dto.getSenhaAtual(), login.getSenha())) {
+                throw new ValidationException("Senha atual incorreta");
+            }
+        }
+        // ADMIN trocando a senha de outra conta (reset): não exige senha atual.
+
+        login.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
         return loginRepository.save(login);
     }
 

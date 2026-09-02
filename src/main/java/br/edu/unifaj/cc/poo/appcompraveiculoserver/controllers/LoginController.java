@@ -2,6 +2,8 @@ package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.ErroResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.PaginaResponseDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.AlterarSenhaDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginAtualizarDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginResponseDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
@@ -125,8 +127,9 @@ public class LoginController {
 
     @Operation(
             summary = "Atualizar dados do usuário",
-            description = "Atualiza usuário, telefone e (opcionalmente) senha. Apenas o próprio dono da conta " +
-                    "ou um ADMIN pode realizar essa operação."
+            description = "Atualiza usuário, telefone e tipo de perfil. Não altera a senha, use " +
+                    "PUT /login/{id}/senha para isso. Apenas o próprio dono da conta ou um ADMIN pode " +
+                    "realizar essa operação."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso",
@@ -146,8 +149,37 @@ public class LoginController {
                             schema = @Schema(implementation = ErroResponseDTO.class)))
     })
     @PutMapping("/login/{id}")
-    public ResponseEntity<LoginResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody LoginDTO dto) {
+    public ResponseEntity<LoginResponseDTO> atualizar(@PathVariable Long id, @Valid @RequestBody LoginAtualizarDTO dto) {
         Login salvo = loginService.atualizar(id, dto);
+        return ResponseEntity.ok(LoginResponseDTO.fromEntity(salvo));
+    }
+
+    @Operation(
+            summary = "Alterar senha",
+            description = "Troca a senha do usuário. O próprio dono da conta precisa informar a senha atual " +
+                    "para confirmar a troca. Um ADMIN pode resetar a senha de qualquer conta sem informar a " +
+                    "senha atual."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Senha alterada com sucesso",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = LoginResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou senha atual incorreta",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class))),
+            @ApiResponse(responseCode = "401", description = "Não autenticado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class))),
+            @ApiResponse(responseCode = "403", description = "Sem permissão para alterar esta conta",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ErroResponseDTO.class)))
+    })
+    @PutMapping("/login/{id}/senha")
+    public ResponseEntity<LoginResponseDTO> alterarSenha(@PathVariable Long id, @Valid @RequestBody AlterarSenhaDTO dto) {
+        Login salvo = loginService.alterarSenha(id, dto);
         return ResponseEntity.ok(LoginResponseDTO.fromEntity(salvo));
     }
 

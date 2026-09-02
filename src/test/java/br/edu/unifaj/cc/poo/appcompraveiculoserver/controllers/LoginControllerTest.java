@@ -1,5 +1,7 @@
 package br.edu.unifaj.cc.poo.appcompraveiculoserver.controllers;
 
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.AlterarSenhaDTO;
+import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginAtualizarDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.dto.login.LoginDTO;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.Login;
 import br.edu.unifaj.cc.poo.appcompraveiculoserver.entities.enums.TipoPerfil;
@@ -70,6 +72,21 @@ class LoginControllerTest {
         dto.setSenha("senha123");
         dto.setTelefone("19999887766");
         dto.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
+        return dto;
+    }
+
+    private LoginAtualizarDTO loginAtualizarDtoValido() {
+        LoginAtualizarDTO dto = new LoginAtualizarDTO();
+        dto.setUsuario("joao123");
+        dto.setTelefone("19999887766");
+        dto.setTipoPerfil(TipoPerfil.PESSOA_FISICA);
+        return dto;
+    }
+
+    private AlterarSenhaDTO alterarSenhaDtoValido() {
+        AlterarSenhaDTO dto = new AlterarSenhaDTO();
+        dto.setSenhaAtual("senhaAntiga123");
+        dto.setNovaSenha("senhaNova123");
         return dto;
     }
 
@@ -163,23 +180,58 @@ class LoginControllerTest {
     void deveAtualizarLoginERetornar200() throws Exception {
         Login atualizado = loginSalvo(1L);
         atualizado.setTelefone("19988887777");
-        when(loginService.atualizar(eq(1L), any(LoginDTO.class))).thenReturn(atualizado);
+        when(loginService.atualizar(eq(1L), any(LoginAtualizarDTO.class))).thenReturn(atualizado);
 
         mockMvc.perform(put("/login/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginDtoValido())))
+                        .content(objectMapper.writeValueAsString(loginAtualizarDtoValido())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.telefone").value("19988887777"));
     }
 
     @Test
     void deveRetornar404AoAtualizarLoginInexistente() throws Exception {
-        when(loginService.atualizar(eq(99L), any(LoginDTO.class)))
+        when(loginService.atualizar(eq(99L), any(LoginAtualizarDTO.class)))
                 .thenThrow(new RecursoNaoEncontradoException("Login não encontrado: 99"));
 
         mockMvc.perform(put("/login/99")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginDtoValido())))
+                        .content(objectMapper.writeValueAsString(loginAtualizarDtoValido())))
+                .andExpect(status().isNotFound());
+    }
+
+    // ---------- PUT /login/{id}/senha ----------
+    @Test
+    void deveAlterarSenhaERetornar200() throws Exception {
+        when(loginService.alterarSenha(eq(1L), any(AlterarSenhaDTO.class))).thenReturn(loginSalvo(1L));
+
+        mockMvc.perform(put("/login/1/senha")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(alterarSenhaDtoValido())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.usuario").value("joao123"));
+    }
+
+    @Test
+    void deveRetornar400QuandoNovaSenhaNaoAtendeARegra() throws Exception {
+        AlterarSenhaDTO dto = alterarSenhaDtoValido();
+        dto.setNovaSenha("semnumero"); // sem dígito
+
+        mockMvc.perform(put("/login/1/senha")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.erro").value("Erro de validação"));
+    }
+
+    @Test
+    void deveRetornar404AoAlterarSenhaDeLoginInexistente() throws Exception {
+        when(loginService.alterarSenha(eq(99L), any(AlterarSenhaDTO.class)))
+                .thenThrow(new RecursoNaoEncontradoException("Login não encontrado: 99"));
+
+        mockMvc.perform(put("/login/99/senha")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(alterarSenhaDtoValido())))
                 .andExpect(status().isNotFound());
     }
 
