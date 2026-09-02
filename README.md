@@ -146,7 +146,8 @@ The API is available at `http://localhost:8080`, and Swagger UI at `http://local
 | GET | `/login` | Lists users, with pagination and optional filters by role and tipoPerfil. | ADMIN |
 | GET | `/login/{id}` | Gets a specific user's data. | Owner / ADMIN |
 | POST | `/login` | Registers a new user account. | Public |
-| PUT | `/login/{id}` | Updates a user's data: username, phone, password. | Owner / ADMIN |
+| PUT | `/login/{id}` | Updates a user's data: username, phone, seller profile type. | Owner / ADMIN |
+| PUT | `/login/{id}/senha` | Changes the user's password. | Owner / ADMIN |
 | PUT | `/login/{id}/imagem` | Updates a user's profile picture. | Owner / ADMIN |
 | DELETE | `/login/{id}` | Deletes a user account. | Owner / ADMIN |
 | GET | `/veiculos` | Searches vehicles with filters, pagination and sorting. | Public |
@@ -254,7 +255,7 @@ Paginated response:
 
 ### User (Login)
 
-Request (`POST`/`PUT /login`):
+Request (`POST /login`), creates the account with an initial password:
 
 ```json
 {
@@ -268,6 +269,27 @@ Request (`POST`/`PUT /login`):
 `senha` must be at least 8 characters long and contain at least one letter and one digit.
 
 `tipoPerfil` accepts `PESSOA_FISICA` or `LOJA`. When `LOJA`, `razaoSocial` and `cnpj` become required. When `PESSOA_FISICA`, both are ignored and stored as `null` even if sent.
+
+Request (`PUT /login/{id}`), updates profile data only, does not touch the password:
+
+```json
+{
+  "usuario": "joao123",
+  "telefone": "19999887766",
+  "tipoPerfil": "PESSOA_FISICA"
+}
+```
+
+Request (`PUT /login/{id}/senha`), changes the password:
+
+```json
+{
+  "senhaAtual": "minhaSenha123",
+  "novaSenha": "minhaSenhaNova456"
+}
+```
+
+`senhaAtual` is required when the account owner changes their own password, and ignored when an ADMIN resets someone else's password.
 
 Response, never includes the password:
 
